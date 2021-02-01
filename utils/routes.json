@@ -1,0 +1,18 @@
+[
+    "/:lang",
+    "/:lang/expert/:id/",
+    "/:lang/page/:id/",
+    "/:lang/paper/:id/",
+    "/:lang/form/comments",
+    "/:lang/form/contact",
+    "/:lang/form/login",
+    "/:lang/form/send_document",
+    "/:lang/form/send_expert",
+    "/:lang/form/signup",
+    "/:lang/list/news",
+    "/:lang/home",
+    "/:lang/search",
+    "/:lang/all_experts",
+    "/:lang/all_research"
+  ]
+  
