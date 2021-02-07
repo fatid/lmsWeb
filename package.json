@@ -8,13 +8,11 @@
   "scripts": {
     "dev": "nuxt",
     "build": "nuxt build",
-    "start": "cross-env HOST=144.91.120.37 PORT=4205 NODE_ENV=production nuxt start",
-    "start3": "cross-env HOST=144.91.120.37 PORT=4206 NODE_ENV=production nuxt start",
+    "start": "cross-env HOST=144.91.120.37 PORT=4208 NODE_ENV=production nuxt start",
+   
     "startWeb": "nuxt start",
     "generate": "nuxt generate",
-    "dev2": "cross-env HOST=144.91.120.37 PORT=4206 NODE_ENV=development nuxt",
-    "dev3": "cross-env HOST=144.91.120.37 PORT=4205 NODE_ENV=development nuxt",
-    "start2": "cross-env HOST=144.91.120.37 PORT=4205 NODE_ENV=production",
+ 
     "test": "jest"
   },
   "dependencies": {
