@@ -68,7 +68,7 @@ export default {
   data() {
     return {
       founds: [],
-      key: this.$route.query.key
+      key: this.$route.query.keyword
     };
   },
   created() {

@@ -7122,9 +7122,6 @@ html.dark .progress {
 	background: #333940;
 }
 
-html.dark .arrow {
-	background-image: url(../img/arrows-dark.png);
-}
 
 html.dark .thumbnail,
 html.dark .img-thumbnail,
@@ -8820,17 +8817,7 @@ Theme Version:	8.2.0
 }
 
 /* Arrows */
-.arrow {
-	background: transparent url(../img/arrows.png) no-repeat 0 0;
-	width: 47px;
-	height: 120px;
-	display: inline-block;
-	position: relative;
-}
-
-.arrow.arrow-light {
-	background-image: url(../img/arrows-dark.png);
-}
+ 
 
 .arrow.vtl {
 	background-position: 0 0;

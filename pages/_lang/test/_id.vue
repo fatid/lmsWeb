@@ -1,49 +1,12 @@
 <template>
   <div class="container">
-	  <h3>{{l('Dictionary','g')}}</h3>
-    <div class="list-group">
-      <li class="list-group-item list-group-item-action" v-for="d in data">
-        <div class="d-flex w-100 ">
-            <!-- @click="goPath('word/deneme')" -->
-          <a
-            @click="goPath('word/' + d.dict_word)"
-            class=" active"
-            aria-current="true"
-          >
-            <div>
-              <img
-                v-if="d.dict_image"
-                :src="d.dict_image"
-                class="image-inside"
-                alt="..."
-              />
-              <div v-else class="box-inside"></div>
-            </div>
-            <div>
-              <h5 class="mb-1">{{ d.dict_word }}  </h5>  
-              <small>{{ d.dict_mean }}</small>
-            </div>
-          </a>
-        </div>
-		<div class="toolbar-cart">
-			<i class="fas fa-star"></i>
-			<a @click="responsiveVoice.speak(d.dict_word)">
-				<i class="fas fa-play"></i>
-			</a>
-		</div>
-        <div class="width-full w-100">
-          <button @click="goPath('search',{keyword:label})" v-for="label in d.labels" type="button" class="btn btn-light">
-            {{ label }}
-          </button>
-        </div>
-      </li>
-    </div> 
+    Test edyoruz
   </div>
 </template>
-<script src="https://code.responsivevoice.org/responsivevoice.js?key=Czvpi6ON"></script>
 <script>
 import general from "@/mixins/general";
 import axios from "axios";
+
 export default {
   mixins: [general],
 

@@ -5,8 +5,8 @@ export class KurumsalSayfalar extends BaseTransformer {
 
     // const regex = /[title]/gi;
  
-     data.KurumsalSayfalar.SA_Title = data.KurumsalSayfalar.SA_Title.replace('[firm]', "Istanbul Metal Demir Çelik").replace("[title]", data.KurumsalSayfalar.SA_Baslik);
-     data.KurumsalSayfalar.SA_Description= data.KurumsalSayfalar.SA_Description.replace("[firm]", "Istanbul Metal Demir Çelik").replace("[title]", data.KurumsalSayfalar.SA_Baslik);
+     data.KurumsalSayfalar.SA_Title = data.KurumsalSayfalar.SA_Title.replace('[firm]', "Daleel").replace("[title]", data.KurumsalSayfalar.SA_Baslik);
+     data.KurumsalSayfalar.SA_Description= data.KurumsalSayfalar.SA_Description.replace("[firm]", "Daleel").replace("[title]", data.KurumsalSayfalar.SA_Baslik);
       
     return {
       ...data.KurumsalSayfalar,

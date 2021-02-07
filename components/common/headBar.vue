@@ -1,5 +1,8 @@
 <template>
 <header>
+  <div class="text-center my-10">
+ <a @click="goPath('home')"> <img class="text-align" :src="l('siteInfo.G_Logo','g')" /></a>
+ </div>
    <div
                   class="header-nav header-nav-links justify-content-end pr-lg-4 mr-lg-3"
                 >
@@ -104,35 +107,10 @@ export default {
     }
   },
   created() {
-    this.getLikes();
-    this.getHeaderData();
+    this.getLikes(); 
   },
   methods:{
-    async getHeaderData() { 
-       let fields = `topBar_title1,topBar_title2,topBar_titleLink,topBar_url,created_on,created_by,id,status`
-         
-                let filters= { status:['=',1]}
-                return new Promise((resolve, reject) => {
-                axios({
-                    url: process.env.baseURL+"topBar",
-                    method: 'get',
-                    params: {
-                        limit:1,
-                        offset:0,
-                        fields,
-                        lang:this.$store.state.locale,
-                        sort:['created_on,DESC'],
-                        filter:filters
-                    }  
-                }).then(response => {
-                  this.topBar = response.data && response.data.formattedData && response.data.formattedData[0] ? response.data.formattedData[0]:  [];
-                        this.topIsVisible = true;
-       
-                }).catch(e => {
-                    console.log(e)
-                    })
-                });
-    }
+   
   },
 
   mounted() {

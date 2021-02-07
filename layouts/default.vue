@@ -1,15 +1,8 @@
 <template>
   <div  :lang="LOCALE"> 
     <headBar v-if="LANG_PACK.main"></headBar>
-    <!-- {{pageInfo}} -->
-    <nuxt v-if="LANG_PACK.main" :key="$route.fullPath" />
-    <section class="section bg-transparent position-relative border-0 z-index-1 m-0 p-0">
-					
-					<svg class="custom-svg-3" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 193 495">
-						<path fill="#afafaf" d="M193,25.73L18.95,247.93c-13.62,17.39-10.57,42.54,6.82,56.16L193,435.09V25.73z"></path>
-						<path fill="none" stroke="#FFF" stroke-width="2" stroke-miterlimit="10" d="M196,53.54L22.68,297.08c-12.81,18-8.6,42.98,9.4,55.79L196,469.53V53.54z"></path>
-					</svg>
-				</section>
+ 
+    <nuxt v-if="LANG_PACK.main" :key="$route.fullPath" /> 
     <footerBar v-if="LANG_PACK.main"></footerBar>
     <!-- {{pageInfo}}  -- {{LANG_PACK}} -->
   </div>
@@ -42,7 +35,7 @@ export default {
       let language = this.$route.params.lang;
       this.$store.commit("setLocale", language);
       this.$store.commit("setCustomClass", language);
-      this.$store.dispatch("getLikes");  
+      // this.$store.dispatch("getLikes");  
       this.$nuxt.$loading.finish();
     });
 
@@ -77,9 +70,9 @@ export default {
         },
         // { hid: 'fb:app_id', name: 'fb:app_id', content: '12873892173892' },
     { hid: 'og:title', name: 'og:title', content: this.pageInfo.SA_Title },
-    { hid: 'og:image', name: 'og:image', content: 'http://buhuth.org/logo.png' },
+    // { hid: 'og:image', name: 'og:image', content: 'http://lms.org/logo.png' },
     { hid: 'og:type', name: 'og:type', content: 'article' }, 
-    {  name: 'article:publisher', content: 'https://www.facebook.com/Buhuth' },
+    // {  name: 'article:publisher', content: 'https://www.facebook.com/Buhuth' },
     {  name: 'article:published_time', content: this.pageInfo.created_on },
     {  name: 'article:modified_time', content: this.pageInfo.updated_on },
         // {

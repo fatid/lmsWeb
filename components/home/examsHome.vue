@@ -1,35 +1,31 @@
 <template>
   <div class="container">
-	  <h3>{{l('Dictionary','g')}}</h3>
+	  <h3>{{l('Courses','g')}}</h3>
     <div class="list-group">
       <li class="list-group-item list-group-item-action" v-for="d in data">
         <div class="d-flex w-100 ">
             <!-- @click="goPath('word/deneme')" -->
           <a
-            @click="goPath('word/' + d.dict_word)"
+            @click="goPath('course/' + d.cou_label_link)"
             class=" active"
             aria-current="true"
           >
             <div>
               <img
-                v-if="d.dict_image"
-                :src="d.dict_image"
+                v-if="d.cou_label_image"
+                :src="d.cou_label_image"
                 class="image-inside"
                 alt="..."
               />
               <div v-else class="box-inside"></div>
             </div>
             <div>
-              <h5 class="mb-1">{{ d.dict_word }}  </h5>  
-              <small>{{ d.dict_mean }}</small>
+              <h5 class="mb-1">{{ d.cou_label_name }}  </h5>   
             </div>
           </a>
         </div>
 		<div class="toolbar-cart">
 			<i class="fas fa-star"></i>
-			<a @click="responsiveVoice.speak(d.dict_word)">
-				<i class="fas fa-play"></i>
-			</a>
 		</div>
         <div class="width-full w-100">
           <button @click="goPath('search',{keyword:label})" v-for="label in d.labels" type="button" class="btn btn-light">
@@ -40,10 +36,10 @@
     </div> 
   </div>
 </template>
-<script src="https://code.responsivevoice.org/responsivevoice.js?key=Czvpi6ON"></script>
 <script>
 import general from "@/mixins/general";
 import axios from "axios";
+
 export default {
   mixins: [general],
 
@@ -51,16 +47,19 @@ export default {
     data: []
   }),
   created() {
-    this.getDictionary();
+    this.getData();
   },
   methods: {
-    async getDictionary() {
-      let fields = `dict_word,dict_mean,dict_image,dict_link,dict_tag,dict_w_similar,dict_tag,id,status,created_on,created_by,id,status`;
+
+    async getCourses() {
+
+
+ let fields = `cou_label_name,cou_label_link,cou_label_image,created_on,created_by,id,status`;
 
       let filters = { status: ["=", 1] };
       return new Promise((resolve, reject) => {
         axios({
-          url: process.env.baseURL + "dict_word",
+          url: process.env.baseURL + "co_labels",
           method: "get",
           params: {
             limit: 20,
@@ -77,14 +76,41 @@ export default {
               response.data.formattedData &&
               response.data.formattedData[0]
             ) {
-              let d = response.data.formattedData;
-              d.map(element => {
-                let k = element;
-                if (k.dict_tag) {
-                  k.labels = k.dict_tag.split(",");
-                }
-              });
+              let d = response.data.formattedData; 
+              this.data = d;
+            } else {
+              this.data = [];
+            }
+          })
+          .catch(e => {
+            console.log(e);
+          });
+      });
+    },
+    async getData() {
+      let fields = `cou_label_name,cou_label_link,cou_label_image,created_on,created_by,id,status`;
 
+      let filters = { status: ["=", 1] };
+      return new Promise((resolve, reject) => {
+        axios({
+          url: process.env.baseURL + "co_labels",
+          method: "get",
+          params: {
+            limit: 20,
+            offset: 0,
+            fields,
+            lang: this.$store.state.locale,
+            sort: ["pdb_date,DESC"],
+            filter: filters
+          }
+        })
+          .then(response => {
+            if (
+              response.data &&
+              response.data.formattedData &&
+              response.data.formattedData[0]
+            ) {
+              let d = response.data.formattedData; 
               this.data = d;
             } else {
               this.data = [];

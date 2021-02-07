@@ -2,7 +2,7 @@
   <footer id="footer1" class="border-0 mt-0">
    <p class="text-center text-3 mb-0">
               © {{ new Date().getFullYear() }}
-              {{ l("All Rights Reserved", "g") }}.
+              {{ l("All Rights Reserved", "g") }}. <a @click="goPath('test/deneme')">{{l('Test','g')}}</a>
             </p>
      <cookie-law theme="dark-lime" :buttonText="l('Onaylıyorum','g')">
            <div slot="message">
