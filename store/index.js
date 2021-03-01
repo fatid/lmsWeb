@@ -13,6 +13,7 @@ import form from './form'
 import core from './core'
 import poll from './poll'
 import expert from './expert'
+import course from './course'
 // import note from './note'
 Vue.use(Vuex); 
 
@@ -180,6 +181,7 @@ export const store = new Vuex.Store({
             core,
             research,
             expert,
-            poll
+            poll,
+            course
     }
 });

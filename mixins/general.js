@@ -100,6 +100,7 @@ export default {
       nup == "no-upscale" ? imaj += '_' + nup : '';
 
       imaj += '_.' + ext;
+      imaj = imaj.replace("/visual/","/visual2/")
       return imaj;
 },
     getImages(path,thumb='h=200'){
@@ -280,6 +281,13 @@ export default {
     },
     getLikes() {
       return this.$store.getters.getLikes
+    },
+    isLiked(id){
+      if(this.likes.filter(k=> k.id == id)){
+        return true
+      }
+      return false
+      
     },
     visitorCount(data,ops){ 
       axios({

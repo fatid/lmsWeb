@@ -1,8 +1,8 @@
 require('dotenv').config()
 const pkg = require('./package.json')
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
-const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin')
-const purgecss = require('@fullhuman/postcss-purgecss')
+// const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+// const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin')
+// const purgecss = require('@fullhuman/postcss-purgecss')
 const getAppRoutes = require('./utils/getRoutes.js'); 
 export default {
   mode: 'universal',
@@ -32,29 +32,13 @@ export default {
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.png' }
     ],
     script: [
-      { src: '/vendor/modernizr/modernizr.min.js' },
-      { src: '/vendor/jquery/jquery.min.js' },
-      { src: '/vendor/jquery.appear/jquery.appear.min.js' },
-      { src: '/vendor/jquery.easing/jquery.easing.min.js' },
-      { src: '/vendor/jquery.cookie/jquery.cookie.min.js' },
-      { src: '/vendor/popper/umd/popper.min.js' },
-      { src: '/vendor/bootstrap/js/bootstrap.min.js' },
-      { src: '/vendor/common/common.min.js' },
-      { src: '/vendor/jquery.validation/jquery.validate.min.js' },
-      
-      { src: '/vendor/jquery.gmap/jquery.gmap.min.js' },
-      { src: '/vendor/jquery.lazyload/jquery.lazyload.min.js' },
-      { src: '/vendor/isotope/jquery.isotope.min.js' },
-      { src: '/vendor/owl.carousel/owl.carousel.min.js' },
-      { src: '/vendor/magnific-popup/jquery.magnific-popup.min.js' },
-      { src: '/vendor/vide/jquery.vide.min.js' },
-      { src: '/vendor/theme.js' },
-      { src: '/main.js' },
-      // {
-        //   src: 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js',
-        //   'data-ad-client': "ca-pub-6837578339758805",
-      //   async: true
-      // }
+      { src: '/js/jquery-3.3.1.min.js' },
+      { src: '/vendor/bootstrap/js/bootstrap.bundle.min.js' },
+      { src: '/vendor/OwlCarousel/owl.carousel.js' },
+      { src: '/vendor/semantic/semantic.min.js' },
+      { src: '/js/custom.js' },
+      { src: '/js/night-mode.js' },
+  
     ], 
   },
   /*
@@ -65,19 +49,22 @@ export default {
   ** Global CSS
   */
  css: [ 
-  '~/static/css/main.css', 
-  '~/static/vendor/bootstrap/css/bootstrap.min.css', 
-  // '~/static/vendor/owl.carousel/assets/owl.carousel.min.css', 
-  // '~/static/vendor/owl.carousel/assets/owl.theme.default.min.css', 
-  // '~/static/vendor/magnific-popup/magnific-popup.min.css', 
-  '~/static/vendor/animate/animate.compat.css', 
-  '@fortawesome/fontawesome-free/css/all.css',
+   '~/static/vendor/unicons-2.0.1/css/unicons.css', 
+   '~/static/css/vertical-responsive-menu.min.css', 
+   '~/static/css/style.css', 
+   '~/static/css/responsive.css', 
+   '~/static/css/night-mode.css', 
+   '@fortawesome/fontawesome-free/css/all.css',
+   '~/static/vendor/OwlCarousel/assets/owl.carousel.css', 
+   '~/static/vendor/OwlCarousel/assets/owl.theme.default.min.css', 
+   '~/static/vendor/bootstrap/css/bootstrap.min.css', 
+   '~/static/vendor/semantic/semantic.min.css', 
   // '~/static/vendor/simple-line-icons/css/simple-line-icons.min.css'
 ],
 plugins: [
   { src: '~/plugins/pageInfo' },
   {  src:  "~/filters/index.js"  },
-  { src: '~plugins/ga.js', ssr: false }
+  { src: '~plugins/ga.js', ssr: false }, 
   // { src: '~/plugins/vue-lazyload', ssr: false },
   // { src: '~plugins/ga.js', ssr: false }
 ],
@@ -92,8 +79,7 @@ optimizedImages: {
     // Doc: https://github.com/nuxt-community/dotenv-module
     '@nuxtjs/dotenv',
     '@nuxtjs/device',
-    'bootstrap-vue/nuxt', 
- 
+    'bootstrap-vue/nuxt',  
     '@nuxtjs/sitemap'
 
   ],
@@ -101,8 +87,7 @@ optimizedImages: {
     middleware: ['auth'], 
   },
   
-  buildModules: [
-   
+  buildModules: [ 
     'nuxt-compress'
   ], 
 
@@ -140,36 +125,36 @@ optimizedImages: {
   '~/middleware/routing.js'
 ],
  build: { 
-  collapseBooleanAttributes: true,
-  decodeEntities: true,
-  minifyCSS: true,
-  minifyJS: true,
-  processConditionalComments: true,
-  removeEmptyAttributes: true,
-  removeRedundantAttributes: true,
-  trimCustomFragments: true,
-  useShortDoctype: true,
-  postcss: {
-    plugins: [
-      purgecss({
-        content: ['./pages/**/*.vue',  './layouts/**/*.vue', './components/**/*.vue','~/static/vendor/bootstrap/css/bootstrap.min.css',],
-        css: ['**/*.css','**/*.scss'], 
-        whitelist: ['html', 'body','table', 'table-striped','fa-whatsapp','fa-whatsapp-square','fa-youtube','flex-row','flex-row-reverse','fa-twiter','fa-instagram','fa_youtube','fa-youtube','owl-stage-outer','owl-stage','owl-theme','owl-carousel','owl-stage-outer','owl-stage','owl-theme','stage-margin','nav-style-1','owl-loaded','owl-dot','owl-prev','owl-next','owl-nav', 'owl-dot active','owl-dots','owl-drag','owl-carousel-init'],
-      })
-    ]
-  }, 
-  extractCSS: true,
-  optimization: {
-    minimizer: [
-      // new UglifyJsPlugin({
-      //   cache: true,
-      //   parallel: true,
-      //   sourceMap: true // set to true if you want JS source maps
-      // }),
-      new OptimizeCssAssetsPlugin({})
-    ],
+  // collapseBooleanAttributes: true,
+  // decodeEntities: true,
+  // minifyCSS: true,
+  // minifyJS: true,
+  // processConditionalComments: true,
+  // removeEmptyAttributes: true,
+  // removeRedundantAttributes: true,
+  // trimCustomFragments: true,
+  // useShortDoctype: true,
+  // // postcss: {
+  //   plugins: [
+  //     purgecss({
+  //       content: ['./pages/**/*.vue',  './layouts/**/*.vue', './components/**/*.vue','~/static/vendor/bootstrap/css/bootstrap.min.css',],
+  //       css: ['**/*.css','**/*.scss'], 
+  //       whitelist: ['html', 'body','table', 'table-striped','fa-whatsapp','fa-whatsapp-square','fa-youtube','flex-row','flex-row-reverse','fa-twiter','fa-instagram','fa_youtube','fa-youtube','owl-stage-outer','owl-stage','owl-theme','owl-carousel','owl-stage-outer','owl-stage','owl-theme','stage-margin','nav-style-1','owl-loaded','owl-dot','owl-prev','owl-next','owl-nav', 'owl-dot active','owl-dots','owl-drag','owl-carousel-init'],
+  //     })
+  //   ]
+  // }, 
+  // extractCSS: true,
+  // optimization: {
+  //   minimizer: [
+  //     // new UglifyJsPlugin({
+  //     //   cache: true,
+  //     //   parallel: true,
+  //     //   sourceMap: true // set to true if you want JS source maps
+  //     // }),
+  //     new OptimizeCssAssetsPlugin({})
+  //   ],
      
-    }
+  //   }
   }
 }
 

@@ -21,9 +21,10 @@
               <a
                 @click="goPath('home')"
                 class="text-color-default text-color-hover-primary text-decoration-none"
-                >{{ l("Home", "g") }}</a
+                >{{ l("Home", "g") }}  </a
               >
             </li>
+            <li > / </li>
             <li v-if="topPage && topPage.SA_Baslik">
               <a
                 @click="goPath('page/'+topPage.wa_full_path)"

@@ -1,165 +1,222 @@
 <template>
-  <div class="container"> 
-   
-        <div class="card" style="width: 100%;"  v-if="!loading.general && data && data.dict_word">
-        <div class="card-body">
-            <h5 class="card-title">{{ data.dict_word }}</h5>
-            <h6 class="card-subtitle mb-2 text-muted">
-            <img :src="data.dict_image" class="image-word"/>
-            </h6>
-            <p class="card-text">{{ data.dict_mean }}</p>
-            <a v-if="data.dict_sound" @click="sound(data.dict_sound)" class="card-link"><i class="fa fa-play"></i> Play Sound</a>
-            <a @click="goPath('home')" class="card-link">All Words</a>
-            <a @click="goPath('home')" class="card-link">Another link</a>
+  <div class="container">
+    <div class="head-word">
+        <a @click="goPath('words/all_words')"> <i class="fa fa-chevron-left"></i></a>
+        <span class="head-title">{{data.dict_word}}</span>
+        <a class="like" title="" :class="isLiked(data.id) ? 'selected' :''" @click="setLikes(data)"> <i class="fa fa-heart"></i></a>
+    </div>
+    
+    <div class="row">
+        <div class="col-12">
 
-            <div class="others">
-            <h6>Other Meanings</h6>
+        <img
+              v-if="data.dict_image"
+              :src="show_image(data.dict_image, '300', '300', true)"
+              class="image-inside"
+              alt="..."
+            />
+            <img
+              v-else
+              src="/images/get-img.jpg"
+              class="image-inside"
+              alt="..."
+            />
 
-            <div v-for="ot in others" class="other-item">
-                {{ot.dict_mean_explain}}
+        {{data.dict_mean}}
+        <br />
+        <br />
+        </div>
+        <div class="col-12">
+   <div class="tags">
+              <div
+                class="ui red horizontal label cursor-pointer" 
+                @click="goPath('words/all_words', { keyword: label })"
+                v-for="label in data.labels"
+              >
+                {{ label }}
+              </div>
             </div>
             </div>
+        <div class="col-12 mt-20">
+                <h3>{{l('Other Meanings','g')}}</h3>
+                <div class="" v-for="m in meanings">
+                        {{m.dict_mean_explain}}
+                </div>
         </div>
-        </div>
-        <div class="" v-else>
-            Loading
-        </div>
-  
+    </div>  
   </div>
-</template>
+</template> 
 <script>
 import general from "@/mixins/general";
 import axios from "axios";
-
 export default {
   mixins: [general],
 
-  data(){
-      return{
-            data: {},
-            others:[],
-            word:'',
-            loading:{
-                general:false,
-                similar: false,
-                other: false,
-            }
-        }
-  },
-
+  data: () => ({
+    data: {},
+    meanings: [],
+    id: ""
+  }),
   created() {
-    // this.word = this.$route.params.word;
-
+      this.id =  this.$route.params && this.$route.params.id  ? this.$route.params.id : "";
     this.getDictionary();
   },
-  watch:{
-      word(val){
-         this.getDictionary();
-      }
-  },
   methods: {
-    sound(file){
-       file = file.replace("/visual","");
-       var audio = new Audio(file);
-       audio.play() 
-    },
-    async getOtherMeanings() {
+    async getMeanings() {
 
-            this.loading.other = true;
-   let fields = `dict_mean_explain,dict_mean_image,dict_mean_sound,id,created_on,created_by,id,status`;
 
-        let filters = { prev_id: ["=", this.data.id] };
-        return new Promise((resolve, reject) => {
-          axios({
-            url: process.env.baseURL + "dict_meanings",
-            method: "get",
-            params: {
-              limit: 1,
-              offset: 0,
-              fields,
-              lang: this.$store.state.locale,
-              sort: ["pdb_date,DESC"],
-              filter: filters
+  let fields = `dict_mean_explain,dict_mean_sound,dict_mean_image,id,status,created_on,created_by,id,status`;
+
+      let filters = { prev_id: ["=", this.data.id] };
+ 
+      return new Promise((resolve, reject) => {
+        axios({
+          url: process.env.baseURL + "dict_meanings",
+          method: "get",
+          params: {
+            limit: 20,
+            offset: 0,
+            fields,
+            lang: this.$store.state.locale,
+            sort: ["pdb_date,DESC"],
+            filter: filters
+          }
+        })
+          .then(response => {
+            if (
+              response.data &&
+              response.data.formattedData &&
+              response.data.formattedData[0]
+            ) {
+               this.meanings =  response.data.formattedData;
+           
+            } else {
+              this.meanings = [];
             }
           })
-            .then(response => {
-              this.others =
-                response.data &&
-                response.data.formattedData &&
-                response.data.formattedData[0]
-                  ? response.data.formattedData
-                  : {};
-                    this.loading.other = false;
- 
-            })
-            .catch(e => {
-                    this.loading.other = false;
+          .catch(e => {
+             this.meanings = [];
+            console.log(e);
+          });
+      });
+        
 
-              console.log(e);
-            });
-        });
-    },
-    async getSimilarWords() {
-
-            this.loading.similar = true;
- 
-            this.loading.similar = false;
     },
     async getDictionary() {
-      let word = this.$route && this.$route.params ? this.$route.params.id : "";
-      this.loading.general = true;
-      if (word) {
-        let fields = `dict_word,dict_mean,dict_image,dict_sound,dict_w_similar,id,status,created_on,created_by,id,status`;
+      let fields = `dict_word,dict_mean,dict_image,dict_link,dict_tag,dict_w_similar,dict_tag,id,status,created_on,created_by,id,status`;
 
-        let filters = { dict_word: ["=", word] };
-        return new Promise((resolve, reject) => {
-          axios({
-            url: process.env.baseURL + "dict_word",
-            method: "get",
-            params: {
-              limit: 1,
-              offset: 0,
-              fields,
-              lang: this.$store.state.locale,
-              sort: ["pdb_date,DESC"],
-              filter: filters
+      let filters = { dict_word: ["=", this.id] };
+ 
+      return new Promise((resolve, reject) => {
+        axios({
+          url: process.env.baseURL + "dict_word",
+          method: "get",
+          params: {
+            limit: 20,
+            offset: 0,
+            fields,
+            lang: this.$store.state.locale,
+            sort: ["pdb_date,DESC"],
+            filter: filters
+          }
+        })
+          .then(response => {
+            if (
+              response.data &&
+              response.data.formattedData &&
+              response.data.formattedData[0]
+            ) {
+              let d = response.data.formattedData[0];
+         
+              if(d.dict_tag){
+                  d.labels = d.dict_tag.split(",");
+              } 
+                this.data = d;
+                this.getMeanings();
+            } else {
+              this.dict_tag = {};
             }
           })
-            .then(response => {
-              this.data =
-                response.data &&
-                response.data.formattedData &&
-                response.data.formattedData[0]
-                  ? response.data.formattedData[0]
-                  : {};
-                    this.loading.general = false;
-
-                  this.getOtherMeanings(this.data .id);
-                  this.getSimilarWords();
-            })
-            .catch(e => {
-                    this.loading.general = false;
-
-              console.log(e);
-            });
-        });
-      }
+          .catch(e => {
+             this.d = {};
+            console.log(e);
+          });
+      });
     }
   }
 };
 </script>
-<style scoped>
-.image-word{
- width: 90px; 
+<style lang="scss">
+.fcrse_img {
+  width img {
+    max-width: 100%;
+    height: 200px;
+  }
 }
-.others{
-  margin: 20px 0px;
-  border-top: 1px solid #efefef;
-  padding-top: 15px;
+
+.tags {
+  display: inline-flex;
 }
-.other-item{
-  width: 100%;
-  display: block;
-  border-top: 1px solid #efefef;
+.list-group-item {
+  margin-bottom: 10px;
+  border: 0;
+  border-radius: 10px;
+  border: 0.1em solid #f7f7f7;
+  .title-item {
+    display: inline-flex;
+    margin-bottom: 10px;
+  }
+  transition: 1s all;
+
+  &:hover {
+    background: #fff;
+    border: 0.1em solid #000;
+    transition: 1s all;
+  }
+}
+.image-inside {
+  width: 40px;
+  height: auto;
+  margin-right: 10px;
+}
+.box-inside {
+  background: #efefef;
+  border-radius: 0.35rem;
+  height: 40px;
+  margin-right: 10px;
+  width: 40px;
+}
+.toolbar-cart {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.head-word{
+    display: inline-flex;
+    padding: 10px 0px;
+}
+.head-title{
+    font-size: 42px;
+}
+.head-word a{
+    background: #fff;
+    width: 40px;
+    height: 40px;
+    text-align: center;
+    padding: 10px 0;
+    border-radius: 50%;
+    margin-top: -8px;
+    margin-right: 20px;
+    &.like{
+        margin-left: 30px;
+        &:hover, .selected{
+            background: rgb(212, 113, 130);
+            color: #fff;
+        }
+    }
 }
 </style>

@@ -1,29 +1,20 @@
 <template>
-
-  <div class="card   mb-5">
-              <div class="card-body pa-0 z-index-1">
-                <h2 class="text-color-dark font-weight-bold text-4 mb-4">
-                  {{ titlePanel }}
-                </h2>
-                <ul class="custom-nav-list-effect-1 list width-100 list-unstyled mb-0">
-                  <li 
-                    :class="similar.SA_Link == getLast ? 'active' : ''"
-                    class="noWrap"
-                     v-for="similar in similars"
-                    :key="similar.id"
-                  >
-                    <a
-                      @click.prevent="goPath($route.path.split('/')[2]+'/'+similar.SA_Link)"
-                      class="text-decoration-none text-color-dark text-color-hover-primary text-2"
-                      :title="similar.SA_Baslik"
-                    >
-                      {{ similar.SA_Baslik }}</a
-                    >
-                  </li>
-                </ul>
-              </div>
-            </div>
- 
+  <div class="fcrse_3 frc123">
+    <ul class="ttrm15">
+      <li v-for="similar in similars" :key="similar.id">
+        <a
+          :class="similar.SA_Link == getLast ? 'active' : ''"
+          class="tt_item active"
+          @click.prevent="
+            goPath($route.path.split('/')[2] + '/' + similar.SA_Link)
+          "
+          :title="similar.SA_Baslik"
+        >
+          {{ similar.SA_Baslik }}</a
+        >
+      </li>
+    </ul>
+  </div>
 </template>
 <script>
 import general from "@/mixins/general";
@@ -58,9 +49,9 @@ export default {
         });
     }
   },
-  watch:{
-    'pageInfo.SA_UstSayfa'(){
-        this.getRelatedPages();
+  watch: {
+    "pageInfo.SA_UstSayfa"() {
+      this.getRelatedPages();
     }
   },
   computed: {
@@ -98,10 +89,10 @@ export default {
 ul {
   li {
     &.liselected {
-      font-weight: 600; 
+      font-weight: 600;
     }
     a {
-      color: #0a0a0a; 
+      color: #0a0a0a;
       font-size: 13px;
       i {
         margin-right: 7px;
@@ -109,12 +100,14 @@ ul {
     }
   }
 }
-.noWrap{
-  text-overflow: ellipsis; 
+.noWrap {
+  text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
   width: 100%;
-  font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 .width-100 {
   width: 100%;
