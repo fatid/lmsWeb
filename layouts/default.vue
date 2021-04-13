@@ -23,21 +23,11 @@
               ><i class="uil uil-apps"></i
             ></a>
             <div class="menu dropdown_category5">
-             
-                  <div 
-                class="item channel_item"
-                v-for="cat in categories"
-                
-                >
-                {{ cat.cou_label_name }}  
-                 <a @click="goPath('courses/' + cat.cou_label_link)"> {{l('Courses','g')}}</a>
-                <a 
-                @click="goPath('words/' + cat.cou_label_link)"
-                >{{l('Words','g')}}</a>
-                <a  
-                @click="goPath('tests/' + cat.cou_label_link)"
-                >{{l('Tests','g')}}</a>
-                  </div>
+              <div class="item channel_item" v-for="cat in categories">
+                <a @click="goPath('courses/' + cat.cou_label_link)">
+                  {{ cat.cou_label_name }}
+                </a>
+              </div>
             </div>
           </div>
         </div>
@@ -49,10 +39,8 @@
               class="prompt srch10"
               type="text"
               v-model="searchText"
-              @keydown.enter="goPath('search',{keyword:searchText})"
-              :placeholder="
-                l('Search for  Courses, Tests and more..', 'g')
-              "
+              @keydown.enter="goPath('search', { keyword: searchText })"
+              :placeholder="l('Search for  Courses, Tests and more..', 'g')"
             />
             <i class="uil uil-search-alt icon icon1"></i>
           </div>
@@ -118,7 +106,7 @@
               ></a>
             </div> -->
           </li>
-          <li class="ui dropdown" v-if="auth.token" >
+          <li class="ui dropdown" v-if="auth.token">
             <a href="#" class="option_links" title="Notifications"
               ><i class="uil uil-bell"></i><span class="noti_count">0</span></a
             >
@@ -230,79 +218,87 @@
         <div class="left_section">
           <ul>
             <li class="menu--item">
-              <a @click="goPath('home')" class="menu--link active" :title="l('Home','g')">
+              <a
+                @click="goPath('home')"
+                class="menu--link active"
+                :title="l('Home', 'g')"
+              >
                 <i class="uil uil-home-alt menu--icon"></i>
-                <span class="menu--label">{{l('Home','g')}}</span>
+                <span class="menu--label">{{ l("Home", "g") }}</span>
               </a>
             </li>
-             
+
             <li class="menu--item">
-              <a @click="goPath('courses/all_courses')" class="menu--link" :title="l('Courses','g')">
+              <a
+                @click="goPath('courses/all_courses')"
+                class="menu--link"
+                :title="l('Courses', 'g')"
+              >
                 <i class="uil uil-search menu--icon"></i>
-                <span class="menu--label">{{l('Courses','g')}}</span>
+                <span class="menu--label">{{ l("Courses", "g") }}</span>
               </a>
-            </li> 
+            </li>
             <li class="menu--item">
-              <a @click="goPath('words/all_words')" class="menu--link" :title="l('Words','g')">
+              <a
+                @click="goPath('words/all_words')"
+                class="menu--link"
+                :title="l('Words', 'g')"
+              >
                 <i class="uil uil-search menu--icon"></i>
-                <span class="menu--label">{{l('Words','g')}}</span>
+                <span class="menu--label">{{ l("Words", "g") }}</span>
               </a>
-            </li> 
+            </li>
             <li class="menu--item  menu--item__has_sub_menu">
               <label class="menu--link" title="Tests">
                 <i class="uil uil-clipboard-alt menu--icon"></i>
-                <span class="menu--label">{{l('Tests','g')}}</span>
+                <span class="menu--label">{{ l("Tests", "g") }}</span>
               </label>
               <ul class="sub_menu">
                 <li class="sub_menu--item">
-                  <a  @click="goPath('tests/all_tests')" class="sub_menu--link"
-                    >{{l('Tests')}}</a
-                  >
-                </li> 
-                <li class="sub_menu--item">
                   <a
-                    href="#"
+                    @click="goPath('tests/all_tests')"
                     class="sub_menu--link"
-                    >Test Results</a
+                    >{{ l("Tests") }}</a
                   >
                 </li>
-                <li >
-                  <a
-                      href="#" class="sub_menu--item"
-                    >My Certification</a
-                  >
+                <li class="sub_menu--item">
+                  <a href="#" class="sub_menu--link">Test Results</a>
+                </li>
+                <li>
+                  <a href="#" class="sub_menu--item">My Certification</a>
                 </li>
               </ul>
             </li>
             <li class="menu--item">
               <a
-                @click="goPath('my/favorite-courses')"  
+                @click="goPath('my/favorite-courses')"
                 class="menu--link"
                 title="Saved Courses"
               >
                 <i class="uil uil-heart-alt menu--icon"></i>
-                <span class="menu--label">{{l('Saved Courses','g')}}</span>
+                <span class="menu--label">{{ l("Saved Courses", "g") }}</span>
               </a>
             </li>
             <li class="menu--item">
               <a
-                 @click="goPath('my/favorite-words')"  
+                @click="goPath('my/favorite-words')"
                 class="menu--link"
                 title="Saved Courses"
               >
                 <i class="uil uil-heart-alt menu--icon"></i>
-                <span class="menu--label">{{l('Saved Words','g')}}</span>
+                <span class="menu--label">{{ l("Saved Words", "g") }}</span>
               </a>
             </li>
-          
           </ul>
-        </div> 
+        </div>
         <div class="left_section pt-2">
           <ul>
             <li class="menu--item">
-              <a  
-               @click="goPath('my/settings')"
-               class="menu--link" title="Setting">
+              <a
+                @click="goPath('my/settings')"
+                class="menu--link"
+                title="Setting"
+              >
                 <i class="uil uil-cog menu--icon"></i>
                 <span class="menu--label">Setting</span>
               </a>
@@ -333,14 +329,33 @@
         </div>
         <div class="left_footer">
           <ul>
-            <li><a @click="goPath('page/about')" >{{l('About','g')}}</a></li> 
-            <li><a @click="goPath('page/contact')" >{{l('Contact Us','g')}}</a></li>  
-            <li><a @click="goPath('page/copyright')" >{{l('Copyright','g')}} </a></li>
-            <li><a @click="goPath('page/privacy_policy')" >{{l('Privacy Policy','g')}} </a></li>
-            <li><a @click="goPath('page/terms_of_use')" >{{l('Terms of Use','g')}} </a></li>
+            <li>
+              <a @click="goPath('page/about')">{{ l("About", "g") }}</a>
+            </li>
+            <li>
+              <a @click="goPath('page/contact')">{{ l("Contact Us", "g") }}</a>
+            </li>
+            <li>
+              <a @click="goPath('page/copyright')"
+                >{{ l("Copyright", "g") }}
+              </a>
+            </li>
+            <li>
+              <a @click="goPath('page/privacy_policy')"
+                >{{ l("Privacy Policy", "g") }}
+              </a>
+            </li>
+            <li>
+              <a @click="goPath('page/terms_of_use')"
+                >{{ l("Terms of Use", "g") }}
+              </a>
+            </li>
           </ul>
           <div class="left_footer_content">
-            <p>© {{year}} <strong>{{l('Daleel','g')}}</strong>. {{l('All Rights Reserved.','g')}} </p>
+            <p>
+              © {{ year }} <strong>{{ l("Daleel", "g") }}</strong
+              >. {{ l("All Rights Reserved.", "g") }}
+            </p>
           </div>
         </div>
       </div>
@@ -352,7 +367,6 @@
             <div class="col-12">
               <nuxt v-if="LANG_PACK.main" :key="$route.fullPath" />
             </div>
-            
           </div>
         </div>
       </div>
@@ -367,7 +381,6 @@ import canoicalMixin from "~/mixins/canoical.js";
 export default {
   mixins: [basicMixin, canoicalMixin, general],
   watch: {
-   
     async $route(to, from) {
       setTimeout(() => {
         window.scrollTo({
@@ -383,7 +396,7 @@ export default {
         url: this.$route.path,
         lang: this.$store.state.locale
       });
-       this.keyMenu = "k" + Math.random(100, 9999999);
+      this.keyMenu = "k" + Math.random(100, 9999999);
       this.rootKey = to.path;
     }
   },
@@ -433,7 +446,7 @@ export default {
     languages: [
       { value: "tr", name: "Turkish" },
       { value: "en", name: "English" }
-    ], 
+    ],
     year: new Date().getFullYear(),
     collapse: false,
     searchText: "",
@@ -535,8 +548,7 @@ export default {
 </script>
 
 <style>
-
-a{
+a {
   cursor: pointer;
   color: #4e4e4e;
 }
@@ -745,15 +757,17 @@ a{
   animation-duration: 0.4s;
 }
 
-.channel_item{
+.channel_item {
   a {
     margin-left: 10px;
     color: #888;
-    font-size: 10px;
-    text-decoration: underline;
-    &:hover{
-      color: rgb(145, 60, 11)!important;
+    font-size: 12px; 
+    &:hover {
+      color: rgb(145, 60, 11) !important;
     }
   }
+}
+.upload_btn {
+  color: #fff!important;
 }
 </style>

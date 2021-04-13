@@ -85,6 +85,8 @@ export const actions = {
     },
 
     async setLikes({commit,state,rootState},item){
+
+        console.log("likes",state.likes,item.id)
         if(item && item.id && state.likes.find(k=>k.id==item.id)){
         }else{
             commit("pushLike",item)
@@ -110,6 +112,8 @@ export const actions = {
         }
     }, 
     async setLikesFirst({commit ,state,rootState},item){
+
+        console.log("item",item)
         if (item && item.trim().charAt(0) == "[") {  
             let p = JSON.parse(item)  
             commit("setLike",p)

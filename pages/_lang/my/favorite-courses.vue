@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     
-
+{{data}}
         <div class="fcrse_1" v-for="d in data">
 										<a @click="goPath('course/'+d.cou_link)" class="hf_img">
 											<img :src="show_image(d.cou_image,'150','150','c','')" alt="">
@@ -70,49 +70,12 @@ export default {
 			fields:'id,cou_label_name'
 		});
 	
-	this.getCourse();
+	this.data = this.$store.state.likes;
 	
   },
   methods: {
     
-    async getCourse() { 
-      let fields = `cou_name,cou_level,cou_category,cou_link,cou_tags,cou_total_time,cou_image,cou_short,cou_description,cou_total_view,id,status,created_on,created_by,id,status`;
-
-      let filters = { status: ["=", 1] };
-
-      return new Promise((resolve, reject) => {
-        axios({
-          url: process.env.baseURL + "courses",
-          method: "get",
-          params: {
-            limit: 1,
-            offset: 0,
-            fields,
-            lang: this.$store.state.locale,
-            sort: ["pdb_date,DESC"],
-            filter: filters
-          }
-        })
-          .then(response => {
-            if (
-              response.data &&
-              response.data.formattedData &&
-              response.data.formattedData[0]
-            ) {
-              let d = response.data.formattedData;
- 
-              this.data = d;
-            } else {
-              this.data = {};
-            }
-          })
-          .catch(e => {
-            this.data = {};
-            console.log(e);
-          });
-      });
-    
-    }
+   
     
   }
 };
