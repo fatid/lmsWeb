@@ -83,25 +83,32 @@ export default {
       }
       return false
     },
+    getVideoPath(video){
+      if(video){
+        return video.replace("/visual/","/")
+      }
+    },
     show_image(i, w, h, c, q, sa, nup) {
-      let imp = i.split(".");
-      let total_point = imp.length-1;
-      let ext = imp[total_point];
-      delete imp[total_point];
-      let im = imp.join(".").slice(0, -1);
+      if(i){
+          let imp = i.split(".");
+          let total_point = imp.length-1;
+          let ext = imp[total_point];
+          delete imp[total_point];
+          let im = imp.join(".").slice(0, -1);
 
 
-      let imaj = im;
-      h > 0 ? imaj += '_wih_' + h : '';
-      w > 0 ? imaj += '_wiw_' + w : '';
-      c != "" ? imaj += '_wic_crop-to-fit' : '';
-      q > 0 ? imaj += '_wiq_' + q : '';
-      sa == "jpg" || sa == "png" || sa == "gif" ? imaj += '_wisa_' + sa : '';
-      nup == "no-upscale" ? imaj += '_' + nup : '';
+          let imaj = im;
+          h > 0 ? imaj += '_wih_' + h : '';
+          w > 0 ? imaj += '_wiw_' + w : '';
+          c != "" ? imaj += '_wic_crop-to-fit' : '';
+          q > 0 ? imaj += '_wiq_' + q : '';
+          sa == "jpg" || sa == "png" || sa == "gif" ? imaj += '_wisa_' + sa : '';
+          nup == "no-upscale" ? imaj += '_' + nup : '';
 
-      imaj += '_.' + ext;
-      imaj = imaj.replace("/visual/","/visual2/")
-      return imaj;
+          imaj += '_.' + ext;
+          imaj = imaj.replace("/visual/","/visual2/")
+          return imaj;
+      }
 },
     getImages(path,thumb='h=200'){
         let files = path ? JSON.parse(path) : []
@@ -177,6 +184,13 @@ export default {
           });
           return rt
       }
+    },
+    HtmlEncode(s)
+    {
+      var el = document.createElement("div");
+      el.innerText = el.textContent = s;
+      s = el.innerHTML;
+      return s;
     },
     getLanguage(language){
       let t = this.l("cat.Languages.list",'g');
@@ -283,11 +297,24 @@ export default {
       return this.$store.getters.getLikes
     },
     isLiked(id){
-      if(this.likes.filter(k=> k.id == id)){
+      console.log(id,this.likes,this.likes.find(k=> k.id == id))
+      if(this.likes.find(k=> k.id == id)){
         return true
       }
       return false
       
+    },
+    getOptName(id,group,field){
+        let options= this.$store.state.core.options
+    
+        if(options && options[group]){
+            let res = options[group].find(k=> k.id==id)
+            if(field && res){
+              return res[field]
+            }else{
+              return res
+            }
+        }
     },
     visitorCount(data,ops){ 
       axios({
