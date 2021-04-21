@@ -4,7 +4,8 @@ import { encode, decode } from 'js-base64';
 
 const state = () => ({
     courses: [],
-    categories:{}
+    categories:{},
+    points:{}
 });
 
 const mutations= {

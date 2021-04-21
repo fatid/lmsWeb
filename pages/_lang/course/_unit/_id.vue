@@ -31,45 +31,57 @@
       <!-- <div class="row" style="margin-top: 30px;">
         <div class="col-md-12">{{ data.sort + 1 }} / {{ total }}</div>
       </div> -->
-       <vue-step :now-step="order" :step-list="steps" @selected="selectStep($event)"></vue-step>
+      <vue-step
+        :now-step="order"
+        :step-list="steps"
+        @selected="selectStep($event)"
+      ></vue-step>
     </div>
-    <div class="card" v-if="data.lesson_question"> 
-        <question :question="question" :order="data.sort" :isAnswered="isAnswered"
-        @answered="isAnswered=$event"
-        ></question>
+    <div class="card" v-if="data.lesson_question">
+   
+      <question
+        :question="question"
+        :order="data.sort"
+        :isAnswered="isAnswered"
+        @answered="isAnswered = $event" 
+      ></question>
     </div>
-    <div class="card" v-else-if="data.lesson_name && data.id!='finish'">
+    <div class="card" v-else-if="data.lesson_name && data.id != 'finish'">
       <div class="row" style="margin-top: 30px;">
         <!-- <div class="col-md-12">{{ data.sort }} / {{ total }}</div> -->
-        
-        <div class="col-md-6">
+
+        <div class="col-auto">
           <div class="title484">
             <h2>{{ data.sort }} - {{ data.lesson_name }}</h2>
-            <img class="line-title" src="/images/line.svg" alt="" />
-            <p>{{ data.lesson_description }}</p>
-          {{data.lesson_question}}
-          <counter v-if="data.lesson_counter" 
 
-                ref="countDown"
-            :initial-value="parseInt(data.lesson_counter)"
-            :stroke-width="5"
-            :seconds-stroke-color="'#f00'" 
-            :underneath-stroke-color="'lightgrey'"
-            :seconds-fill-color="'#efefef'"
-         
-            :size="200"
-            :padding="14"
-         
-            :second-label="'seconds'"
-            :show-second="true" 
-            :show-minute="false" 
-            :show-hour="false" 
-            :show-negatives="false" 
-            @update="updated"
-          ></counter>
-                <!-- @finish="finished"
+            <img class="line-title" src="/images/line.svg" alt="" />
+            <div class="row">
+              <div class="col-auto">
+                <p v-html="HtmlEncode(data.lesson_description)"></p>
+                {{ HtmlEncode(data.lesson_question) }}
+              </div>
+              <div class="col" v-if="data.lesson_counter">
+                <counter
+                  ref="countDown"
+                  :initial-value="parseInt(data.lesson_counter)"
+                  :stroke-width="5"
+                  :seconds-stroke-color="'#f00'"
+                  :underneath-stroke-color="'lightgrey'"
+                  :seconds-fill-color="'#efefef'"
+                  :size="200"
+                  :padding="14"
+                  :second-label="'seconds'"
+                  :show-second="true"
+                  :show-minute="false"
+                  :show-hour="false"
+                  :show-negatives="false"
+                  @update="updated"
+                ></counter>
+              </div>
+            </div>
+
+            <!-- @finish="finished"
                 @update="updated" -->
-   
           </div>
         </div>
         <div class="col-md-6">
@@ -81,22 +93,22 @@
           </div>
         </div>
       </div>
-      
     </div>
-     <div class="card" v-show="data.id=='finish'">
-       <div class="result_content">
-									<h2>Congratulation!</h2>
-									<p>You finished this unit.</p>
-									<a  class="download_btn" download="w3logo"  
-                   @click="
-                goPath(
-                  'course/the_only_course_you_need_to_learn_web_development'
-                )
-              "
-                  >Turn Back Course Page</a>
-								</div>
-     </div>
-    <div class="arrows" v-if="isAnswered">
+    <div class="card" v-show="data.id == 'finish'">
+      <div class="result_content">
+        <h2>Congratulation!</h2>
+        <p>You finished this course.</p>
+        <a
+          class="download_btn"
+          download="w3logo"
+          @click="
+            goPath('course/the_only_course_you_need_to_learn_web_development')
+          "
+          >Turn Back Course Page</a
+        >
+      </div>
+    </div>
+    <div class="arrows" v-if="data.id != 'finish'">
       <a
         class="prev"
         v-if="prev && prev.id"
@@ -115,22 +127,23 @@
 <script>
 import general from "@/mixins/general";
 import axios from "axios";
-import vueStep from 'vue-step'
-import counter from '@/components/utils/counter.vue'
-import question from '@/components/utils/question.vue'
+import vueStep from "vue-step";
+import counter from "@/components/utils/counter.vue";
+import question from "@/components/utils/question.vue";
 export default {
   mixins: [general],
 
   data: () => ({
     data: {
-      id:null,
-      lesson_question:''
+      id: null,
+      lesson_question: ""
     },
-   
-    isAnswered:true,
-    question:{
-      q:null,
-      a:null
+    totalPoints: [],
+    updated: null,
+    isAnswered: true,
+    question: {
+      q: null,
+      a: null
     },
     steps: [],
     total: 0,
@@ -153,6 +166,9 @@ export default {
       group: "co_labels",
       fields: "id,cou_label_name"
     });
+    if(!this.points  ||   (this.points  && !this.points[this.unit])){
+        this.points[this.unit] = []
+    }
 
     this.getLessons();
   },
@@ -203,11 +219,11 @@ export default {
               return { ...k, sort: i };
             });
             this.allLessons.push({
-              id: "finish", 
-              sort: i+1
+              id: "finish",
+              sort: i + 1
             });
             this.total = this.allLessons.length;
-            this.steps = this.allLessons.map(k=> '');
+            this.steps = this.allLessons.map(k => "");
             this.setSelect();
           }
         })
@@ -217,8 +233,8 @@ export default {
         });
     },
     async getQuestion() {
-      
-      let fields = 'id,sort,status,exa_type,rs_Question,exa_image,exa_sound,exa_video,exa_timer';
+      let fields =
+        "id,sort,status,exa_type,rs_Question,exa_image,exa_sound,exa_video,exa_timer";
       this.getAnswers();
       axios({
         url: process.env.baseURL + "exam_q",
@@ -233,18 +249,22 @@ export default {
         }
       })
         .then(response => {
-          if (  response.data &&   response.data.formattedData &&  response.data.formattedData[0]
+          if (
+            response.data &&
+            response.data.formattedData &&
+            response.data.formattedData[0]
           ) {
-            this.question.q= response.data.formattedData[0]; 
+            this.question.q = response.data.formattedData[0];
           }
         })
         .catch(e => {
-          this.question.q = null; 
+          this.question.q = null;
         });
     },
     async getAnswers() {
-      
-      let fields = 'id,sort,status,exa_q_answer,exa_q_image,exa_q_sound,exa_q_true'; 
+      this.question.a = null;
+      let fields =
+        "id,sort,status,exa_q_answer,exa_q_image,exa_q_sound,exa_q_true";
       axios({
         url: process.env.baseURL + "exam_q_answer",
         method: "get",
@@ -258,25 +278,28 @@ export default {
         }
       })
         .then(response => {
-          if (  response.data &&   response.data.formattedData &&  response.data.formattedData[0]
+          if (
+            response.data &&
+            response.data.formattedData &&
+            response.data.formattedData[0]
           ) {
-            this.question.a = response.data.formattedData; 
+            this.question.a = response.data.formattedData;
           }
         })
         .catch(e => {
-          this.question.a=null; 
+          this.question.a = null;
         });
     },
-    setSelect(){
-            let id = this.$route.params.id; 
-            this.data = this.allLessons.find(k => k.id == id); 
-            this.next = this.allLessons[this.data.sort ];
-            this.prev = this.allLessons[this.data.sort - 2];
-            this.order= this.data.sort
+    setSelect() {
+      let id = this.$route.params.id;
+      this.data = this.allLessons.find(k => k.id == id);
+      this.next = this.allLessons[this.data.sort];
+      this.prev = this.allLessons[this.data.sort - 2];
+      this.order = this.data.sort;
     },
-    selectStep(step){
-     this.$route.params.id = this.allLessons[step-1].id;
-     this.setSelect();
+    selectStep(step) {
+      this.$route.params.id = this.allLessons[step - 1].id;
+      this.setSelect();
     },
     async getLesson() {
       let fields = this.fields;
@@ -321,15 +344,20 @@ export default {
     counter,
     question
   },
-  watch:{
-    'data.lesson_question'(val){
-      console.log("get question",this.data.lesson_question)
-        if(val){
-          this.getQuestion();
-          this.isAnswered = false;
-        }else{
-          // this.question=[]
-        }
+  computed:{
+    points(){
+       return this.$store.state.course.points;
+    }
+  },
+  watch: {
+    "data.lesson_question"(val) {
+      console.log("get question", this.data.lesson_question);
+      if (val) {
+        this.getQuestion();
+        this.isAnswered = false;
+      } else {
+        // this.question=[]
+      }
     }
   }
 };
@@ -377,7 +405,6 @@ export default {
   background: #fff;
   border-radius: 5px;
   margin-top: 10px;
-
 }
 .arrows a.next {
   border-radius: 10px;
@@ -397,5 +424,16 @@ export default {
   color: rgb(40, 81, 194);
   font-size: 14px;
   padding: 10px;
+}
+
+.title484,
+.title484 div,
+.title484 p {
+  font-size: 18px;
+  line-height: 1.5;
+  font-weight: 400;
+  color: rgb(43, 42, 42);
+  text-align:right;
+  font-family:Cairo;
 }
 </style>

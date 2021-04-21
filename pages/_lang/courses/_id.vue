@@ -4,11 +4,12 @@
 
         <div class="fcrse_1" v-for="d in data">
 										<a @click="goPath('course/'+d.cou_link)" class="hf_img">
-											<img :src="show_image(d.cou_image,'150','150','c','')" alt="">
+											<img v-if="d.cou_image" :src="show_image(d.cou_image,'150','150','c','')" alt="">
+											<img v-else-if="options['cou_settings']" :src="show_image(options['cou_settings'][0].cou_setting_image,'150','150','c','')" alt="">
 											<div class="course-overlay">
 												<div class="badge_seller">{{getOptName(d.cou_level,'co_level','cou_level_name')}}</div>
 												<div class="crse_reviews">
-													<i class="uil uil-star"></i>4.5
+													<i class="uil uil-star"></i> No
 												</div>
 												<span class="play_btn1"><i class="uil uil-play"></i></span>
 												<div class="crse_timer">
@@ -56,7 +57,8 @@ export default {
   mixins: [general],
 
   data: () => ({
-    data: []
+    data: [],
+    settings:[]
   }),
   async created() {
 	  	await this.$store.dispatch("core/getOptions", {
@@ -68,6 +70,11 @@ export default {
             slang: this.$store.state.locale,
 			group: 'co_labels',
 			fields:'id,cou_label_name'
+		});
+    await this.$store.dispatch("core/getOptions", {
+          slang: this.$store.state.locale,
+          group: 'cou_settings',
+          fields:'id,cou_setting_image'
 		});
 	
 	this.getCourse();
@@ -85,7 +92,7 @@ export default {
           url: process.env.baseURL + "courses",
           method: "get",
           params: {
-            limit: 1,
+            limit: 100,
             offset: 0,
             fields,
             lang: this.$store.state.locale,
@@ -134,5 +141,8 @@ export default {
 	position: absolute;
 	top: 20px;
 	right: 20px;
+}
+.fcrse_1{
+  margin-bottom: 10px;
 }
 </style>

@@ -8,6 +8,9 @@ export default {
   },
   computed: {
     
+    options() { 
+      return this.$store.state.core.options
+    },
     pageInfo() {
       return this.$store.state.pages.pageData;
     },
@@ -140,6 +143,12 @@ export default {
       let menu = this.l('menu','g');
       return menu[type];
     },
+    changeLanguage(lang){ 
+      console.log("this.$router",this.$route)
+      let p = this.$route.path.slice(4)
+      this.$router.push({path:'/'+lang+'/'+p, query:this.$route.query})
+      this.collapse = false;
+    },
     goPath(path,query={}){ 
       this.$router.push({path:'/'+this.LOCALE+'/'+path,query})
       this.collapse = false;
@@ -187,9 +196,12 @@ export default {
     },
     HtmlEncode(s)
     {
-      var el = document.createElement("div");
-      el.innerText = el.textContent = s;
-      s = el.innerHTML;
+      // var el = document.createElement("div");
+      if(s){
+          s = s.replaceAll("&lt;", "<");
+          s = s.replaceAll("&gt;", ">");
+          s = s.replaceAll("&quot;", "\"");
+      }
       return s;
     },
     getLanguage(language){
@@ -215,8 +227,7 @@ export default {
       let list = []
       if(downloaded && downloaded.charAt(0)=="["){
           list = JSON.parse(downloaded);
-      }
-
+      } 
       if(list.find(k=> k.down_content==ops.id)){
         // console.log("Visited before")
         window.open(ops.link);
