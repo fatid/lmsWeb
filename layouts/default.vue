@@ -47,6 +47,18 @@
         </div>
       </div>
       <div class="header_right">
+        <div class="language-select">       <a
+              @click="changeLanguage('ar')" 
+              title="Arabic"
+              :class="LOCALE=='en' ? 'selected-language' : '' "
+              >AR</a> 
+              <a> | </a>
+               <a
+              @click="changeLanguage('en')" 
+              title="English"
+              :class="LOCALE=='ar' ? 'selected-language' : '' "
+              >EN</a>
+              </div>
         <ul>
           <li>
             <a
@@ -769,5 +781,17 @@ a {
 }
 .upload_btn {
   color: #fff!important;
+}
+
+.header_right{
+  display: inline-flex;
+}
+.language-select{
+    display: block;
+    margin-right: 20px;
+}
+
+a.selected-language{
+  color: #a0a0a0!important;
 }
 </style>

@@ -42,14 +42,14 @@
 										<div class="crse_reviews mr-2">
 											<i class="uil uil-star"></i>4.5
 										</div>
-										(81,665 ratings)
+										(N/A ratings)
 									</div>
 									<div class="_215b05">										
-										114,521 students enrolled
+										0 students enrolled
 									</div>
 									 
 									<div class="_215b05">										
-										{{l('Last updated','g')}} 1/2020
+										{{l('Last updated','g')}} 04/2021
 									</div>
 									<!-- <ul class="_215b31">										
 										<li><button class="btn_adcart">Add to Cart</button></li>
@@ -119,7 +119,7 @@
 						<div class="course_tab_content">
 							<div class="tab-content" id="nav-tabContent">
 								<div class="tab-pane fade show active" id="nav-about" role="tabpanel"> 	
-                    <div  v-html="data.cou_description" class="tab-height"></div> 
+                    <div  v-html="HtmlEncode(data.cou_description)" class="tab-height"></div> 
                 </div>
 								<div class="tab-pane fade" id="nav-courses" role="tabpanel">
 									<div class="crse_content">
@@ -515,6 +515,7 @@ export default {
   height: 40px;
   margin-right: 10px;
   width: 40px;
+  font-family: Cairo;
 }
 .toolbar-cart{
 	position: absolute;
