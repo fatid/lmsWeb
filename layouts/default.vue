@@ -180,7 +180,7 @@
                             <img src="/images/hd_dp.jpg" alt="" />
                           </a>
                   </template>
-                  <b-dropdown-item  @click="goPath('page/contact')" >  Profile</b-dropdown-item>
+                  <b-dropdown-item  @click="goPath('my/profile')" >  Profile</b-dropdown-item>
                   <b-dropdown-item  @click="goPath('form/login?logout=true')" >  Sign Out</b-dropdown-item> 
                 </b-dropdown>
 
