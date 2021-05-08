@@ -80,7 +80,8 @@ optimizedImages: {
     '@nuxtjs/dotenv',
     '@nuxtjs/device',
     'bootstrap-vue/nuxt',  
-    '@nuxtjs/sitemap'
+    '@nuxtjs/sitemap',
+      ['vue-scrollto/nuxt', { duration: 300 }],
 
   ],
   router: {

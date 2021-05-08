@@ -22,10 +22,11 @@ export default {
             this.$store.commit("form/restoreResult", { show: false });
           },
         checkForm(form=null,validation=null,errors=null) {
-            this.errors = [];
+       
             let v = validation ? validation : this.validation;
             let f = form ? form : this.form;
             let e = errors ? errors : this.errors;
+            console.log(f,v)
             v.forEach(k=>{
                 if(k.check.includes("required")){
                     if (!f[k.name]) {
@@ -39,7 +40,7 @@ export default {
             })
             
       
-            if (!this.errors.length) {
+            if (!e || !e.length) {
               return true;
             }
       

@@ -8,7 +8,8 @@ const cookieparser = require('cookieparser')
 const state = () => ({
     uId:'',
     auth:{},
-    uDetail: {}
+    uDetail: {},
+    signupSuccess:false
 })
 
 const getters = {
@@ -44,8 +45,7 @@ const actions = {
 
         let auth = {};
         // let auth = headers ? cookieparser.parse(headers) :{};
-        console.log("Find Auth")
-
+        
         return new Promise((resolve, reject) => {
        
             if (auth || a) { 
@@ -88,7 +88,7 @@ const actions = {
         //     return auth;
     },
     formSignUp({commit,state},{ form,pageData}){
-
+        console.log("uye girişi")
         let sendobj = form;
         let sended={
           name:"",
@@ -117,6 +117,7 @@ const actions = {
                        sended.show= true,
                        sended.text="Kaydınız başarıyla alındı. Teşekkürler" 
                        commit("form/setForm", { v: sended,  callback: resolve} , {root: true })
+                       state.signupSuccess = true
                        return sended;
                     }
                 })

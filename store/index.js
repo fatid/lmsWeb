@@ -86,7 +86,7 @@ export const actions = {
 
     async setLikes({commit,state,rootState},item){
 
-        console.log("likes",state.likes,item.id)
+        console.log("likes",state.likes,item)
         if(item && item.id && state.likes.find(k=>k.id==item.id)){
         }else{
             commit("pushLike",item)
@@ -135,7 +135,10 @@ export const actions = {
         }
     },
     async getLikes({state,dispatch,rootState},payload){
+        console.log("we area here 999 ")
+
         if(rootState.user.auth && rootState.user.auth.id){
+            console.log("we area here 1 id")
             try{
 
                          await axios({
@@ -152,7 +155,7 @@ export const actions = {
                              let a = response.data.formattedData[0]
                          
                              let likes = a.U_likedPages
-                    
+                   
                              if(likes){
                                 dispatch("setLikesFirst", likes); 
                             }
@@ -162,6 +165,7 @@ export const actions = {
                  console.log("Err",err)
              }
         }else{ 
+            console.log("we area here")
             let likes = window.localStorage.getItem("likes");
             if(likes){
                 dispatch("setLikesFirst", likes); 

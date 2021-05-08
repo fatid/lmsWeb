@@ -1,6 +1,6 @@
 <template>
   <div>
-    <header class="header clearfix">
+    <header class="header clearfix"  >
       <button type="button" id="toggleMenu" class="toggle_menu">
         <i class="uil uil-bars"></i>
       </button>
@@ -50,7 +50,7 @@
        
         <ul>
           <li>
-             <b-dropdown :text="LOCALE" variant="outline-danger" class="m-2" :key="'locale'+LOCALE">
+             <b-dropdown :text="LOCALE" variant="outline-danger" pill class="m-2" :key="'locale'+LOCALE">
                   <template #button-content>
                       <img class="image-lang" :src="'/img/'+LOCALE+'.png'"   />
                   </template>
@@ -398,7 +398,9 @@ import general from "@/mixins/general";
 import axios from "axios";
 import basicMixin from "~/mixins/basic.js";
 import canoicalMixin from "~/mixins/canoical.js";
-import Multiselect from 'vue-multiselect'
+import Multiselect from 'vue-multiselect';
+var Vue = require('vue');
+var VueScrollTo = require('vue-scrollto');
 export default {
   mixins: [basicMixin, canoicalMixin, general],
   watch: {
@@ -420,8 +422,7 @@ export default {
       this.keyMenu = "k" + Math.random(100, 9999999);
       this.rootKey = to.path;
     }
-  },
-
+  }, 
   transition: "page",
   head() {
     return {
@@ -497,6 +498,10 @@ export default {
       return this.$store.state.langFile;
     }
   },
+ async beforeMount(){
+      await this.$store.dispatch('user/findAuth',{headers:null})
+
+  },
   created() {
     this.getLikes();
     this.$store.dispatch("course/getCourseCategories");
@@ -509,7 +514,7 @@ export default {
       let language = this.$route.params.lang;
       this.$store.commit("setLocale", language);
       this.$store.commit("setCustomClass", language);
-      // this.$store.dispatch("getLikes");
+      this.$store.dispatch("getLikes");
       this.$nuxt.$loading.finish();
     });
 
