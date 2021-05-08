@@ -207,7 +207,7 @@ export default {
       let language = this.$route.params.lang;
       this.$store.commit("setLocale", language);
       this.$store.commit("setCustomClass", language);
-      // this.$store.dispatch("getLikes");
+      this.$store.dispatch("getLikes");
       this.$nuxt.$loading.finish();
     });
 
@@ -497,8 +497,13 @@ a {
     display: block;
     margin-right: 20px;
 }
-
+.language-select a{
+  padding: 8px;
+  margin: 2px 4px;
+  font-size: 12px;
+}
 a.selected-language{
   color: #a0a0a0!important;
+
 }
 </style>

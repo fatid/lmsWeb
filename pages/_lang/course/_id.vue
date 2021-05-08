@@ -29,7 +29,7 @@
 										<a href="#" class="_215b11" @click="removeLikes(data.id)" v-else>										
 											<span>
                           <i class="uil uil-heart red" ></i> 
-                          </span>{{l('Remove Save','g')}}
+                          </span>{{l('Unsave','g')}}
 										</a>
 										<a href="#" class="_215b12">										
 											<span><i class="uil uil-windsock"></i></span> {{l('Report abuse','g')}} 
@@ -105,9 +105,11 @@
 						<div class="course_tabs">
 							<nav>
 								<div class="nav nav-tabs tab_crse justify-content-center" id="nav-tab" role="tablist">
-									<a class="nav-item nav-link active" id="nav-about-tab" data-toggle="tab" href="#nav-about" role="tab" aria-selected="true">{{l('About','g')}}</a>
-									<a class="nav-item nav-link" id="nav-courses-tab" data-toggle="tab" href="#nav-courses" role="tab" aria-selected="false">{{l('Courses Content','g')}}</a>
-									<a class="nav-item nav-link" id="nav-reviews-tab" data-toggle="tab" href="#nav-reviews" role="tab" aria-selected="false">{{l('Reviews','g')}}</a>
+									<a class="nav-item nav-link active" id="nav-about-tab"   
+									v-scroll-to="'#crse_text'"
+									 role="tab" aria-selected="true">{{l('About','g')}}</a>
+									<a v-scroll-to="'#crse_content'" class="nav-item nav-link" id="nav-courses-tab"  role="tab" aria-selected="false">{{l('Courses Content','g')}}</a>
+									<a v-scroll-to="'#crse_comment'" class="nav-item nav-link" id="nav-reviews-tab"  role="tab" aria-selected="false">{{l('Reviews','g')}}</a>
 								</div>
 							</nav>						
 						</div>
@@ -121,9 +123,9 @@
 				<div class="row">
 
 				 
-                    <div  v-html="HtmlEncode(data.cou_description)" class="tab-height"></div> 
+                    <div  v-html="HtmlEncode(data.cou_description)" id="crse_text" class="tab-height"></div> 
              
-									<div class="crse_content ">
+									<div class="crse_content " id="crse_content">
 										<h3>{{l('Course content','g')}}</h3>
 										<div class="_112456">
 											<ul class="accordion-expand-holder">
@@ -175,7 +177,7 @@
 											</div> 
 						 
 								 
-									<div class="student_reviews">
+									<div class="student_reviews" id="crse_comment">
 										<div class="row">
 											<div class="col-lg-5">
 												<div class="reviews_left">

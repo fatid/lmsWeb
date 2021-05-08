@@ -5,7 +5,7 @@ import {token_check} from '../helper/token_check'
 export default  async ({store,context,redirect,next,req,route }) => { 
  
     const headers = req && req.headers.cookie
-    console.log(headers)
+ 
    await store.dispatch("changeDevice", { context });
    const lang = store.state.locale
    const restrictedPaths =  '/account/';  
@@ -14,10 +14,12 @@ export default  async ({store,context,redirect,next,req,route }) => {
 //  if(r=="/"){
 //     return redirect('/ar/home')
 //  }
+console.log("Token check start")
    store.dispatch('user/findAuth',{headers})
    if (store.state.user.auth && store.state.user.auth.token) { 
        let auth = store.state.user.auth;
                    await  token_check(auth.token) .then((decodedToken) => { 
+                    console.log("Token check",auth.token)
                         if(restrictedPathsLogin.includes(r)){
                             return  redirect('/'+lang+'/account/dashboard')
                         } 

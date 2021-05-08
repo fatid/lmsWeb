@@ -3,11 +3,11 @@
   <div class="row">
     <div class="col-lg-6 col-md-8">
 
-            <div class="sign_form">
+            <div class="sign_form"  v-if="!signupSuccess">
 						<h2>{{l('Welcome to Daleel','g')}}</h2>
 						<p>{{l('Sign Up and Start Learning!','g')}}</p>
 					 
-							<div class="ui search focus">
+							<div class="ui search focus" v-if="!signupSuccess">
 								<div class="ui left icon input swdh11 swdh19">
 									      <input class="prompt srch_explore" type="text" name="fullname" 
                              v-model="form2.U_rname"
@@ -39,8 +39,8 @@
 							</div>
 							<div class="ui form mt-30 checkbox_sign">
 								<div class="inline field">
-									<div class="ui checkbox mncheck">
-										<input type="checkbox" tabindex="0" class="hidden">
+									<div class="ui checkbox " :class="{checked: form2.accept}" @click="form2.accept=!form2.accept">
+										<input type="checkbox" tabindex="0"  v-model="form2.accept" />
 										<label> {{HtmlEncode(l('Im in for emails with exciting discounts and personalized recommendations','g'))}}  </label>
 									</div>
 								</div>
@@ -58,6 +58,15 @@
 						<p class="sgntrm145">{{l('By signing up, you agree to our','g')}}   <a @click="goPath('page/terms_of_use')">{{l('Terms of Use','g')}}</a> {{l('and','g')}} <a @click="goPath('page/privacy_policy')">{{l('Privacy Policy','g')}}</a>.</p>
 						<!-- <p class="mb-0 mt-30">Already have an account? <a @click="goPath('page/terms_of_use')">Log In</a></p> -->
 					</div>
+          <div v-else>
+<div class="verification_content">
+							<img src="/images/verified-account.svg" alt="">
+							<h4>You are signed up :) </h4>
+							<p>Please login and start learn.</p>
+					 
+						</div>
+
+          </div>
 
     </div>
     <div class="col-lg-6 col-md-8">
@@ -141,6 +150,11 @@ import validate from "@/mixins/validate";
 export default {
   mixins: [basicMixin, validate, general],
     layout: 'basic',
+    computed:{
+        signupSuccess(){
+          return this.$store.state.user.signupSuccess
+        }
+    },
  data() {
     return {
       form: {
@@ -178,7 +192,10 @@ export default {
   },
   methods: {
      submitSignUp() {
+       this.errors2 = [];
       if(this.checkForm(this.form2,this.validation2,this.errors2)){
+
+        console.log("Success")
           this.$store.dispatch("user/formSignUp", {
             form: this.form2,
             pageData: this.pageInfo
@@ -195,6 +212,7 @@ export default {
       }
     },
     submit() {
+      this.errors=[]
       if(this.checkForm()){
           this.$store.dispatch("user/login", {
             form: this.form,

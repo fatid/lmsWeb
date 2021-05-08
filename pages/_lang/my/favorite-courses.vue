@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     
-{{data}}
+<!-- {{data}} -->
         <div class="fcrse_1" v-for="d in data">
 										<a @click="goPath('course/'+d.cou_link)" class="hf_img">
 											<img :src="show_image(d.cou_image,'150','150','c','')" alt="">

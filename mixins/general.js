@@ -298,19 +298,18 @@ export default {
       this.$store.dispatch('setLikes',item);
     },
     removeLikes(selected){
-      let f = this.likes.filter((k,i)=>{
-          if(i==selected){  }else{
-            return k
-          }
-      }) 
-      f = JSON.stringify(f)
+ 
+      let f = this.likes.filter((k,i)=>  k.id!=selected );
+
+      f = JSON.stringify(f) 
       this.$store.dispatch('setLikesFirst',f)
     },
     getLikes() {
       return this.$store.getters.getLikes
     },
     isLiked(id){
-      console.log(id,this.likes,this.likes.find(k=> k.id == id))
+      console.log("isliked",id,this.likes,this.likes.find(k=> k.id == id))
+    
       if(this.likes.find(k=> k.id == id)){
         return true
       }
