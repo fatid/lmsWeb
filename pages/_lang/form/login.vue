@@ -60,7 +60,7 @@
 					</div>
           <div v-else>
 <div class="verification_content">
-							<img src="/images/verified-account.svg" alt="">
+							<img src="/images/verified-account.svg" style="height:80px;" alt="">
 							<h4>You are signed up :) </h4>
 							<p>Please login and start learn.</p>
 					 
