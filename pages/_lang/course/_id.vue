@@ -1,8 +1,11 @@
 <template>
   <div class="container">
     <div class="_215b01">
+
+	
 			<div class="container-fluid">			
 				<div class="row">
+					<!-- <div class="col-lg-12">	courseProcess : {{courseProcess}}</div><x -->
 					<div class="col-lg-12">
 						<div class="section3125">							
 							<div class="row justify-content-center">						
@@ -112,17 +115,15 @@
 				</div>
 			</div>
 		</div>
+
    <div class="_215b17">
 			<div class="container-fluid">
 				<div class="row">
-					<div class="col-lg-12">
-						<div class="course_tab_content">
-							<div class="tab-content" id="nav-tabContent">
-								<div class="tab-pane fade show active" id="nav-about" role="tabpanel"> 	
+
+				 
                     <div  v-html="HtmlEncode(data.cou_description)" class="tab-height"></div> 
-                </div>
-								<div class="tab-pane fade" id="nav-courses" role="tabpanel">
-									<div class="crse_content">
+             
+									<div class="crse_content ">
 										<h3>{{l('Course content','g')}}</h3>
 										<div class="_112456">
 											<ul class="accordion-expand-holder">
@@ -141,16 +142,19 @@
 															</span>
 														</div>
 														<div class="section-header-right">
-															<span class="num-items-in-section">{{l('Not Started','g')}}</span>
-															<span class="section-header-length">%0</span>
+															<span class="num-items-in-section">
+																	{{unit.stats ? unit.stats.totalCompletedRate==100 ? l('Completed','g') : unit.stats.totalCompletedRate>0 ? l('Ongoing','g') :  l('Not Started','g') : l('Not Started','g')}}
+															</span>
+															<span class="section-header-length"> %{{unit.stats ? unit.stats.totalCompletedRate : '0'}}</span>
 														</div>
 												</a>
+												 
 											<div class="ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom">
 											 
 												<div class="lecture-container" v-for="(les,num) in getCourses(unit.id)"
 													@click="goPath('course/'+unit.id+'/'+les.id)" :class=" unit.accordion ? 'lecture-hidden' :''" >
 														<div class="left-content-number">
-																{{num}}
+																{{num+1}}
 														</div>				
 													<div class="left-content"> 
 														<div class="top">
@@ -169,8 +173,8 @@
 											</div> 
 											</div> 
 											</div> 
-								</div>
-								<div class="tab-pane fade" id="nav-reviews" role="tabpanel">
+						 
+								 
 									<div class="student_reviews">
 										<div class="row">
 											<div class="col-lg-5">
@@ -311,10 +315,8 @@
 							</div>
 						</div>
 					</div>
-				</div>
-			</div>
-		</div>
-  </div>
+				 
+	 
 </template>
 <script>
 import general from "@/mixins/general";
@@ -340,8 +342,13 @@ export default {
             group: 'co_labels',
             fields:'id,cou_label_name'
     });
-    
+     this.$store.dispatch('course/getAllCourseProcess',{});
      this.getCourse(); 
+  },
+   computed:{ 
+    courseProcess(){
+         return this.$store.state.course.courseProcess;
+    }
   },
   methods: {
 
@@ -385,10 +392,13 @@ export default {
               response.data.formattedData[0]
             ) {
               let d = response.data.formattedData;  
-			  d.map(element => {
-				return {...element,accordion:false}
+			  
+			   this.units = d.map(element => { 
+				  console.log("element.id",element.id)
+                let stats =    this.courseProcess && this.courseProcess.data && this.courseProcess.data[element.id] ? this.courseProcess.data[element.id] :  {}
+				return {...element,stats,accordion:false}
 			  });
-              this.units = d;
+			 
             } else {
               this.units = {};
             }
@@ -400,6 +410,7 @@ export default {
       });
      
   },
+ 
   getCourses(prev){
 
 	  return this.lessons.filter(k=> k.lesson_unite == prev)
@@ -496,15 +507,21 @@ export default {
   height: auto;
   margin-right: 10px;
 }
+.left-content{
+padding: 4px 0px;
+	cursor:pointer;
+
+}
 .left-content-number{
 	position: relative;
 	height: 25px;
 	width: 25px;
 	border-radius: 50%;
 	background: gray;
-	padding: 5px 0px;
+	padding: 4px 0px;
 	text-align: center;
 	color: #fff;
+	cursor:pointer;
 	&.completed{
 			background: rgb(14, 151, 66);
 	}
@@ -516,6 +533,7 @@ export default {
   margin-right: 10px;
   width: 40px;
   font-family: Cairo;
+  
 }
 .toolbar-cart{
 	position: absolute;
@@ -532,7 +550,7 @@ export default {
 	text-align:right;
 }
 .tab-height{
-	min-height: 500px;
+	min-height: 50px;
 }
 .download_btn{
     color: #fff!important;

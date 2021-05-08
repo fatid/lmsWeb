@@ -26,10 +26,12 @@
 		<div class="search120">
 			<div class="ui search">
 			  <div class="ui left icon input swdh10">
+				  authhh 
 				<input class="prompt srch10" type="text" 
          :placeholder="l('Search for Tuts Videos, Tutors, Tests and more..','g')">
 				<i class='uil uil-search-alt icon icon1'></i>
 			  </div>
+			
 			</div>
 		</div>
 		<div class="header_right">
@@ -111,6 +113,8 @@
 						<a class="vbm_btn" href="instructor_notifications.html">View All <i class='uil uil-arrow-right'></i></a>
 					</div>
 				</li>
+
+			
          <li v-if="!auth.token" class="list-inline-item g-mx-4"><a class="g-color-black g-color-primary--hover g-text-underline--none--hover" @click="goPath('form/login')">{{l('LOGIN','g')}}</a></li>            
         	<li class="ui dropdown" v-else-if="auth.token">
 					<a  @click="goPath('account/dashboard')" class="opts_account" title="Account">

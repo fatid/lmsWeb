@@ -144,10 +144,11 @@ export default {
       return menu[type];
     },
     changeLanguage(lang){ 
-      console.log("this.$router",this.$route)
+     
       let p = this.$route.path.slice(4)
       this.$router.push({path:'/'+lang+'/'+p, query:this.$route.query})
       this.collapse = false;
+      this.$store.state.locale = lang;
     },
     goPath(path,query={}){ 
       this.$router.push({path:'/'+this.LOCALE+'/'+path,query})
@@ -201,6 +202,7 @@ export default {
           s = s.replaceAll("&lt;", "<");
           s = s.replaceAll("&gt;", ">");
           s = s.replaceAll("&quot;", "\"");
+          s = s.replaceAll("&#039;", "'");
       }
       return s;
     },

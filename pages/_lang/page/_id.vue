@@ -84,7 +84,7 @@ import general from "@/mixins/general";
 export default {
   mixins: [general],
  
-
+layout: 'basic',
   components: {
     Breadcrumb,
     Sidebar,

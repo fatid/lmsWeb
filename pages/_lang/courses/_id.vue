@@ -4,7 +4,7 @@
 
         <div class="fcrse_1" v-for="d in data">
 										<a @click="goPath('course/'+d.cou_link)" class="hf_img">
-											<img v-if="d.cou_image" :src="show_image(d.cou_image,'150','150','c','')" alt="">
+											<img v-if="d.cou_image" :src="show_image(d.cou_image,'150','150','','90')" alt="">
 											<img v-else-if="options['cou_settings']" :src="show_image(options['cou_settings'][0].cou_setting_image,'150','150','c','')" alt="">
 											<div class="course-overlay">
 												<div class="badge_seller">{{getOptName(d.cou_level,'co_level','cou_level_name')}}</div>
@@ -80,6 +80,7 @@ export default {
 	this.getCourse();
 	
   },
+  
   methods: {
     
     async getCourse() { 
@@ -107,7 +108,7 @@ export default {
               response.data.formattedData[0]
             ) {
               let d = response.data.formattedData;
- 
+            
               this.data = d;
             } else {
               this.data = {};
