@@ -7,6 +7,7 @@
             <li class="breadcrumb-item">
               <a @click="goPath('courses')">{{ l("Course", "g") }}</a>
             </li>
+       
 
             <li
               class="breadcrumb-item active"
@@ -20,23 +21,26 @@
               The only course you need to learn web development
             </li>
           </ol>
+                 <a
+          class="download_btn2" 
+          @click="
+            goPath('course/the_only_course_you_need_to_learn_web_development')
+          "
+          >Back to Course</a
+        >
         </nav>
-
-        <!-- <div class="titleright">						
-								<a href="certification_center.html" class="blog_link"><i class="uil uil-angle-double-left"></i>Back to Certification Center</a>
-							</div> -->
+ 
       </div>
     </div>
-    <div class="card-header">
-      <!-- <div class="row" style="margin-top: 30px;">
-        <div class="col-md-12">{{ data.sort + 1 }} / {{ total }}</div>
-      </div> -->
+    <div class="card-header"> 
+       
       <vue-step
         :now-step="order"
         :step-list="steps"
         @selected="selectStep($event)"
       ></vue-step>
     </div>
+    <!-- {{activeCourse}} -->
     <div class="card" v-if="data.lesson_question">
    
       <question
@@ -56,28 +60,14 @@
 
             <img class="line-title" src="/images/line.svg" alt="" />
             <div class="row">
-              <div class="col-auto">
+              <div class="col-2">
+                <img :src="show_image(data.lesson_photo,'150','150','','90')" />
+                </div>
+              <div class="col">
                 <p v-html="HtmlEncode(data.lesson_description)"></p>
                 {{ HtmlEncode(data.lesson_question) }}
               </div>
-              <div class="col" v-if="data.lesson_counter">
-                <counter
-                  ref="countDown"
-                  :initial-value="parseInt(data.lesson_counter)"
-                  :stroke-width="5"
-                  :seconds-stroke-color="'#f00'"
-                  :underneath-stroke-color="'lightgrey'"
-                  :seconds-fill-color="'#efefef'"
-                  :size="200"
-                  :padding="14"
-                  :second-label="'seconds'"
-                  :show-second="true"
-                  :show-minute="false"
-                  :show-hour="false"
-                  :show-negatives="false"
-                  @update="updated"
-                ></counter>
-              </div>
+              
             </div>
 
             <!-- @finish="finished"
@@ -86,10 +76,13 @@
         </div>
         <div class="col-md-6">
           <div v-if="data.lesson_video">
-            <video width="640" height="480" controls autoplay>
+            <video width="100%" style="max-width: 640px;" height="480" controls autoplay>
               <source :src="getVideoPath(data.lesson_video)" type="video/mp4" />
               Your browser does not support the video tag.
             </video>
+          </div>
+             <div v-if="data.lesson_video_url">  
+            <iframe width="560" height="315" :src="'https://www.youtube.com/embed/'+data.lesson_video_url" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
           </div>
         </div>
       </div>
@@ -98,6 +91,7 @@
       <div class="result_content">
         <h2>Congratulation!</h2>
         <p>You finished this course.</p>
+        <p>Your total score is: {{activeCourse.point*10}}</p>
         <a
           class="download_btn"
           download="w3logo"
@@ -109,6 +103,8 @@
       </div>
     </div>
     <div class="arrows" v-if="data.id != 'finish'">
+
+      
       <a
         class="prev"
         v-if="prev && prev.id"
@@ -166,13 +162,42 @@ export default {
       group: "co_labels",
       fields: "id,cou_label_name"
     });
-    if(!this.points  ||   (this.points  && !this.points[this.unit])){
-        this.points[this.unit] = []
-    }
-
+     
+    this.getCourseLast(this.unit);
     this.getLessons();
   },
   methods: {
+    getCourseLast(unit){
+         let id = this.$route.params.id; 
+        this.$store.dispatch('course/getCourseLast',{unit,id});
+    },
+    setCourseLast(){
+       let unitId = this.$route.params.unit; 
+       let lessonId = this.$route.params.id; 
+       let activeCourse = this.activeCourse; 
+       activeCourse.totalLesson = this.total;
+       if(activeCourse.lessons){
+
+          let obj =  Object.keys(activeCourse.lessons).map((key) => [Number(key), activeCourse.lessons[key]]); 
+          let total_completed = 0; 
+          console.log("obj",obj)
+          obj.forEach(k=> {
+            if(k[1].completed == true){
+                total_completed ++;
+            }
+          })
+          console.log("total_completed",total_completed)
+          activeCourse.totalCompleted = total_completed
+          console.log(total_completed,this.total,total_completed / this.total)
+          activeCourse.totalCompletedRate = Math.round(total_completed / this.total*100)
+       }
+          this.$store.dispatch("course/setCourseLast", {
+              unitId,
+              lessonId,
+              courseId: "all",
+              unitData: activeCourse
+            });
+    }, 
     getCourseIcon(les) {
       if (les.lesson_type == "Course" && les.lesson_video) {
         return "uil uil-play-circle";
@@ -224,6 +249,7 @@ export default {
             });
             this.total = this.allLessons.length;
             this.steps = this.allLessons.map(k => "");
+            this.setCourseLast();
             this.setSelect();
           }
         })
@@ -298,7 +324,8 @@ export default {
       this.order = this.data.sort;
     },
     selectStep(step) {
-      this.$route.params.id = this.allLessons[step - 1].id;
+      let id = this.allLessons[step - 1].id;
+      this.goPath('course/' + this.unit + '/' + id)
       this.setSelect();
     },
     async getLesson() {
@@ -345,11 +372,20 @@ export default {
     question
   },
   computed:{
-    points(){
-       return this.$store.state.course.points;
+    activeCourse:{
+       get(){
+         return this.$store.state.course.activeCourse;
+       },
+       set(val){
+         Object.assign(this.$store.state.course.activeCourse,val);
+       }
     }
   },
   watch: {
+    "$route.params.id"(val){
+      // this.activeCourse.last = val;
+      this.setCourseLast({unitId:this.$route.params.unit,lessonId:val,unitData:this.activeCourse})
+    },
     "data.lesson_question"(val) {
       console.log("get question", this.data.lesson_question);
       if (val) {
@@ -426,6 +462,9 @@ export default {
   padding: 10px;
 }
 
+.title484 h2{
+  text-align:right;
+}
 .title484,
 .title484 div,
 .title484 p {
@@ -435,5 +474,15 @@ export default {
   color: rgb(43, 42, 42);
   text-align:right;
   font-family:Cairo;
+}
+
+a.download_btn2{
+  position: absolute;
+  right: 20px;
+  top: 6px;
+  background: rgb(233, 143, 83);
+  color: #fff!important;
+  padding: 5px;
+  border-radius: 7px;
 }
 </style>

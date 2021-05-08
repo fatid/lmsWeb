@@ -38,33 +38,37 @@ const mutations = {
 
 const actions = {
     async findAuth({ commit,router },{ headers }){
+   
+        let a = localStorage.getItem('auth'); 
+        console.log("a",a)
 
-        let a = Cookies.get('auth');
-        let auth = headers ? cookieparser.parse(headers).auth :{};
+        let auth = {};
+        // let auth = headers ? cookieparser.parse(headers) :{};
+        console.log("Find Auth")
 
         return new Promise((resolve, reject) => {
        
             if (auth || a) { 
-                auth = auth ? auth : a;    
+                auth = auth && auth.token ? auth : a;    
                 try { 
-                    // console.log("2");
+                    console.log("2",auth,a);
                     auth = JSON.parse(auth)
                     commit('setAuth', { v: auth, callback: resolve });
                 } catch (err) { 
-                    // this.$router.push("/login");
-                    // console.log("3");
-                    Cookies.get('removeAuth',{v:"",c:resolve})
+                    this.$router.push("/login");
+                    console.log("3");
+                    localStorage.getItem('removeAuth',{v:"",c:resolve})
                     
                 }
             } else {
-                // console.log("4");
-                Cookies.get('removeAuth',{v:"",c:resolve}) 
+                console.log("4");
+                localStorage.getItem('removeAuth',{v:"",c:resolve}) 
                 auth.token = ''; 
             } 
 
         });
 
-        //     let a = Cookies.get('auth');
+        //     let a = localStorage.getItem('auth');
         //     let auth={}
         //     if (a) { 
         //         auth =  a;
@@ -125,6 +129,7 @@ const actions = {
     
     logout({commit,state,dispatch,rootState},{ form}){
 
+        localStorage.setItem('auth', JSON.stringify({})); 
         Cookies.set('auth', JSON.stringify({})); 
         dispatch("getLikes", {} , {root: true })
         console.log("local",rootState.locale)
@@ -163,8 +168,12 @@ const actions = {
                       let token = response.data.token;
                       commit("setAuth", { v: token, callback: resolve})
                       let a = response.data.formattedData[0]; 
-                      // console.log(donen.token);
-                      if (token) { Cookies.set('auth', JSON.stringify({token,U_mail: a.U_mail,id:a.id,name:a.U_rname,surname:a.U_surname,fullName:`${a.U_rname} ${a.U_surname}`})) }
+                      console.log("localStorage",token,response,a);
+                      if (token) { 
+                            let authData=JSON.stringify({token,U_mail: a.U_mail,id:a.id,name:a.U_rname,surname:a.U_surname,fullName:`${a.U_rname} ${a.U_surname}`});
+                            localStorage.setItem('auth', authData);
+                            Cookies.set('auth', authData); 
+                        }
                         state.token = token; 
 
                       //console.log(response.status); 
@@ -176,7 +185,9 @@ const actions = {
                        commit("form/setForm", { v: sended,  callback: resolve} , {root: true })
                        dispatch("getLikes", {} , {root: true })
                     //    this.$router.push('/'+rootState.locale+"/account/dashboard");
-                       window.location.href = `/${rootState.locale}/account/dashboard`
+            
+
+                       window.location.href = `/${rootState.locale}/home`
                        return sended;
                     }
                 })

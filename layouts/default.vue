@@ -47,26 +47,21 @@
         </div>
       </div>
       <div class="header_right">
-        <div class="language-select">       <a
-              @click="changeLanguage('ar')" 
-              title="Arabic"
-              :class="LOCALE=='en' ? 'selected-language' : '' "
-              >AR</a> 
-              <a> | </a>
-               <a
-              @click="changeLanguage('en')" 
-              title="English"
-              :class="LOCALE=='ar' ? 'selected-language' : '' "
-              >EN</a>
-              </div>
+       
         <ul>
           <li>
-            <a
-              @click="goPath('course/my')"
-              class="upload_btn"
-              title="Create New Course"
-              >{{ l("My Courses", "g") }}</a
-            >
+             <b-dropdown :text="LOCALE" variant="outline-danger" class="m-2" :key="'locale'+LOCALE">
+                  <template #button-content>
+                      <img class="image-lang" :src="'/img/'+LOCALE+'.png'"   />
+                  </template>
+                  <b-dropdown-item  @click="changeLanguage('ar')" ><img class="image-lang" :src="'/img/ar.png'"   /> Arabic</b-dropdown-item>
+                  <b-dropdown-item  @click="changeLanguage('en')" ><img class="image-lang" :src="'/img/en.png'" /> English</b-dropdown-item> 
+                </b-dropdown>
+          </li>
+          <li>
+
+            <b-button pill variant="outline-danger" @click="goPath('course/my')">{{ l("My Courses", "g") }}</b-button>
+            
           </li>
           <!-- <li>
 					<a href="shopping_cart.html" class="option_links" title="cart"><i class='uil uil-shopping-cart-alt'></i><span class="noti_count">2</span></a>
@@ -165,6 +160,7 @@
               ></a>
             </div> -->
           </li>
+         
           <li v-if="!auth.token" class="list-inline-item g-mx-4">
             <a
               class="g-color-black g-color-primary--hover g-text-underline--none--hover"
@@ -173,13 +169,23 @@
             >
           </li>
           <li class="ui dropdown" v-else-if="auth.token">
-            <a
-              @click="goPath('account/dashboard')"
-              class="opts_account"
-              title="Account"
-            >
-              <img src="/images/hd_dp.jpg" alt="" />
-            </a>
+
+<b-dropdown variant="link" toggle-class="text-decoration-none" no-caret>
+               <template #button-content>
+                          <a
+                            @click="goPath('courses/all_courses')"
+                            class="opts_account"
+                            title="Account"
+                          >
+                            <img src="/images/hd_dp.jpg" alt="" />
+                          </a>
+                  </template>
+                  <b-dropdown-item  @click="goPath('page/contact')" >  Profile</b-dropdown-item>
+                  <b-dropdown-item  @click="goPath('form/login?logout=true')" >  Sign Out</b-dropdown-item> 
+                </b-dropdown>
+
+
+          
             <div class="menu dropdown_account">
               <div class="channel_my">
                 <div class="profile_link">
@@ -223,6 +229,8 @@
         </ul>
       </div>
     </header>
+
+   
     <!-- Header End -->
     <!-- Left Sidebar Start -->
     <nav class="vertical_nav">
@@ -376,7 +384,7 @@
       <div class="sa4d25">
         <div class="container-fluid">
           <div class="row">
-            <div class="col-12">
+            <div class="col-12"> 
               <nuxt v-if="LANG_PACK.main" :key="$route.fullPath" />
             </div>
           </div>
@@ -390,6 +398,7 @@ import general from "@/mixins/general";
 import axios from "axios";
 import basicMixin from "~/mixins/basic.js";
 import canoicalMixin from "~/mixins/canoical.js";
+import Multiselect from 'vue-multiselect'
 export default {
   mixins: [basicMixin, canoicalMixin, general],
   watch: {
@@ -793,5 +802,13 @@ a {
 
 a.selected-language{
   color: #a0a0a0!important;
+}
+img.image-lang{
+  height: 15px;
+  width: 20px;
+}
+.no-border{
+  border: 0;
+  padding: 0;
 }
 </style>

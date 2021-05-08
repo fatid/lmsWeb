@@ -21,18 +21,20 @@ export default {
         formResultClose() {
             this.$store.commit("form/restoreResult", { show: false });
           },
-        checkForm() {
+        checkForm(form=null,validation=null,errors=null) {
             this.errors = [];
-            let v = this.validation;
+            let v = validation ? validation : this.validation;
+            let f = form ? form : this.form;
+            let e = errors ? errors : this.errors;
             v.forEach(k=>{
                 if(k.check.includes("required")){
-                    if (!this.form[k.name]) {
+                    if (!f[k.name]) {
                         let label = k.label()+" "+this.l('required', 'g')
-                        this.errors.push(label);
+                        e.push(label);
 
                     }
-                }else if (k.check.includes("email") && !this.validEmail(this.form.mail)) { 
-                    this.errors.push(this.l('Valid email required','g'));
+                }else if (k.check.includes("email") && !this.validEmail(f.mail)) { 
+                   e.push(this.l('Valid email required','g'));
                 }
             })
             
