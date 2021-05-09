@@ -27,10 +27,18 @@
               <li class="nav-item">
                 <a
                   class="nav-link"
-                  id="pills-privacy-tab"
-                  @click="show = 'privacy'"
-                  :class="show == 'privacy' ? 'active' : ''"
-                  >{{ l("Privacy", "general") }}
+                  @click="show = 'lists'"
+                  :class="show == 'lists' ? 'active' : ''"
+                  >{{ l("Lists", "general") }}
+                </a>
+              </li>
+              <li class="nav-item">
+                <a
+                  class="nav-link"
+                  id="pills-password-tab"
+                  @click="show = 'password'"
+                  :class="show == 'password' ? 'active' : ''"
+                  >{{ l("Change Password", "general") }}
                 </a>
               </li>
               <li class="nav-item">
@@ -169,18 +177,11 @@
                                 </select>
                               </div>
                             </div>
-                          </div>
-languageDegree :{{languageDegree}}
+                          </div> 
                           <div class="col-lg-12 mt-5 ">
-                            <p>{{ l("Language", "g") }}</p>
+                            <p>{{ l("Your Languages", "g") }}</p>
                           </div>
-                          <div class="col-lg-12 mt-2 text-center align-center">
-                            <b-button
-                              variant="success"
-                              @click="addNewLanguage()"
-                              >+ {{ l("Add New Language", "g") }}</b-button
-                            >
-                          </div>
+                        
                           <div class="w-100" v-for="(lg, i) in uye_languages">
                             <div class="row w-100">
                               <div class="col-lg-1 mt-20"><strong>{{ (i+1) }}</strong></div>
@@ -201,7 +202,7 @@ languageDegree :{{languageDegree}}
                                   </div>
                                 </div>
                               </div>
-                              <div class="col-lg-6">
+                              <div class="col-lg-5">
                                 <div class="ui search focus mt-10">
                                   <div class="ui left icon input swdh11 swdh19">
                                     <select
@@ -212,15 +213,22 @@ languageDegree :{{languageDegree}}
                                         v-for="u in languageDegree"
                                         :key="u.value"
                                         :value="u.value"
-                                        >{{ u.label }}</option
+                                        >{{ u.name }}</option
                                       >
                                     </select>
                                   </div>
                                 </div>
                               </div>
+                             <div class="col-lg-1 mt-20"><a @click="removeLanguageItem(i)">x</a></div>
                             </div>
                           </div>
-
+  <div class="col-lg-12 mt-2 text-center align-center">
+                            <b-button
+                              variant="success"
+                              @click="addNewLanguage()"
+                              >+ {{ l("Add New Language", "g") }}</b-button
+                            >
+                          </div>
                           <div class="col-lg-12">
                             <div class="divider-1"></div>
                           </div>
@@ -235,6 +243,56 @@ languageDegree :{{languageDegree}}
                 </button>
               </div>
             </div>
+             <div
+              class="tab-pane fade"
+              :class="show == 'lists' ? 'show active' : ''"
+            >
+              <div class="account_setting">
+                <h4>{{l('Lists','g')}}</h4>
+                        <b-list-group>
+                                <b-list-group-item 
+                                        v-for="list in my_lists"
+                                        class="d-flex justify-content-between align-items-center">
+                                   <span v-if="list.id"> {{list.uye_list_name}}</span>
+                                   <span v-else>
+                                        <input type="text" name="listname"
+                                      class="prompt srch_explore pa-10 w-100"
+                                      v-model="uyeListItem.uye_list_name"
+                                    /> </span>
+                                     <b-badge v-if="!list.id" variant="success" @click="saveUyeList()" pill>Save</b-badge>
+                                    <b-badge v-if="list.id" variant="danger" @click="removeList(list.id)" pill>X</b-badge>
+                                    <b-badge v-if="list.id" variant="primary" pill>14</b-badge>
+                                </b-list-group-item>
+                        </b-list-group>
+
+                         
+
+
+<!-- <div class="w-100" v-for="(lg, i) in my_lists">
+                            <div class="row w-100">
+                              <div class="col-lg-1 mt-20"><strong>{{ (i+1) }}</strong></div>
+                              <div class="col-lg-7">
+                                <div class="ui search focus mt-10">
+                                  <div class="ui left icon input swdh11 swdh19">
+                                    <input type="text"
+                                      class="prompt srch_explore pa-10 w-100"
+                                      v-model="lg.uye_list_name"
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+
+                            </div>
+                            </div> -->
+                        <div class="col-lg-12 mt-2 text-center align-center">
+                            <b-button
+                              variant="success"
+                              @click="addNewList()"
+                              >+ {{ l("Add New List", "g") }}</b-button
+                            >
+                          </div>
+              </div>
+             </div>
             <div
               class="tab-pane fade"
               :class="show == 'notification' ? 'show active' : ''"
@@ -332,7 +390,7 @@ languageDegree :{{languageDegree}}
                         <p class="ml5">
                           If this setting is turned off, Cursus may still send
                           you messages regarding your account, required service
-                          announcements, legal notifications, and privacy
+                          announcements, legal notifications, and password
                           matters
                         </p>
                       </div>
@@ -373,43 +431,56 @@ languageDegree :{{languageDegree}}
             </div>
             <div
               class="tab-pane fade"
-              :class="show == 'privacy' ? 'show active' : ''"
+              :class="show == 'password' ? 'show active' : ''"
             >
               <div class="account_setting">
-                <h4>Privacy</h4>
-                <p>Modify your privacy settings here.</p>
+                <h4>Change Password</h4> 
                 <div class="basic_profile">
                   <div class="basic_form">
                     <div class="nstting_content">
-                      <div class="basic_ptitle">
-                        <h4>Profile page settings</h4>
-                      </div>
-                      <div class="ui toggle checkbox _1457s2">
-                        <input
-                          type="checkbox"
-                          name="stream_ss8"
-                          checked=""
-                          tabindex="0"
-                          class="hidden"
-                        />
-                        <label>Show your profile on search engines</label>
-                      </div>
-                      <div class="ui toggle checkbox _1457s2">
-                        <input
-                          type="checkbox"
-                          name="stream_ss9"
-                          tabindex="0"
-                          class="hidden"
-                        />
-                        <label
-                          >Show courses you're taking on your profile
-                          page</label
-                        >
-                      </div>
+                       <div class="col-lg-6">
+                            <div class="ui search focus mt-30">
+                              <div class="ui left icon input swdh11 swdh19">
+                                <input
+                                  class="prompt srch_explore"
+                                  type="password"
+                                  name="name"
+                                  v-model="changePassword.password"
+                                  :placeholder="l('Old Password','g')"
+                                />
+                              </div>
+                            </div>
+                    </div>   <div class="col-lg-6">
+                            <div class="ui search focus mt-30">
+                              <div class="ui left icon input swdh11 swdh19">
+                                <input
+                                  class="prompt srch_explore"
+                                  type="password"
+                                  name="name"
+                                  v-model="changePassword.password_confirm"
+                                    :placeholder="l('Password Confirm','g')"
+                                />
+                              </div>
+                            </div>
+                            </div>
+                            <div class="col-lg-12">
+                            <div class="ui search focus mt-30">
+                              <div class="ui left icon input swdh11 swdh19">
+                                <input
+                                  class="prompt srch_explore"
+                                  type="password"
+                                  name="name"
+                                  v-model="changePassword.new_password"
+                                    :placeholder="l('New Password','g')"
+                                />
+                              </div>
+                            </div>
+                    </div>
+                    </div>
                     </div>
                   </div>
                 </div>
-                <button class="save_btn" type="submit">Save Changes</button>
+                <button class="save_btn" type="submit" @click="changePasswordAction">{{l('Change Password','g')}}</button>
               </div>
             </div>
             <div
@@ -871,14 +942,23 @@ languageDegree :{{languageDegree}}
 <script>
 import general from "@/mixins/general";
 import axios from "axios";
-
+ 
 export default {
   mixins: [general],
 
   data: () => ({
     show: "main",
     myProfile: {},
+    changePassword: {     password:'',
+                password_confirm:'',
+                new_password:'',},
+    boxTwo:'',
     uye_languages: [],
+    my_lists: [],
+    uyeListItem:{
+        id:null,
+        uye_list_name:''
+    },
     genders: [
       { name: "Male", value: "MG_Male" },
       { name: "Female", value: "MG_Female" }
@@ -892,7 +972,6 @@ export default {
     levels() {
       return this.$store.state.core.options["co_level"];
     },
-
     languageDegree() {
       return this.l("cat.LangugeDegree", "g").list;
     },
@@ -917,14 +996,76 @@ export default {
 
     // this.genders = this.l("cat.Membership.list.M_Gender.list",'g');
     this.getUyeLanguages();
+    this.getUyeLists();
     this.getMyProfile();
   },
   methods: {
+    async removeLanguageItem(index){
+     
+         this.boxTwo = ''
+        this.$bvModal.msgBoxConfirm('Please confirm that you want to delete this language.', {
+          title: 'Please Confirm',
+          size: 'sm',
+          buttonSize: 'sm',
+          okVariant: 'danger',
+          okTitle: 'YES',
+          cancelTitle: 'NO',
+          footerClass: 'p-2',
+          hideHeaderClose: false,
+          centered: true
+        })
+          .then(value => {
+            this.boxTwo = value
+                if(value){
+                    this.uye_languages = this.uye_languages.filter((k,i)=> i!=index);
+                }
+          })
+          .catch(err => {
+            // An error occurred
+          })
+ 
+    },
     addNewLanguage() {
       this.uye_languages.push({
         id: null,
         uye_language: "",
         uye_language_degree: ""
+      });
+    },
+    addNewList() {
+      this.my_lists.push({
+        id: null,
+        uye_list_name: ""
+      });
+    },
+    changePasswordAction() {
+        this.changePassword={
+                password:'',
+                password_confirm:'',
+                new_password:'',
+        }
+    },
+    async saveUyeList() {
+      let mp = this.uyeListItem;
+      let id = this.auth.id + new Date().valueOf();
+      await axios({
+        url: process.env.baseURL + "uye_Lists",
+        method: "create",
+        data: {
+          id: id,
+          uye_list_name: mp.uye_list_name,
+          status: 1, 
+          prev: this.auth.id
+        }
+      }).then(response => {
+        this.saveStatus = { show: true, stataus: "success" };
+        setTimeout(() => {
+          window.scrollTo({
+            top: 0,
+            left: 0,
+            behavior: "smooth"
+          });
+        }, 500);
       });
     },
     async saveProfile() {
@@ -1003,12 +1144,50 @@ export default {
           }
         });
       });
+    },
+    getUyeLists() {
+        let filters = { prev: ["=", this.auth.id] };
+      // uye_languages
+      return new Promise((resolve, reject) => {
+          axios({
+          url: process.env.baseURL + "uye_Lists",
+          method: "get",
+          params: {
+            limit: 100,
+            offset: 0,
+            fields: "uye_list_name,id",
+            lang: this.$store.state.locale,
+            sort: ["sort,ASC"],
+            filter: filters
+          }
+        }).then(response => {
+          if (
+            response.data &&
+            response.data.formattedData &&
+            response.data.formattedData[0]
+          ) {
+              this.my_lists = response.data.formattedData;
+          }
+        });
+      });
     }
-  }
+  
+            },
 };
 </script>
 <style>
 .pa-10 {
   padding: 10px !important;
+}
+.modal{
+    z-index:99999;
+}
+header.modal-header{
+    position: relative;
+        height: auto;
+}
+
+.modal-body{
+    height: auto;
 }
 </style>

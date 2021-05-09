@@ -85,8 +85,7 @@ export const actions = {
     },
 
     async setLikes({commit,state,rootState},item){
-
-        console.log("likes",state.likes,item)
+ 
         if(item && item.id && state.likes.find(k=>k.id==item.id)){
         }else{
             commit("pushLike",item)
