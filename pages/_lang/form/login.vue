@@ -112,9 +112,9 @@
           </div>
           <div class="ui form mt-30 checkbox_sign">
             <div class="inline field">
-              <div class="ui checkbox mncheck">
-                <input type="checkbox" tabindex="0" class="hidden"       @blur="checkForm()"
-                            v-model="form.keepmein"/>
+              <div class="ui checkbox" 
+                    :class="{checked: form.keepmein}" @click="form.keepmein=!form.keepmein">
+										<input type="checkbox" tabindex="0"  v-model="form.keepmein" />
                 <label>{{l('Remember Me','g')}} </label>
               </div>
             </div>
