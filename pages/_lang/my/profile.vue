@@ -57,7 +57,7 @@
                 {{ l("Saved", "g") }}
               </b-alert>
 
-              <div class="account_setting"> 
+              <div class="account_setting">
                 <div class="basic_profile">
                   <div class="basic_ptitle">
                     <h4>Basic Profile</h4>
@@ -98,9 +98,9 @@
                               <div class="ui left icon input swdh11 swdh19">
                                 <input
                                   class="prompt srch_explore"
-                                  type="text" 
+                                  type="text"
                                   v-model="myProfile.U_Mobil"
-                                  :placeholder="l('Mobile','g')"
+                                  :placeholder="l('Mobile', 'g')"
                                 />
                               </div>
                             </div>
@@ -110,9 +110,9 @@
                               <div class="ui left icon input swdh11 swdh19">
                                 <input
                                   class="prompt srch_explore"
-                                  type="text" 
+                                  type="text"
                                   v-model="myProfile.U_mail"
-                                  :placeholder="l('Email','g')"
+                                  :placeholder="l('Email', 'g')"
                                 />
                               </div>
                             </div>
@@ -128,32 +128,99 @@
                                   id="id_headline"
                                   required=""
                                   maxlength="60"
-                                  :placeholder="l('About Me','g')"
+                                  :placeholder="l('About Me', 'g')"
                                 />
                               </div>
-                         
                             </div>
                           </div>
                           <div class="col-lg-6">
-                             <div class="ui search focus mt-30">
-                              <div class="ui left icon input swdh11 swdh19" v-if="levels && levels[0]">
-                                	<select class="prompt srch_explore pa-10 w-100"   v-model="myProfile.U_degree"   >	 
-                                        <option v-for="u in levels" :key="u.id" :value="u.id">{{u.cou_level_name}}</option>
-                                    </select>	
+                            <div class="ui search focus mt-30">
+                              <div
+                                class="ui left icon input swdh11 swdh19"
+                                v-if="levels && levels[0]"
+                              >
+                                <select
+                                  class="prompt srch_explore pa-10 w-100"
+                                  v-model="myProfile.U_degree"
+                                >
+                                  <option
+                                    v-for="u in levels"
+                                    :key="u.id"
+                                    :value="u.id"
+                                    >{{ u.cou_level_name }}</option
+                                  >
+                                </select>
                               </div>
                             </div>
                           </div>
-                            <div class="col-lg-6">
-                             <div class="ui search focus mt-30">
-                                 
-                              <div class="ui left icon input swdh11 swdh19" >
-                                  
-                                	<select class="prompt srch_explore pa-10 w-100"   v-model="myProfile.U_Gender"   >	 
-                                        <option v-for="(u) in genders" :key="u.value" :value="u.value">{{u.name}}</option>
-                                    </select>	
+                          <div class="col-lg-6">
+                            <div class="ui search focus mt-30">
+                              <div class="ui left icon input swdh11 swdh19">
+                                <select
+                                  class="prompt srch_explore pa-10 w-100"
+                                  v-model="myProfile.U_Gender"
+                                >
+                                  <option
+                                    v-for="u in genders"
+                                    :key="u.value"
+                                    :value="u.value"
+                                    >{{ u.name }}</option
+                                  >
+                                </select>
                               </div>
                             </div>
                           </div>
+languageDegree :{{languageDegree}}
+                          <div class="col-lg-12 mt-5 ">
+                            <p>{{ l("Language", "g") }}</p>
+                          </div>
+                          <div class="col-lg-12 mt-2 text-center align-center">
+                            <b-button
+                              variant="success"
+                              @click="addNewLanguage()"
+                              >+ {{ l("Add New Language", "g") }}</b-button
+                            >
+                          </div>
+                          <div class="w-100" v-for="(lg, i) in uye_languages">
+                            <div class="row w-100">
+                              <div class="col-lg-1 mt-20"><strong>{{ (i+1) }}</strong></div>
+                              <div class="col-lg-5">
+                                <div class="ui search focus mt-10">
+                                  <div class="ui left icon input swdh11 swdh19">
+                                    <select
+                                      class="prompt srch_explore pa-10 w-100"
+                                      v-model="lg.uye_language"
+                                    >
+                                      <option
+                                        v-for="u in languages"
+                                        :key="u.value"
+                                        :value="u.value"
+                                        >{{ u.name }}</option
+                                      >
+                                    </select>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="col-lg-6">
+                                <div class="ui search focus mt-10">
+                                  <div class="ui left icon input swdh11 swdh19">
+                                    <select
+                                      class="prompt srch_explore pa-10 w-100"
+                                      v-model="lg.uye_language_degree"
+                                    >
+                                      <option
+                                        v-for="u in languageDegree"
+                                        :key="u.value"
+                                        :value="u.value"
+                                        >{{ u.label }}</option
+                                      >
+                                    </select>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
                           <div class="col-lg-12">
                             <div class="divider-1"></div>
                           </div>
@@ -162,7 +229,7 @@
                     </div>
                   </div>
                 </div>
-                 
+
                 <button class="save_btn" type="submit" @click="saveProfile()">
                   {{ l("Save Changes", "general") }}
                 </button>
@@ -811,9 +878,10 @@ export default {
   data: () => ({
     show: "main",
     myProfile: {},
+    uye_languages: [],
     genders: [
-        {name: 'Male' ,value:'MG_Male'},
-        {name: 'Female' ,value:'MG_Female'}
+      { name: "Male", value: "MG_Male" },
+      { name: "Female", value: "MG_Female" }
     ],
     saveStatus: { show: false, stataus: "success" }
   }),
@@ -821,23 +889,44 @@ export default {
     auth() {
       return this.$store.state.user.auth;
     },
-    levels(){ 
-        return this.$store.state.core.options['co_level']  
-    }   
+    levels() {
+      return this.$store.state.core.options["co_level"];
+    },
+
+    languageDegree() {
+      return this.l("cat.LangugeDegree", "g").list;
+    },
+    languages() {
+      let objs = this.l("cat.Languages", "g").list;
+      const sortable = Object.entries(objs);
+      let country = [];
+      sortable.forEach(k => {
+        country.push(k[1]);
+      });
+      country.sort((a, b) => (a.name > b.name ? 1 : b.name > a.name ? -1 : 0));
+
+      return country;
+    }
   },
   async created() {
+    await this.$store.dispatch("core/getOptions", {
+      slang: this.$store.state.locale,
+      group: "co_level",
+      fields: "id,cou_level_name"
+    });
 
-         await this.$store.dispatch("core/getOptions", {
-            slang: this.$store.state.locale,
-			group: 'co_level',
-			fields:'id,cou_level_name'
-		}); 
-        
-        // this.genders = this.l("cat.Membership.list.M_Gender.list",'g');
-        this.getMyProfile();
- 
+    // this.genders = this.l("cat.Membership.list.M_Gender.list",'g');
+    this.getUyeLanguages();
+    this.getMyProfile();
   },
   methods: {
+    addNewLanguage() {
+      this.uye_languages.push({
+        id: null,
+        uye_language: "",
+        uye_language_degree: ""
+      });
+    },
     async saveProfile() {
       let mp = this.myProfile;
       await axios({
@@ -849,7 +938,7 @@ export default {
           U_mail: mp.U_mail,
           U_aboutme: mp.U_aboutme,
           U_degree: mp.U_degree,
-          U_Gender: mp.U_Gender,
+          U_Gender: mp.U_Gender
         }
       }).then(response => {
         this.saveStatus = { show: true, stataus: "success" };
@@ -872,7 +961,8 @@ export default {
           params: {
             limit: 100,
             offset: 0,
-            fields: "U_mail,U_rname,U_surname,id,U_Status,U_likedPages,U_degree,U_BirthDate,U_Mtype,U_Photo,U_Gender,U_Mobil,U_aboutme",
+            fields:
+              "U_mail,U_rname,U_surname,id,U_Status,U_likedPages,U_degree,U_BirthDate,U_Mtype,U_Photo,U_Gender,U_Mobil,U_aboutme",
             lang: this.$store.state.locale,
             sort: ["sort,ASC"],
             filter: filters
@@ -887,12 +977,38 @@ export default {
           }
         });
       });
+    },
+    getUyeLanguages() {
+      let filters = { prev: ["=", this.auth.id] };
+      // uye_languages
+      return new Promise((resolve, reject) => {
+        axios({
+          url: process.env.baseURL + "U_Lang",
+          method: "get",
+          params: {
+            limit: 100,
+            offset: 0,
+            fields: "uye_language,uye_language_degree,id",
+            lang: this.$store.state.locale,
+            sort: ["sort,ASC"],
+            filter: filters
+          }
+        }).then(response => {
+          if (
+            response.data &&
+            response.data.formattedData &&
+            response.data.formattedData[0]
+          ) {
+            this.uye_languages = response.data.formattedData;
+          }
+        });
+      });
     }
   }
 };
 </script>
 <style>
-.pa-10{
-    padding:10px!important;
+.pa-10 {
+  padding: 10px !important;
 }
 </style>
