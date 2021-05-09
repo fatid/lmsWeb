@@ -16,22 +16,7 @@
           ><img class="logo-inverse" :src="l('siteInfo.G_Logo', 'g')" alt="logo"
         /></a>
       </div>
-      <div class="top-category">
-        <div class="ui compact menu cate-dpdwn">
-          <div class="ui simple dropdown item">
-            <a href="#" class="option_links p-0" title="categories"
-              ><i class="uil uil-apps"></i
-            ></a>
-            <div class="menu dropdown_category5">
-              <div class="item channel_item" v-for="cat in categories">
-                <a @click="goPath('courses/' + cat.cou_label_link)">
-                  {{ cat.cou_label_name }}
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      
       <div class="search120">
         <div class="ui search">
           <div class="ui left icon input swdh10">
