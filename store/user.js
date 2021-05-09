@@ -39,10 +39,9 @@ const mutations = {
 
 const actions = {
     async findAuth({ commit,router },{ headers }){
-   
+         if(process.client){   
         let a = localStorage.getItem('auth'); 
-        console.log("a",a)
-
+       
         let auth = {};
         // let auth = headers ? cookieparser.parse(headers) :{};
         
@@ -86,6 +85,7 @@ const actions = {
         //    commit('setAuth',  {v: auth})
            
         //     return auth;
+    }
     },
     formSignUp({commit,state},{ form,pageData}){
         console.log("uye girişi")

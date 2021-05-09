@@ -84,9 +84,9 @@ optimizedImages: {
       ['vue-scrollto/nuxt', { duration: 300 }],
 
   ],
-  router: {
-    middleware: ['auth'], 
-  },
+  // router: {
+  //   // middleware: ['auth'], 
+  // },
   
   buildModules: [ 
     'nuxt-compress'
