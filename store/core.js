@@ -2,7 +2,9 @@ import axios from 'axios'
 
 const state = () => ({
     countries: [],
-    options: {},
+    options: {
+      'co_level':[]
+    },
 });
 
 const mutations= {
