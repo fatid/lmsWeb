@@ -115,8 +115,8 @@
 				</li>
 
 			
-         <li v-if="!auth.token" class="list-inline-item g-mx-4"><a class="g-color-black g-color-primary--hover g-text-underline--none--hover" @click="goPath('form/login')">{{l('LOGIN','g')}}</a></li>            
-        	<li class="ui dropdown" v-else-if="auth.token">
+         <li v-if="!auth || !auth.token" class="list-inline-item g-mx-4"><a class="g-color-black g-color-primary--hover g-text-underline--none--hover" @click="goPath('form/login')">{{l('LOGIN','g')}}</a></li>            
+        	<li class="ui dropdown" v-else-if="auth && auth.token">
 					<a  @click="goPath('account/dashboard')" class="opts_account" title="Account">
 						<img src="/images/hd_dp.jpg" alt="">
 					</a>
