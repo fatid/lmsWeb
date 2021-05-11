@@ -203,7 +203,7 @@
               <a href="membership.html" class="item channel_item"
                 >Paid Memberships</a
               >
-              <a href="setting.html" class="item channel_item">Setting</a>
+              <a @click="goPath('my/profile')" class="item channel_item">Setting</a>
               <a href="help.html" class="item channel_item">Help</a>
               <a href="feedback.html" class="item channel_item"
                 >Send Feedback</a
@@ -314,7 +314,7 @@
                 <span class="menu--label">Help</span>
               </a>
             </li>
-            <li class="menu--item">
+            <li class="menu--item"> 
               <a
                 @click="goPath('reports/all')"
                 class="menu--link"
@@ -325,7 +325,7 @@
               </a>
             </li>
             <li class="menu--item">
-              <a href="feedback.html" class="menu--link" title="Send Feedback">
+              <a @click="isErrorReportVisible=true" class="menu--link" title="Send Feedback">
                 <i class="uil uil-comment-alt-exclamation menu--icon"></i>
                 <span class="menu--label">Send Feedback</span>
               </a>
@@ -375,6 +375,10 @@
           </div>
         </div>
       </div>
+
+     
+<errorReport></errorReport>
+
     </div>
   </div>
 </template>
@@ -386,8 +390,13 @@ import canoicalMixin from "~/mixins/canoical.js";
 import Multiselect from 'vue-multiselect';
 var Vue = require('vue');
 var VueScrollTo = require('vue-scrollto');
+import errorReport from "@/components/common/errorReport";
+
 export default {
   mixins: [basicMixin, canoicalMixin, general],
+  components:{
+    errorReport
+  },
   watch: {
     async $route(to, from) {
       setTimeout(() => {
@@ -481,6 +490,14 @@ export default {
     },
     LANG_PACK() {
       return this.$store.state.langFile;
+    },
+    isErrorReportVisible: {
+      get(){
+        return this.$store.state.isErrorReportVisible;
+
+      },set(val){
+          this.$store.state.isErrorReportVisible = val;
+      }
     }
   },
  async beforeMount(){
@@ -800,5 +817,9 @@ img.image-lang{
 .no-border{
   border: 0;
   padding: 0;
+}
+header.modal-header{
+    position: relative;
+        height: auto;
 }
 </style>

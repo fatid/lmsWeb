@@ -2,7 +2,7 @@
   <div class="container">
     
 
-        <div class="fcrse_1" v-for="d in data">
+        <div class="fcrse_1" v-for="d in data"> 
 										<a @click="goPath('course/'+d.cou_link)" class="hf_img">
 											<img v-if="d.cou_image" :src="show_image(d.cou_image,'150','150','','90')" alt="">
 											<img v-else-if="options['cou_settings']" :src="show_image(options['cou_settings'][0].cou_setting_image,'150','150','c','')" alt="">
@@ -12,9 +12,7 @@
 													<i class="uil uil-star"></i> No
 												</div>
 												<span class="play_btn1"><i class="uil uil-play"></i></span>
-												<div class="crse_timer">
-													{{d.cou_total_time}} hours
-												</div>
+										 
 											</div>
 										</a>
 										<div class="hs_content">
@@ -27,10 +25,10 @@
 													<span><i class="uil uil-windsock"></i>Report</span>
 												</div>																											
 											</div>
-											<div class="vdtodt">
+											<!-- <div class="vdtodt">
 												<span class="vdt14">{{d.cou_total_view}} {{l('views','g')}}</span>
 												<!-- <span class="vdt14">15 days ago</span> -->
-											</div>
+												<!-- </div> -->
 											<a @click="goPath('course/'+d.cou_link)" class="crse14s title900">{{d.cou_name}}</a>
 											<a href="#" class="crse-cate">{{d.cou_short}}</a>
 											<div class="crse-cate mt-1">
@@ -38,11 +36,7 @@
 												<span class="  ml-1">|</span> 
 												<a href="#" v-if="d.cou_tags" :class="'ml-2'" :key="'tg'+tag"  v-for="tag in d.cou_tags.split(',')">{{tag}} </a>
 											</div>
-											<div class="auth1lnkprce">
-												<!-- <p class="cr1fot">By <a href="#">John Doe</a></p> -->
-												<!-- <div class="prce142">$10</div> -->
-												<button class="shrt-cart-btn" title="cart"><i class="uil uil-shopping-cart-alt"></i></button>
-											</div>
+									 
 										</div>
 									</div>
 

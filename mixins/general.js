@@ -276,8 +276,7 @@ export default {
           } 
         }
     },
-    downloadCount(data,ops){ 
-    
+    downloadCount(data,ops){  
         axios({
           url: process.env.baseURL+"wDownloads",
           method: 'get',
@@ -294,8 +293,8 @@ export default {
            console.log(e)
           })   
     },
-    setLikes(item){
-      this.$store.dispatch('setLikes',item);
+    setLikes(item,list){
+      this.$store.dispatch('setLikes',item,list);
     },
     removeLikes(selected){
  

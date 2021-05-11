@@ -222,7 +222,7 @@
                              <div class="col-lg-1 mt-20"><a @click="removeLanguageItem(i)">x</a></div>
                             </div>
                           </div>
-  <div class="col-lg-12 mt-2 text-center align-center">
+                          <div class="col-lg-12 mt-2 text-center align-center">
                             <b-button
                               variant="success"
                               @click="addNewLanguage()"
@@ -249,19 +249,40 @@
             >
               <div class="account_setting">
                 <h4>{{l('Lists','g')}}</h4>
+
+          
                         <b-list-group>
                                 <b-list-group-item 
-                                        v-for="list in my_lists"
+                                        v-for="(list,i) in my_lists" :key="'l'+i" 
                                         class="d-flex justify-content-between align-items-center">
-                                   <span v-if="list.id"> {{list.uye_list_name}}</span>
-                                   <span v-else>
-                                        <input type="text" name="listname"
-                                      class="prompt srch_explore pa-10 w-100"
-                                      v-model="uyeListItem.uye_list_name"
-                                    /> </span>
-                                     <b-badge v-if="!list.id" variant="success" @click="saveUyeList()" pill>Save</b-badge>
-                                    <b-badge v-if="list.id" variant="danger" @click="removeList(list.id)" pill>X</b-badge>
-                                    <b-badge v-if="list.id" variant="primary" pill>14</b-badge>
+ 
+                                   <span v-show="list.view == 'read'"> {{list.uye_list_name}} - {{list.uye_list_cat}} </span>
+                                   <span v-show="list.view  && list.view == 'edit'">
+                                      <div  class="d-flex j align-items-center">
+                                            <input type="text" name="listname"
+                                      class="prompt srch_explore pa-10 mr-5 w-100"
+                                      v-model="list.uye_list_name"
+                                    />  
+                                      <select type="text" name="listname"
+                                      class="prompt srch_explore pa-10 mr-5  w-100"
+                                      v-model="list.uye_list_cat"
+                                    >
+                                        <option
+                                            v-for="opt in listOptions"
+                                            :value="opt.value"
+                                        >{{opt.name}}</option>
+                                    </select>
+                                    <b-button  variant="success"    @click="saveUyeList(list)" >
+                                        <i class="fa fa-save"></i> Save</b-button>
+                                      </div>
+                                    </span>
+                                    <span>
+                                     
+                                    <b-button variant="primary"  v-if="list.id"   @click="removeList(list.id)" pill><i class="fa fa-trash"></i> Delete</b-button>
+                                    <b-button   v-if="list.view == 'read'" variant="danger" @click="list.view = 'edit'" pill>Edit</b-button>
+                                    <b-button   v-if="list.view == 'edit'" variant="danger" @click="list.view = 'read'" pill>Close Edit</b-button>
+                                    <b-badge variant="success"  v-if="list.id"   pill>14</b-badge>
+                                    </span>
                                 </b-list-group-item>
                         </b-list-group>
 
@@ -959,6 +980,11 @@ export default {
         id:null,
         uye_list_name:''
     },
+    listOptions: [
+      { name: "Course", value: "Course" },
+      { name: "Exam", value: "Exam" },
+      { name: "Word", value: "Word" }
+    ],
     genders: [
       { name: "Male", value: "MG_Male" },
       { name: "Female", value: "MG_Female" }
@@ -1045,20 +1071,26 @@ export default {
                 new_password:'',
         }
     },
-    async saveUyeList() {
-      let mp = this.uyeListItem;
-      let id = this.auth.id + new Date().valueOf();
+    async saveUyeList(mp) { 
+      let method = "post"
+      if(mp.id){
+          method='put';
+      }
+
+     
       await axios({
         url: process.env.baseURL + "uye_Lists",
-        method: "create",
+        method,
         data: {
-          id: id,
+          id: mp.id,
           uye_list_name: mp.uye_list_name,
+          uye_list_cat: mp.uye_list_cat,
           status: 1, 
-          prev: this.auth.id
+          prev_id: this.auth.id
         }
       }).then(response => {
         this.saveStatus = { show: true, stataus: "success" };
+              this.getUyeLists();
         setTimeout(() => {
           window.scrollTo({
             top: 0,
@@ -1083,6 +1115,7 @@ export default {
         }
       }).then(response => {
         this.saveStatus = { show: true, stataus: "success" };
+  
         setTimeout(() => {
           window.scrollTo({
             top: 0,
@@ -1120,7 +1153,7 @@ export default {
       });
     },
     getUyeLanguages() {
-      let filters = { prev: ["=", this.auth.id] };
+      let filters = { prev_id: ["=", this.auth.id] };
       // uye_languages
       return new Promise((resolve, reject) => {
         axios({
@@ -1146,7 +1179,7 @@ export default {
       });
     },
     getUyeLists() {
-        let filters = { prev: ["=", this.auth.id] };
+        let filters = { prev_id: ["=", this.auth.id] };
       // uye_languages
       return new Promise((resolve, reject) => {
           axios({
@@ -1155,7 +1188,7 @@ export default {
           params: {
             limit: 100,
             offset: 0,
-            fields: "uye_list_name,id",
+            fields: "uye_list_name,id,uye_list_cat",
             lang: this.$store.state.locale,
             sort: ["sort,ASC"],
             filter: filters
@@ -1166,7 +1199,7 @@ export default {
             response.data.formattedData &&
             response.data.formattedData[0]
           ) {
-              this.my_lists = response.data.formattedData;
+              this.my_lists = response.data.formattedData.map(k=> {return {...k,view:'read'}});
           }
         });
       });
@@ -1189,5 +1222,8 @@ header.modal-header{
 
 .modal-body{
     height: auto;
+}
+.list-group-item{
+    margin-bottom: 15px;
 }
 </style>

@@ -21,13 +21,12 @@
               The only course you need to learn web development
             </li>
           </ol>
-                 <a
-          class="download_btn2" 
-          @click="
-            goPath('course/the_only_course_you_need_to_learn_web_development')
-          "
-          >Back to Course</a
-        >
+          <a
+            class="download_btn2" 
+              @click="
+              goPath('course/the_only_course_you_need_to_learn_web_development')
+            "
+          >Back to Course</a>
         </nav>
  
       </div>
@@ -126,6 +125,8 @@ import axios from "axios";
 import vueStep from "vue-step";
 import counter from "@/components/utils/counter.vue";
 import question from "@/components/utils/question.vue";
+ 
+
 export default {
   mixins: [general],
 

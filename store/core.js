@@ -3,7 +3,8 @@ import axios from 'axios'
 const state = () => ({
     countries: [],
     options: {
-      'co_level':[]
+      'co_level':[],
+      'uye_Lists':[],
     },
 });
 
@@ -19,13 +20,19 @@ const actions = {
 
 async getOptions({ commit, dispatch, state },payload){
     let slang = payload &&  payload.lang  ? payload.lang : "ar"
+    let prev_id = payload &&  payload.prev_id  ? payload.prev_id :  null
     let group = payload &&  payload.group  ? payload.group : null
     let sort = payload &&  payload.sort  ? [payload.sort] : ["id,DESC"]
+
+    let filter= { status: ["=",1] };
+    if(prev_id){
+      filter.prev_id=["=",prev_id]
+    }
 
     let  params = {
       limit: 100,
       lang: slang,
-      filter: { status: ["=",1] }, 
+    filter,  
       sort
     }
     if(payload &&  payload.fields){

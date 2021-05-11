@@ -21,7 +21,7 @@ export const state = () => ({
     locales: ['ar','tr', 'en'],
     locale: 'en',
     customClass: {flexRow:'flex-row',dir:'ltr',float:'pull-left'},
-    isMobile: false,
+    isMobile: false, 
     isErrorReportVisible: false,
     langFile:{},
     likes:[]
@@ -84,18 +84,16 @@ export const actions = {
         commit('changeMobile', checkIfMobile(context))
     },
 
-    async setLikes({commit,state,rootState},item){
+    async setLikes({commit,state,rootState},item,list){
  
         if(item && item.id && state.likes.find(k=>k.id==item.id)){
         }else{
-            commit("pushLike",item)
-        
-            let t = JSON.stringify(state.likes);
-            
+            commit("pushLike",{...item,list:list}) 
+            let t = JSON.stringify(state.likes); 
             if(rootState.user.auth && rootState.user.auth.id){
                 await axios({
-                  url: process.env.baseURL+"uye/"+rootState.user.auth.id,
-                  method: "put",
+                  url: process.env.baseURL+"Favorites",
+                  method: "post",
                   data: { 
                       U_likedPages:t
                   }
@@ -163,8 +161,7 @@ export const actions = {
              catch(err){
                  console.log("Err",err)
              }
-        }else{ 
-            console.log("we area here")
+        }else{  
             let likes = window.localStorage.getItem("likes");
             if(likes){
                 dispatch("setLikesFirst", likes); 
