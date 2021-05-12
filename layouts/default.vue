@@ -45,7 +45,7 @@
           </li>
           <li>
 
-            <b-button pill variant="outline-danger"  @click="goPath('course/all_courses')">{{ l("My Courses", "g") }}</b-button>
+            <b-button pill variant="outline-danger"  @click="goPath('courses/all_courses')">{{ l("My Courses", "g") }}</b-button>
             
           </li>
           <!-- <li>
