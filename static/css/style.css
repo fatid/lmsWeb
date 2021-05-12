@@ -381,7 +381,7 @@ input[type=text] {
 
 /*--- Header ---*/
 
-header {
+header.main-header {
 	position: fixed;
 	z-index: 999;
 	width: 100%;

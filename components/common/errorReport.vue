@@ -1,4 +1,84 @@
 <template>
+
+
+
+ <b-modal 
+      :title="l('Send Feedback','g')"
+      v-model="isVisible" 
+    > 
+    <div class="form-group col-12 ">
+                 <p v-if="errors.length" class="errors">
+                <b>{{l('Please correct the following error(s):','g')}}</b>
+                <ul>
+                  <li v-for="error in errors">{{ error }}</li>
+                </ul>
+              </p>
+</div>
+      <form ref="form"
+      okTitle='Save'
+      >
+       <!-- @submit.stop.prevent="handleSubmit" -->
+        <b-form-group
+          label="Name"
+          label-for="name-input"
+          invalid-feedback="Name is required"
+       
+        >
+      
+           <b-form-input
+                      type="text" 
+                      @blur="checkForm()"
+                      :placeholder="l('Name', 'g')"
+                      class="form-group g-py-15  form-control"
+                      style=""
+                      :class="customClass.textDir"
+                      required
+                      v-model="form.name"
+                ></b-form-input>
+           <b-form-input
+                      type="text"  
+                      
+                      class="form-group g-py-15  form-control"
+                      style=""
+                      :class="customClass.textDir"
+                      required  
+                      id="mail"
+                      name="mail" 
+
+                      :placeholder="l('E-mail', 'g')" 
+                      
+                       
+                      data-validation="email"
+                      v-model="form.mail"
+                ></b-form-input>
+ <textarea
+                      data-validation="required"
+                      id="message"
+                      name="message" 
+
+                      :class="customClass.textDir"
+                      style=""
+                      class="form-control"
+                      v-model="form.message"
+                    ></textarea>
+        </b-form-group>
+      </form>
+       <template #modal-footer="{ ok, cancel, hide }">
+             <div>
+                    <b-button size="md" variant="success"
+                      @click="submit()"
+                      >
+                      {{ l("Submit", "g") }}
+                    </b-button >
+       <a class="btn btn-primary" size="md" 
+        @click="isVisible=false"
+       >{{l('Close','g')}}</a>  
+       </div>
+           </template>
+ 
+    </b-modal>
+
+<!---
 <div id="myModal" class="modal" :class="isVisible ? 'visible' : ''" >
   <div class="modal-content modal-content-wide" >
     <div class="modal-header">
@@ -14,8 +94,7 @@
             class="full-width context-menu-form"
             :class="customClass.textDir"
           >
-            <!-- Teal Alert -->
-            
+       
             <div
               v-if="formResult.show"
               class="alert alert-dismissible fade show g-bg-teal g-color-white rounded-0"
@@ -135,9 +214,9 @@
       </div>
     </div>
   </div> 
-      </div>
+      </div> 
     </div>
-  </div>
+  </div>!-->
 </template>
 
 <script> 
@@ -164,7 +243,9 @@ export default {
   },
   methods: {
     submit() {
-      if(this.checkForm()){
+
+      this.errors= [];
+      if(this.checkForm(this.form,this.validation,this.errors)){
           this.$store.dispatch("form/formSubmit", {
             form: this.form,
             pageData: this.pageInfo
@@ -211,6 +292,13 @@ export default {
 .context-menu-form {
   background: #efefef;
   padding: 12px;
+}
+</style>
+<style>
+.modal-open .modal {
+    overflow-x: hidden;
+    overflow-y: auto;
+    z-index: 99999999999!important;
 }
 </style>
 

@@ -27,7 +27,7 @@
           <h2>{{ updated ? updated.value : '' }} / {{ question.q.exa_timer }}</h2>
           <p>{{ l("seconds", "g") }}</p>
         </div>
-        <p>Your Point: {{ score * 10 }}</p>
+        <!-- <p>Your Point: {{ score * 10 }}</p> -->
       </div>
       <div class="col-9">
         <div class="question" v-if="question.q.exa_type == 'SentenceCorrect'">
@@ -42,21 +42,26 @@
             </div>
           </div>
           <div class="words" v-show="counterStatus != 'stopped'">
-            <div
-              class="words_item"
-              v-for="alp in splitwords(question.q.rs_Question)"
-              @click="addToAnswer(alp, ' ')"
-            >
-              {{ alp }}
-            </div>
-            <div class="words_item" @click="removeAnswer()">
-              <i class="fa fa-trash"></i>
-            </div>
+  
+            <draggable v-model="splitwords_answer" @end="splitwords_setanswer()">
+                  <transition-group style=" display: inline-flex;">
+                          <div
+                            class="words_item"
+                            v-for="(alp,i) in splitwords_answer"
+                            :key="'alp'+i"
+                          >
+                            <!-- @click="addToAnswer(alp, ' ')" -->
+                            {{ alp }}
+                          </div>  
+                  </transition-group>
+            </draggable>
+            <p><i>Please set answer drag and drop words.</i></p>
+           
           </div>
         </div>
         <div v-else>
           {{ order }} - {{ parseQuestion(question.q.rs_Question) }} -
-          {{ question.q.exa_type }}
+          
         </div>
         <div v-if="question.q.exa_video">
           <video   width="100%" style="max-width: 640px;"  height="480" controls autoplay>
@@ -146,7 +151,7 @@
 <script>
 import counter from "@/components/utils/counter.vue";
 import general from "@/mixins/general";
-
+  import draggable from 'vuedraggable'
 export default {
   mixins: [general],
 
@@ -164,6 +169,7 @@ export default {
       isTimeOut: false,
       isTrue: null,
       answerText: "",
+      splitwords_answer: [],
       answer: "",
       counterStatus: "start",
       trueText: "",
@@ -206,7 +212,8 @@ export default {
     };
   },
   components: {
-    counter
+    counter,
+    draggable
   },
   computed: {
     activeCourse: {
@@ -217,7 +224,7 @@ export default {
         this.$store.state.course.activeCourse = val;
       }
     },
-
+   
     randomAlphabets() {
       let alp = this.trueText.trim();
       let start = alp.split("");
@@ -231,11 +238,16 @@ export default {
   },
   created() {
     this.chooseActive();
+   
   },
   watch: {
     "activeCourse.last"(val) {
       this.chooseActive();
     },
+    "question.q"(val){
+      
+      this.splitwords();
+    }, 
     "updated.value"(val) {
         let unitId = this.$route.params.unit;
         let lessonId = this.$route.params.id;
@@ -254,6 +266,21 @@ export default {
   methods: {
     getRandomResultText() {
       return "Başarılı Cevap Tebrikler";
+    },
+
+    splitwords_setanswer(){
+        this.answerText = this.splitwords_answer.join(" ");
+    },
+     splitwords() {
+
+      let words = this.question.q.rs_Question;
+      let ws = words.split(" ");
+      let w = ws.map(k => {
+        return k.replaceAll(".", "").trim();
+      });
+      this.trueText = w.join(" ").trim();
+      this.splitwords_answer = w.sort(() => Math.random() - 0.5);
+      return [...this.splitwords_answer]
     },
     chooseActive() {
       this.unit = this.$route.params.unit;
@@ -307,14 +334,7 @@ export default {
         return item;
       }
     },
-    splitwords(words) {
-      let ws = words.split(" ");
-      let w = ws.map(k => {
-        return k.replaceAll(".", "").trim();
-      });
-      this.trueText = w.join(" ").trim();
-      return w.sort(() => Math.random() - 0.5);
-    },
+   
     parseQuestion(val) {
       val = val.replaceAll("&lt;", "<");
       val = val.replaceAll("&gt;", ">");

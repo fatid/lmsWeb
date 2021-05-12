@@ -1,7 +1,7 @@
 <template>
 
 <div>
-	<header class="header clearfix">
+	<header class="header clearfix main-header">
 		<button type="button" id="toggleMenu" class="toggle_menu">
 		  <i class='uil uil-bars'></i>
 		</button>
