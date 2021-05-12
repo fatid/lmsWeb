@@ -55,7 +55,7 @@
           </li>
           <li>
             <a
-              @click="goPath('course/all_courses')"
+              @click="goPath('courses/all_courses')"
               class="upload_btn"
               title="Create New Course"
               >{{ l("My Courses", "g") }}</a
