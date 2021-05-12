@@ -5,6 +5,7 @@ const state = () => ({
     options: {
       'co_level':[],
       'uye_Lists':[],
+      'SSS_Kategori':[]
     },
 });
 

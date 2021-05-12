@@ -92,7 +92,7 @@
                       >
                     </b-popover>
 
-                    <a href="#" class="_215b12">
+                    <a href="#" @click="$store.state.isErrorReportVisible=true" class="_215b12">
                       <span><i class="uil uil-windsock"></i></span>
                       {{ l("Report abuse", "g") }}
                     </a>
@@ -296,19 +296,19 @@
             <div class="row">
               <div class="col-lg-5">
                 <div class="reviews_left">
-                  <h3>Student Feedback</h3>
+                  <h3>Feedback</h3>
                   <div class="total_rating">
-                    <div class="_rate001">4.6</div>
+                    <div class="_rate001">-</div>
                     <div class="rating-box">
                       <span class="rating-star full-star"></span>
                       <span class="rating-star full-star"></span>
                       <span class="rating-star full-star"></span>
                       <span class="rating-star full-star"></span>
-                      <span class="rating-star half-star"></span>
+                      <span class="rating-star full-star"></span>
                     </div>
                     <div class="_rate002">Course Rating</div>
                   </div>
-                  <div class="_rate003">
+                  <!-- <div class="_rate003">
                     <div class="_rate004">
                       <div class="progress progress1">
                         <div
@@ -402,9 +402,9 @@
                         <span class="rating-star empty-star"></span>
                         <span class="rating-star empty-star"></span>
                       </div>
-                      <div class="_rate002">1%</div>
-                    </div>
-                  </div>
+                      <div class="_rate002">1%</div> -->
+                    <!-- </div> -->
+                  <!-- </div> -->
                 </div>
               </div>
               <div class="col-lg-7">
@@ -423,7 +423,8 @@
                     </div>
                   </div>
                 </div>
-                <div class="review_all120">
+				No comment 
+                <!-- <div class="review_all120">
                   <div class="review_item">
                     <div class="review_usr_dt">
                       <img src="images/left-imgs/img-1.jpg" alt="" />
@@ -464,7 +465,7 @@
                   <div class="review_item">
                     <a href="#" class="more_reviews">See More Reviews</a>
                   </div>
-                </div>
+                </div> -->
               </div>
             </div>
           </div>

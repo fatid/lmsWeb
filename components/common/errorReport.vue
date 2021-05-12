@@ -5,15 +5,24 @@
  <b-modal 
       :title="l('Send Feedback','g')"
       v-model="isVisible" 
-    >
-      <form ref="form" @submit.stop.prevent="handleSubmit"
+    > 
+    <div class="form-group col-12 ">
+                 <p v-if="errors.length" class="errors">
+                <b>{{l('Please correct the following error(s):','g')}}</b>
+                <ul>
+                  <li v-for="error in errors">{{ error }}</li>
+                </ul>
+              </p>
+</div>
+      <form ref="form"
       okTitle='Save'
       >
+       <!-- @submit.stop.prevent="handleSubmit" -->
         <b-form-group
           label="Name"
           label-for="name-input"
           invalid-feedback="Name is required"
-          :state="nameState"
+       
         >
       
            <b-form-input
@@ -27,8 +36,7 @@
                       v-model="form.name"
                 ></b-form-input>
            <b-form-input
-                      type="text" 
-                      @blur="checkForm()"
+                      type="text"  
                       
                       class="form-group g-py-15  form-control"
                       style=""
@@ -46,8 +54,7 @@
  <textarea
                       data-validation="required"
                       id="message"
-                      name="message"
-                      @blur="checkForm()"
+                      name="message" 
 
                       :class="customClass.textDir"
                       style=""
@@ -236,7 +243,9 @@ export default {
   },
   methods: {
     submit() {
-      if(this.checkForm()){
+
+      this.errors= [];
+      if(this.checkForm(this.form,this.validation,this.errors)){
           this.$store.dispatch("form/formSubmit", {
             form: this.form,
             pageData: this.pageInfo
@@ -284,11 +293,12 @@ export default {
   background: #efefef;
   padding: 12px;
 }
- 
+</style>
+<style>
 .modal-open .modal {
     overflow-x: hidden;
     overflow-y: auto;
-    z-index: 99999999999;
+    z-index: 99999999999!important;
 }
 </style>
 

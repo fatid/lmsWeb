@@ -1,6 +1,6 @@
 <template>
   <div>
-    <header class="header clearfix"  >
+    <header class="header clearfix main-header"  >
       <button type="button" id="toggleMenu" class="toggle_menu">
         <i class="uil uil-bars"></i>
       </button>
@@ -45,7 +45,7 @@
           </li>
           <li>
 
-            <b-button pill variant="outline-danger" @click="goPath('course/my')">{{ l("My Courses", "g") }}</b-button>
+            <b-button pill variant="outline-danger"  @click="goPath('course/all_courses')">{{ l("My Courses", "g") }}</b-button>
             
           </li>
           <!-- <li>
@@ -300,7 +300,7 @@
           <ul>
             <li class="menu--item">
               <a
-                @click="goPath('my/settings')"
+                @click="goPath('my/profile')"
                 class="menu--link"
                 title="Setting"
               >
@@ -377,7 +377,7 @@
       </div>
 
      
-<errorReport></errorReport>
+        <errorReport></errorReport>
 
     </div>
   </div>

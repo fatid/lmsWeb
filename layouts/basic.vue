@@ -1,6 +1,6 @@
 <template>
   <div>
-    <header class="header clearfix">
+    <header class="header clearfix main-header">
      
       <div class="main_logo" id="logo">
         <a @click="goPath('home')"
@@ -26,14 +26,18 @@
         </div>
       </div>
       <div class="language-select">       <a
-              @click="changeLanguage('ar')" 
+              @click="changeLanguage('home')" 
               title="Arabic"
               :class="LOCALE=='en' ? 'selected-language' : '' "
-              >Home</a>  
+              >{{l('Home','g')}}</a>  
                <a
-              @click="changeLanguage('en')" 
+              @click="goPath('words/all_words')" 
               title="Words" 
-              >Words</a>
+              >{{l('Words','g')}}</a>
+               <a
+              @click="goPath('page/help')" 
+              title="FAQ" 
+              >{{l('FAQ','g')}}</a>
               </div>
       <div class="header_right">
        
@@ -51,7 +55,7 @@
           </li>
           <li>
             <a
-              @click="goPath('course/my')"
+              @click="goPath('course/all_courses')"
               class="upload_btn"
               title="Create New Course"
               >{{ l("My Courses", "g") }}</a
@@ -89,6 +93,9 @@
         </div>
       </div>
     </div>
+
+        <errorReport></errorReport>
+
   </div>
  
 </template>
@@ -97,8 +104,13 @@ import general from "@/mixins/general";
 import axios from "axios";
 import basicMixin from "~/mixins/basic.js";
 import canoicalMixin from "~/mixins/canoical.js";
+import errorReport from "@/components/common/errorReport";
+
 export default {
   mixins: [basicMixin, canoicalMixin, general],
+  components:{
+    errorReport
+  },
   watch: {
     async $route(to, from) {
       setTimeout(() => {

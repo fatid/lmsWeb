@@ -21,7 +21,8 @@
               The only course you need to learn web development
             </li>
           </ol>
-          <a
+        
+            <a
             class="download_btn2" 
               @click="
               goPath('course/the_only_course_you_need_to_learn_web_development')
@@ -101,7 +102,7 @@
         >
       </div>
     </div>
-    <div class="arrows" v-if="data.id != 'finish'">
+    <div class="arrows " v-if="data.id != 'finish'">
 
       
       <a
@@ -116,6 +117,8 @@
         @click="goPath('course/' + unit + '/' + next.id)"
         ><i class="fa fa-chevron-right" /> {{ l("Next", "g") }}</a
       >
+ <b-button variant="outline-primary"   @click="$store.state.isErrorReportVisible=true" class="pull-right float-right">Report Error</b-button>
+       
     </div>
   </div>
 </template>
@@ -429,6 +432,7 @@ export default {
   font-size: 30px;
   color: #fff;
   margin-top: 30px;
+  margin-bottom: 30px;
 }
 
 .card {
