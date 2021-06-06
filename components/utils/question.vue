@@ -2,9 +2,9 @@
   <div v-if="question && question.q">
     <div class="row">
       <!-- <div class="col-12">{{ activeCourse }}</div> -->
-      <div class="col-3" v-if="question.q && question.q.exa_timer">
+      <!-- <div class="col-3" v-if="question.q && question.q.exa_timer">
         {{ order }}
-        <counter
+         <counter
           v-if="timeCounterStartPoint && counterStatus == 'start'"
           :status="counterStatus"
           ref="countDown"
@@ -22,14 +22,44 @@
           :show-negatives="false"
           @update="updated = $event"
           @finish="hasFinished($event)"
-        ></counter>
+        ></counter>  
         <div v-if="counterStatus == 'stopped'" class="stopped">
           <h2>{{ updated ? updated.value : '' }} / {{ question.q.exa_timer }}</h2>
           <p>{{ l("seconds", "g") }}</p>
-        </div>
-        <!-- <p>Your Point: {{ score * 10 }}</p> -->
-      </div>
-      <div class="col-9">
+        </div> -->
+        <!-- <p>Your Point: {{ score * 10 }}</p> 
+      </div> -->
+      <div class="col-12">
+        {{ order }}
+        <div class="question" v-if="question.q.exa_type == 'ParagraphOrder'">
+          {{ l("Make the text correct", "g") }}
+          <div class="myParagraph" v-if="question.q.rs_Question">
+            <!-- {{answerText == trueText ? "Yes true." : "Try Again"}}   {{answerText}}==={{trueText}} -->
+            <div
+              class="answerSentence"
+              :class="counterStatus == 'stopped' ? 'answered' : ''"
+            >
+              <!-- {{ l("Answer", "g") }}: {{ answerText }} -->
+            </div>
+          </div>
+          <div class="words" v-show="counterStatus != 'stopped'">
+  
+            <draggable v-model="splitwords_answer" @end="splitparagraph_setanswer()">
+                  <transition-group style=" display: inline-flex;">
+                          <div
+                            class="words_item"
+                            v-for="(alp,i) in splitwords_answer"
+                            :key="'alp'+i"
+                          >
+                            <!-- @click="addToAnswer(alp, ' ')" -->
+                            {{ alp }}
+                          </div>  
+                  </transition-group>
+            </draggable>
+            <p><i>Please set answer drag and drop words.</i></p>
+           
+          </div>
+        </div> 
         <div class="question" v-if="question.q.exa_type == 'SentenceCorrect'">
           {{ l("Make the sentence correct", "g") }}
           <div class="myAlphabet" v-if="question.q.rs_Question">
@@ -170,6 +200,7 @@ export default {
       isTrue: null,
       answerText: "",
       splitwords_answer: [],
+      splitparagraph_answer: [],
       answer: "",
       counterStatus: "start",
       trueText: "",
@@ -271,15 +302,19 @@ export default {
     splitwords_setanswer(){
         this.answerText = this.splitwords_answer.join(" ");
     },
-     splitwords() {
+    splitparagraph_setanswer(){
+        this.answerText = this.splitparagraph_answer.join(" ");
+    },
+    splitwords() {
 
       let words = this.question.q.rs_Question;
-      let ws = words.split(" ");
+      let ws = words.split(" "); 
       let w = ws.map(k => {
         return k.replaceAll(".", "").trim();
       });
       this.trueText = w.join(" ").trim();
       this.splitwords_answer = w.sort(() => Math.random() - 0.5);
+      this.splitparagraph_answer = w.sort(() => Math.random() - 0.5);
       return [...this.splitwords_answer]
     },
     chooseActive() {
@@ -334,7 +369,6 @@ export default {
         return item;
       }
     },
-   
     parseQuestion(val) {
       val = val.replaceAll("&lt;", "<");
       val = val.replaceAll("&gt;", ">");
@@ -347,7 +381,7 @@ export default {
     nextQuestion() {
       this.$emit("answered", true);
     },
-    setanswer() {
+    setanswer(){
       if (!this.isTrue) {
         let unitId = this.$route.params.unit;
         let lessonId = this.$route.params.id;

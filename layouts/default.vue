@@ -158,14 +158,16 @@
 <b-dropdown variant="link" toggle-class="text-decoration-none" no-caret>
                <template #button-content>
                           <a
-                            @click="goPath('courses/all_courses')"
+                          
                             class="opts_account"
                             title="Account"
                           >
-                            <img src="/images/hd_dp.jpg" alt="" />
+                            <img :src="auth.U_Photo ? auth.U_Photo : '/images/hd_dp.jpg'" alt="" />
                           </a>
                   </template>
                   <b-dropdown-item  @click="goPath('my/profile')" >  Profile</b-dropdown-item>
+                  <b-dropdown-item  @click="goPath('courses/all_courses')" >  {{l('My Courses','g')}}</b-dropdown-item>
+                  <b-dropdown-item  @click="goPath('my/list')" >   {{l('My List','g')}}</b-dropdown-item>
                   <b-dropdown-item  @click="goPath('form/login?logout=true')" >  Sign Out</b-dropdown-item> 
                 </b-dropdown>
 
