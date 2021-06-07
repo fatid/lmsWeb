@@ -30,7 +30,7 @@
         <!-- <p>Your Point: {{ score * 10 }}</p> 
       </div> -->
       <div class="col-12">
-        {{ order }}
+      {{order}}
         <div class="question" v-if="question.q.exa_type == 'ParagraphOrder'">
           {{ l("Make the text correct", "g") }}
           <div class="myParagraph" v-if="question.q.rs_Question">
@@ -43,12 +43,12 @@
             </div>
           </div>
           <div class="words" v-show="counterStatus != 'stopped'">
-  
-            <draggable v-model="splitwords_answer" @end="splitparagraph_setanswer()">
-                  <transition-group style=" display: inline-flex;">
+            <div style="width: 100%;float: left;">
+            <draggable v-model="splitparagraph_answer" @end="splitparagraph_setanswer()">
+                  <transition-group style=" display: flex;">
                           <div
-                            class="words_item"
-                            v-for="(alp,i) in splitwords_answer"
+                            class="paragraph_item"
+                            v-for="(alp,i) in splitparagraph_answer"
                             :key="'alp'+i"
                           >
                             <!-- @click="addToAnswer(alp, ' ')" -->
@@ -56,11 +56,13 @@
                           </div>  
                   </transition-group>
             </draggable>
-            <p><i>Please set answer drag and drop words.</i></p>
+            </div>
+            
            
           </div>
+          <p><i>Please set answer drag and drop words.</i></p>
         </div> 
-        <div class="question" v-if="question.q.exa_type == 'SentenceCorrect'">
+        <div class="question" v-else-if="question.q.exa_type == 'SentenceCorrect'">
           {{ l("Make the sentence correct", "g") }}
           <div class="myAlphabet" v-if="question.q.rs_Question">
             <!-- {{answerText == trueText ? "Yes true." : "Try Again"}}   {{answerText}}==={{trueText}} -->
@@ -90,8 +92,7 @@
           </div>
         </div>
         <div v-else>
-          {{ order }} - {{ parseQuestion(question.q.rs_Question) }} -
-          
+          {{ order }} - {{ parseQuestion(question.q.rs_Question) }} - 
         </div>
         <div v-if="question.q.exa_video">
           <video   width="100%" style="max-width: 640px;"  height="480" controls autoplay>
@@ -204,6 +205,7 @@ export default {
       answer: "",
       counterStatus: "start",
       trueText: "",
+      alternativeChars:[],
       alphabets: [
         "ا",
         "أ",
@@ -260,8 +262,15 @@ export default {
       let alp = this.trueText.trim();
       let start = alp.split("");
       const total = start.length + 4;
+      let total_given_alphabets = this.alternativeChars ? this.alternativeChars.length : 0; 
+      console.log("total_given_alphabets",total_given_alphabets,this.alternativeChars,this.trueText)
+      if(this.alternativeChars){
+        this.alternativeChars.forEach(element => {
+            start.push(element);
+        });
+      }
       // this.alphabets;
-      for (let i = 0; i < 4; i++) {
+      for (let i = 0; i < 4-total_given_alphabets; i++) {
         start.push(this.getRandomItem(this.alphabets, start));
       }
       return start.sort(() => Math.random() - 0.5);
@@ -308,15 +317,16 @@ export default {
     splitwords() {
 
       let words = this.question.q.rs_Question;
+      let wp = words.split("\n"); 
       let ws = words.split(" "); 
       let w = ws.map(k => {
         return k.replaceAll(".", "").trim();
       });
       this.trueText = w.join(" ").trim();
       this.splitwords_answer = w.sort(() => Math.random() - 0.5);
-      this.splitparagraph_answer = w.sort(() => Math.random() - 0.5);
+      this.splitparagraph_answer = wp.sort(() => Math.random() - 0.5);
       return [...this.splitwords_answer]
-    },
+    }, 
     chooseActive() {
       this.unit = this.$route.params.unit;
       let id = this.$route.params.id;
@@ -371,11 +381,14 @@ export default {
     },
     parseQuestion(val) {
       val = val.replaceAll("&lt;", "<");
-      val = val.replaceAll("&gt;", ">");
-      let before = val.split("<<<");
-      let after = before[1] ? before[1].split(">>>") : ["", ""];
-      let newVal = before[0] + " " + after[1];
-      this.trueText = after[0].trim();
+      val = val.replaceAll("&gt;", ">"); 
+      let before = val.split("++");
+      let after = before[1] ? before[1].split("++") : ["", ""];
+      let newVal = before[0] + " .....  " + before[2]; 
+      let answer = before[1] ? before[1].split("+") : [];
+      this.trueText = answer && answer[1] ?  answer[1].trim() : '';
+      let answer_char = answer && answer[1] ?  answer[0].trim() : ''; 
+      this.alternativeChars = answer_char ? answer_char.trim().split("") : []
       return newVal;
     },
     nextQuestion() {
@@ -572,6 +585,19 @@ export default {
 .words {
   width: 100%;
   display: inline-flex;
+}
+.paragraph_item {
+  width: auto;
+  height: 30px;
+  padding: 5px;
+  margin-bottom: 3px;
+  margin-right: 3px;
+  /* border-radius: 10px; */
+  background: #fff;
+  border: 1px solid #e6e6e6;
+  text-align: center;
+  cursor: pointer;
+  font-size: 14px;
 }
 .words_item {
   width: auto;
