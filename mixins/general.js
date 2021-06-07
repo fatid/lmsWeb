@@ -149,6 +149,7 @@ export default {
       this.$router.push({path:'/'+lang+'/'+p, query:this.$route.query})
       this.collapse = false;
       this.$store.state.locale = lang;
+      this.$router.reload()
     },
     goPath(path,query={}){ 
       this.$router.push({path:'/'+this.LOCALE+'/'+path,query})

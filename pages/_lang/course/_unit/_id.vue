@@ -33,12 +33,16 @@
       </div>
     </div>
     <div class="card-header"> 
-       
-      <vue-step
+       <div v-for="(st,i) in steps.length" @click="selectStep(i+1)" class="head-tab"
+        :class="(i+1)==order ? 'selected-tab' : ''"
+       >
+         {{i+1== steps.length ? 'Results' : i+1}}
+       </div> 
+      <!-- <vue-step
         :now-step="order"
         :step-list="steps"
-        @selected="selectStep($event)"
-      ></vue-step>
+        
+      ></vue-step> -->
     </div>
     <!-- {{activeCourse}} -->
     <div class="card" v-if="data.lesson_question">
@@ -446,6 +450,8 @@ export default {
   background: #fff;
   border-radius: 5px;
   margin-top: 10px;
+  display: inline-flex;
+  width: 100%;
 }
 .arrows a.next {
   border-radius: 10px;
@@ -489,5 +495,20 @@ a.download_btn2{
   color: #fff!important;
   padding: 5px;
   border-radius: 7px;
+}
+.head-tab{
+  border: 1px solid #efefef;
+  background: #f9f9f9;
+  border-radius: .35rem;
+  min-width: 25px;
+  height: 25px;
+  padding: 0px 3px;
+  text-align: center;
+  margin-right: 10px;
+  cursor: pointer;
+}
+.selected-tab{
+  background: rgb(43, 86, 167);
+  color: #fff;
 }
 </style>

@@ -26,7 +26,7 @@
 		<div class="search120">
 			<div class="ui search">
 			  <div class="ui left icon input swdh10">
-				  authhh 
+				    
 				<input class="prompt srch10" type="text" 
          :placeholder="l('Search for Tuts Videos, Tutors, Tests and more..','g')">
 				<i class='uil uil-search-alt icon icon1'></i>

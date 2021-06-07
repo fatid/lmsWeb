@@ -2,9 +2,9 @@
   <div v-if="question && question.q">
     <div class="row">
       <!-- <div class="col-12">{{ activeCourse }}</div> -->
-      <div class="col-3" v-if="question.q && question.q.exa_timer">
+      <!-- <div class="col-3" v-if="question.q && question.q.exa_timer">
         {{ order }}
-        <counter
+         <counter
           v-if="timeCounterStartPoint && counterStatus == 'start'"
           :status="counterStatus"
           ref="countDown"
@@ -22,15 +22,47 @@
           :show-negatives="false"
           @update="updated = $event"
           @finish="hasFinished($event)"
-        ></counter>
+        ></counter>  
         <div v-if="counterStatus == 'stopped'" class="stopped">
           <h2>{{ updated ? updated.value : '' }} / {{ question.q.exa_timer }}</h2>
           <p>{{ l("seconds", "g") }}</p>
-        </div>
-        <!-- <p>Your Point: {{ score * 10 }}</p> -->
-      </div>
-      <div class="col-9">
-        <div class="question" v-if="question.q.exa_type == 'SentenceCorrect'">
+        </div> -->
+        <!-- <p>Your Point: {{ score * 10 }}</p> 
+      </div> -->
+      <div class="col-12">
+      {{order}}
+        <div class="question" v-if="question.q.exa_type == 'ParagraphOrder'">
+          {{ l("Make the text correct", "g") }}
+          <div class="myParagraph" v-if="question.q.rs_Question">
+            <!-- {{answerText == trueText ? "Yes true." : "Try Again"}}   {{answerText}}==={{trueText}} -->
+            <div
+              class="answerSentence"
+              :class="counterStatus == 'stopped' ? 'answered' : ''"
+            >
+              <!-- {{ l("Answer", "g") }}: {{ answerText }} -->
+            </div>
+          </div>
+          <div class="words" v-show="counterStatus != 'stopped'">
+            <div style="width: 100%;float: left;">
+            <draggable v-model="splitparagraph_answer" @end="splitparagraph_setanswer()">
+                  <transition-group style=" display: flex;">
+                          <div
+                            class="paragraph_item"
+                            v-for="(alp,i) in splitparagraph_answer"
+                            :key="'alp'+i"
+                          >
+                            <!-- @click="addToAnswer(alp, ' ')" -->
+                            {{ alp }}
+                          </div>  
+                  </transition-group>
+            </draggable>
+            </div>
+            
+           
+          </div>
+          <p><i>Please set answer drag and drop words.</i></p>
+        </div> 
+        <div class="question" v-else-if="question.q.exa_type == 'SentenceCorrect'">
           {{ l("Make the sentence correct", "g") }}
           <div class="myAlphabet" v-if="question.q.rs_Question">
             <!-- {{answerText == trueText ? "Yes true." : "Try Again"}}   {{answerText}}==={{trueText}} -->
@@ -60,8 +92,7 @@
           </div>
         </div>
         <div v-else>
-          {{ order }} - {{ parseQuestion(question.q.rs_Question) }} -
-          
+          {{ order }} - {{ parseQuestion(question.q.rs_Question) }} - 
         </div>
         <div v-if="question.q.exa_video">
           <video   width="100%" style="max-width: 640px;"  height="480" controls autoplay>
@@ -170,9 +201,11 @@ export default {
       isTrue: null,
       answerText: "",
       splitwords_answer: [],
+      splitparagraph_answer: [],
       answer: "",
       counterStatus: "start",
       trueText: "",
+      alternativeChars:[],
       alphabets: [
         "ا",
         "أ",
@@ -229,8 +262,15 @@ export default {
       let alp = this.trueText.trim();
       let start = alp.split("");
       const total = start.length + 4;
+      let total_given_alphabets = this.alternativeChars ? this.alternativeChars.length : 0; 
+      console.log("total_given_alphabets",total_given_alphabets,this.alternativeChars,this.trueText)
+      if(this.alternativeChars){
+        this.alternativeChars.forEach(element => {
+            start.push(element);
+        });
+      }
       // this.alphabets;
-      for (let i = 0; i < 4; i++) {
+      for (let i = 0; i < 4-total_given_alphabets; i++) {
         start.push(this.getRandomItem(this.alphabets, start));
       }
       return start.sort(() => Math.random() - 0.5);
@@ -271,17 +311,22 @@ export default {
     splitwords_setanswer(){
         this.answerText = this.splitwords_answer.join(" ");
     },
-     splitwords() {
+    splitparagraph_setanswer(){
+        this.answerText = this.splitparagraph_answer.join(" ");
+    },
+    splitwords() {
 
       let words = this.question.q.rs_Question;
-      let ws = words.split(" ");
+      let wp = words.split("\n"); 
+      let ws = words.split(" "); 
       let w = ws.map(k => {
         return k.replaceAll(".", "").trim();
       });
       this.trueText = w.join(" ").trim();
       this.splitwords_answer = w.sort(() => Math.random() - 0.5);
+      this.splitparagraph_answer = wp.sort(() => Math.random() - 0.5);
       return [...this.splitwords_answer]
-    },
+    }, 
     chooseActive() {
       this.unit = this.$route.params.unit;
       let id = this.$route.params.id;
@@ -334,20 +379,22 @@ export default {
         return item;
       }
     },
-   
     parseQuestion(val) {
       val = val.replaceAll("&lt;", "<");
-      val = val.replaceAll("&gt;", ">");
-      let before = val.split("<<<");
-      let after = before[1] ? before[1].split(">>>") : ["", ""];
-      let newVal = before[0] + " " + after[1];
-      this.trueText = after[0].trim();
+      val = val.replaceAll("&gt;", ">"); 
+      let before = val.split("++");
+      let after = before[1] ? before[1].split("++") : ["", ""];
+      let newVal = before[0] + " .....  " + before[2]; 
+      let answer = before[1] ? before[1].split("+") : [];
+      this.trueText = answer && answer[1] ?  answer[1].trim() : '';
+      let answer_char = answer && answer[1] ?  answer[0].trim() : ''; 
+      this.alternativeChars = answer_char ? answer_char.trim().split("") : []
       return newVal;
     },
     nextQuestion() {
       this.$emit("answered", true);
     },
-    setanswer() {
+    setanswer(){
       if (!this.isTrue) {
         let unitId = this.$route.params.unit;
         let lessonId = this.$route.params.id;
@@ -538,6 +585,19 @@ export default {
 .words {
   width: 100%;
   display: inline-flex;
+}
+.paragraph_item {
+  width: auto;
+  height: 30px;
+  padding: 5px;
+  margin-bottom: 3px;
+  margin-right: 3px;
+  /* border-radius: 10px; */
+  background: #fff;
+  border: 1px solid #e6e6e6;
+  text-align: center;
+  cursor: pointer;
+  font-size: 14px;
 }
 .words_item {
   width: auto;

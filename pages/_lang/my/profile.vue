@@ -24,14 +24,7 @@
                   >{{ l("Notification", "general") }}
                 </a>
               </li>
-              <li class="nav-item">
-                <a
-                  class="nav-link"
-                  @click="show = 'lists'"
-                  :class="show == 'lists' ? 'active' : ''"
-                  >{{ l("Lists", "general") }}
-                </a>
-              </li>
+            
               <li class="nav-item">
                 <a
                   class="nav-link"
@@ -68,8 +61,7 @@
               <div class="account_setting">
                 <div class="basic_profile">
                   <div class="basic_ptitle">
-                    <h4>Basic Profile</h4>
-                    <p>Add information about yourself</p>
+                    <h4>Profile Details</h4> 
                   </div>
                   <div class="basic_form">
                     <div class="row">
@@ -77,6 +69,7 @@
                         <div class="row">
                           <div class="col-lg-6">
                             <div class="ui search focus mt-30">
+                                 <p>{{l('Name','g')}}</p> 
                               <div class="ui left icon input swdh11 swdh19">
                                 <input
                                   class="prompt srch_explore"
@@ -90,6 +83,7 @@
                           </div>
                           <div class="col-lg-6">
                             <div class="ui search focus mt-30">
+                                 <p>{{l('Surname','g')}}</p> 
                               <div class="ui left icon input swdh11 swdh19">
                                 <input
                                   class="prompt srch_explore"
@@ -103,6 +97,7 @@
                           </div>
                           <div class="col-lg-6">
                             <div class="ui search focus mt-30">
+                                 <p>{{l('Mobile','g')}}</p> 
                               <div class="ui left icon input swdh11 swdh19">
                                 <input
                                   class="prompt srch_explore"
@@ -115,6 +110,7 @@
                           </div>
                           <div class="col-lg-6">
                             <div class="ui search focus mt-30">
+                                    <p>{{l('Email','g')}}</p> 
                               <div class="ui left icon input swdh11 swdh19">
                                 <input
                                   class="prompt srch_explore"
@@ -125,24 +121,10 @@
                               </div>
                             </div>
                           </div>
-                          <div class="col-lg-12">
-                            <div class="ui search focus mt-30">
-                              <div class="ui left icon input swdh11 swdh19">
-                                <input
-                                  class="prompt srch_explore"
-                                  type="text"
-                                  name="headline"
-                                  v-model="myProfile.U_aboutme"
-                                  id="id_headline"
-                                  required=""
-                                  maxlength="60"
-                                  :placeholder="l('About Me', 'g')"
-                                />
-                              </div>
-                            </div>
-                          </div>
+                         
                           <div class="col-lg-6">
                             <div class="ui search focus mt-30">
+                               <p>{{l('Degree','g')}}</p> 
                               <div
                                 class="ui left icon input swdh11 swdh19"
                                 v-if="levels && levels[0]"
@@ -163,6 +145,7 @@
                           </div>
                           <div class="col-lg-6">
                             <div class="ui search focus mt-30">
+                                         <p>{{l('Gender','g')}}</p> 
                               <div class="ui left icon input swdh11 swdh19">
                                 <select
                                   class="prompt srch_explore pa-10 w-100"
@@ -178,10 +161,58 @@
                               </div>
                             </div>
                           </div> 
+                          <div class="col-lg-6">
+                            <div class="ui search focus mt-30">
+                                     <p>{{l('BirthDate','g')}}</p> 
+                              <div class="ui left icon input swdh11 swdh19">
+                                  <input
+                                  class="prompt srch_explore"
+                                  type="date"
+                                  v-model="myProfile.U_BirthDate"
+                                  :placeholder="l('BirthDate', 'g')"
+                                />
+                              </div>
+                            </div>
+                          </div> 
+                          <div class="col-lg-6">
+                            <div class="ui search focus mt-30">
+                                  <p>{{l('Country','g')}}</p>  
+                              <div class="ui left icon input swdh11 swdh19"> 
+                                <select
+                                  class="prompt srch_explore pa-10 w-100"
+                                  v-model="myProfile.U_Country"
+                                >
+                                  <option
+                                    v-for="u in countries"
+                                    :key="u.id"
+                                    :value="u.id"
+                                    >{{ u.countryName }}</option
+                                  >
+                                </select>
+                              </div>
+                            </div>
+                          </div> 
+                          <div class="col-lg-12">
+                            <div class="ui search focus mt-30">
+                              <p>{{l('Timezone','g')}}</p>
+                              <div class="ui left icon input swdh11 swdh19">
+                                <select
+                                  class="prompt srch_explore pa-10 w-100"
+                                  v-model="myProfile.U_Timezone"
+                                >
+                                  <option
+                                    v-for="u in timezones"
+                                    :key="u.value"
+                                    :value="u.value"
+                                    >{{ u.text }}</option
+                                  >
+                                </select>
+                              </div>
+                            </div>
+                          </div> 
                           <div class="col-lg-12 mt-5 ">
                             <p>{{ l("Your Languages", "g") }}</p>
-                          </div>
-                        
+                          </div> 
                           <div class="w-100" v-for="(lg, i) in uye_languages">
                             <div class="row w-100">
                               <div class="col-lg-1 mt-20"><strong>{{ (i+1) }}</strong></div>
@@ -196,7 +227,7 @@
                                         v-for="u in languages"
                                         :key="u.value"
                                         :value="u.value"
-                                        >{{ u.name }}</option
+                                        >{{ u.name }} ( {{u.special}} ) </option
                                       >
                                     </select>
                                   </div>
@@ -213,7 +244,7 @@
                                         v-for="u in languageDegree"
                                         :key="u.value"
                                         :value="u.value"
-                                        >{{ u.name }}</option
+                                        >{{ u.name }} </option
                                       >
                                     </select>
                                   </div>
@@ -229,11 +260,43 @@
                               >+ {{ l("Add New Language", "g") }}</b-button
                             >
                           </div>
+                          <div class="col-lg-12 mt-5 ">
+                            <p>{{ l("About Me", "g") }}</p>
+                          </div> 
+                           <div class="col-lg-12">
+                            <div class="ui search focus mt-30">
+                              <div class="ui left icon input swdh11 swdh19">
+                                <textarea
+                                  class="pa-5 w-100" 
+                                  name="headline"
+                                  v-model="myProfile.U_aboutme"
+                                  id="id_headline"
+                                  required="" 
+                                  :placeholder="l('About Me', 'g')"
+                                ></textarea>
+                              </div>
+                            </div>
+                          </div>
                           <div class="col-lg-12">
                             <div class="divider-1"></div>
                           </div>
                         </div>
                       </div>
+                      <div class="col-lg-4 col-12">
+                          <div class="col-lg-12">
+                            <div class="ui search focus mt-30">
+                              <div class="ui left icon input swdh11 swdh19">
+                                 <div v-if="!myProfile.U_Photo">
+                                   <p><a>{{l('Upload avatar','g')}}</a></p>
+                                  <input type="file" name="changeFile" @change="onFileChange"/>
+                                 </div>
+                                 <div v-else>
+                                  <img :src="myProfile.U_Photo" class="g-width-200 imageUpload"/>
+                                  <p class="margin-top-10 mt-10 g-mt-10"><a @click="removeImage"><i class="fa fa-times"></i> {{l('Remove image','g')}}</a></p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
                     </div>
                   </div>
                 </div>
@@ -243,7 +306,7 @@
                 </button>
               </div>
             </div>
-             <div
+             <!-- <div
               class="tab-pane fade"
               :class="show == 'lists' ? 'show active' : ''"
             >
@@ -289,7 +352,7 @@
                          
 
 
-<!-- <div class="w-100" v-for="(lg, i) in my_lists">
+<div class="w-100" v-for="(lg, i) in my_lists">
                             <div class="row w-100">
                               <div class="col-lg-1 mt-20"><strong>{{ (i+1) }}</strong></div>
                               <div class="col-lg-7">
@@ -304,7 +367,7 @@
                               </div>
 
                             </div>
-                            </div> -->
+                            </div>
                         <div class="col-lg-12 mt-2 text-center align-center">
                             <b-button
                               variant="success"
@@ -312,7 +375,7 @@
                               >+ {{ l("Add New List", "g") }}</b-button
                             >
                           </div>
-              </div>
+              </div> -->
              </div>
             <div
               class="tab-pane fade"
@@ -321,68 +384,7 @@
               <div class="account_setting">
                 <h4>Notifications - Choose when and how to be notified</h4>
                 <p>Select push and email notifications you'd like to receive</p>
-                <div class="basic_profile">
-                  <div class="basic_form">
-                    <div class="nstting_content">
-                      <div class="basic_ptitle">
-                        <h4>Choose when and how to be notified</h4>
-                      </div>
-                      <div class="ui toggle checkbox _1457s2">
-                        <input
-                          type="checkbox"
-                          name="stream_ss1"
-                          checked=""
-                          tabindex="0"
-                          class="hidden"
-                        />
-                        <label>Subscriptions</label>
-                        <p class="ml5">
-                          Notify me about activity from the profiles I'm
-                          subscribed to
-                        </p>
-                      </div>
-                      <div class="ui toggle checkbox _1457s2">
-                        <input
-                          type="checkbox"
-                          name="stream_ss2"
-                          tabindex="0"
-                          class="hidden"
-                        />
-                        <label>Recommended Courses</label>
-                        <p class="ml5">
-                          Notify me of courses I might like based on what I
-                          watch
-                        </p>
-                      </div>
-                      <div class="ui toggle checkbox _1457s2">
-                        <input
-                          type="checkbox"
-                          name="stream_ss3"
-                          tabindex="0"
-                          class="hidden"
-                        />
-                        <label>Activity on my comments</label>
-                        <p class="ml5">
-                          Notify me about activity on my comments on others’
-                          courses
-                        </p>
-                      </div>
-                      <div class="ui toggle checkbox _1457s2">
-                        <input
-                          type="checkbox"
-                          name="stream_ss4"
-                          checked=""
-                          tabindex="0"
-                          class="hidden"
-                        />
-                        <label>Replies to my comments</label>
-                        <p class="ml5">
-                          Notify me about replies to my comments
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+               
                 <div class="divider-1 mb-50"></div>
                 <div class="basic_profile">
                   <div class="basic_form">
@@ -958,7 +960,7 @@
         </div>
       </div>
     </div>
-  </div>
+   
 </template>
 <script>
 import general from "@/mixins/general";
@@ -989,7 +991,134 @@ export default {
       { name: "Male", value: "MG_Male" },
       { name: "Female", value: "MG_Female" }
     ],
-    saveStatus: { show: false, stataus: "success" }
+    files:[],
+    saveStatus: { show: false, stataus: "success" },
+    timezones:[
+          {
+              "value": -12,
+              "text": "(GMT -12:00) Eniwetok, Kwajalein"
+          },
+          {
+              "value": -11,
+              "text": "(GMT -11:00) Midway Island, Samoa"
+          },
+          {
+              "value": -10,
+              "text": "(GMT -10:00) Hawaii"
+          },
+          {
+              "value": -9,
+              "text": "(GMT -9:00) Alaska"
+          },
+          {
+              "value": -8,
+              "text": "(GMT -8:00) Pacific Time (US & Canada)"
+          },
+          {
+              "value": -7,
+              "text": "(GMT -7:00) Mountain Time (US & Canada)"
+          },
+          {
+              "value": -6,
+              "text": "(GMT -6:00) Central Time (US & Canada), Mexico City"
+          },
+          {
+              "value": -5,
+              "text": "(GMT -5:00) Eastern Time (US & Canada), Bogota, Lima"
+          },
+          {
+              "value": -4,
+              "text": "(GMT -4:00) Atlantic Time (Canada), Caracas, La Paz"
+          },
+          {
+              "value": -3.5,
+              "text": "(GMT -3:30) Newfoundland"
+          },
+          {
+              "value": -3,
+              "text": "(GMT -3:00) Brazil, Buenos Aires, Georgetown"
+          },
+          {
+              "value": -2,
+              "text": "(GMT -2:00) Mid-Atlantic"
+          },
+          {
+              "value": -1,
+              "text": "(GMT -1:00) Azores, Cape Verde Islands"
+          },
+          {
+              "value": 0,
+              "text": "(GMT) Western Europe Time, London, Lisbon, Casablanca"
+          },
+          {
+              "value": 1,
+              "text": "(GMT +1:00) Brussels, Copenhagen, Madrid, Paris"
+          },
+          {
+              "value": 2,
+              "text": "(GMT +2:00) Kaliningrad, South Africa"
+          },
+          {
+              "value": 3,
+              "text": "(GMT +3:00) Istanbul, Baghdad, Riyadh, Moscow, St. Petersburg"
+          },
+          {
+              "value": 3.5,
+              "text": "(GMT +3:30) Tehran"
+          },
+          {
+              "value": 4,
+              "text": "(GMT +4:00) Abu Dhabi, Muscat, Baku, Tbilisi"
+          },
+          {
+              "value": 4.5,
+              "text": "(GMT +4:30) Kabul"
+          },
+          {
+              "value": 5,
+              "text": "(GMT +5:00) Ekaterinburg, Islamabad, Karachi, Tashkent"
+          },
+          {
+              "value": 5.5,
+              "text": "(GMT +5:30) Bombay, Calcutta, Madras, New Delhi"
+          },
+          {
+              "value": 5.75,
+              "text": "(GMT +5:45) Kathmandu"
+          },
+          {
+              "value": 6,
+              "text": "(GMT +6:00) Almaty, Dhaka, Colombo"
+          },
+          {
+              "value": 7,
+              "text": "(GMT +7:00) Bangkok, Hanoi, Jakarta"
+          },
+          {
+              "value": 8,
+              "text": "(GMT +8:00) Beijing, Perth, Singapore, Hong Kong"
+          },
+          {
+              "value": 9,
+              "text": "(GMT +9:00) Tokyo, Seoul, Osaka, Sapporo, Yakutsk"
+          },
+          {
+              "value": 9.5,
+              "text": "(GMT +9:30) Adelaide, Darwin"
+          },
+          {
+              "value": 10,
+              "text": "(GMT +10:00) Eastern Australia, Guam, Vladivostok"
+          },
+          {
+              "value": 11,
+              "text": "(GMT +11:00) Magadan, Solomon Islands, New Caledonia"
+          },
+          {
+              "value": 12,
+              "text": "(GMT +12:00) Auckland, Wellington, Fiji, Kamchatka"
+          }
+        ]
   }),
   computed: {
     auth() {
@@ -997,6 +1126,9 @@ export default {
     },
     levels() {
       return this.$store.state.core.options["co_level"];
+    },
+    countries() {
+      return this.$store.state.core.options["LocalCountries"];
     },
     languageDegree() {
       return this.l("cat.LangugeDegree", "g").list;
@@ -1018,14 +1150,45 @@ export default {
       slang: this.$store.state.locale,
       group: "co_level",
       fields: "id,cou_level_name"
+    }); 
+    await this.$store.dispatch("core/getOptions", {
+      slang: this.$store.state.locale,
+      group: "LocalCountries",
+      fields: "id,countryName"
+    });
+    await this.$store.dispatch("core/getOptions", {
+      slang: this.$store.state.locale,
+      group: "U_Lang",
+      prev_id: this.myProfile.id,
+      fields: "id,uye_language,uye_language_degree"
     });
 
     // this.genders = this.l("cat.Membership.list.M_Gender.list",'g');
-    this.getUyeLanguages();
+    this.getUyeLanguages(); 
     this.getUyeLists();
     this.getMyProfile();
   },
   methods: {
+
+     onFileChange(e) {
+      var files = e.target.files || e.dataTransfer.files;
+      if (!files.length)
+        return;
+      this.createImage(files[0]);
+    },
+    createImage(file) {
+      var image = new Image();
+      var reader = new FileReader();
+      var vm = this;
+
+      reader.onload = (e) => {
+        this.myProfile.U_Photo = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    },
+    removeImage: function (e) {
+      this.myProfile.U_Photo = '';
+    },
     async removeLanguageItem(index){
      
          this.boxTwo = ''
@@ -1108,14 +1271,49 @@ export default {
         data: {
           U_rname: mp.U_rname,
           U_surname: mp.U_surname,
-          U_mail: mp.U_mail,
+          U_Mobil: mp.U_Mobil,
           U_aboutme: mp.U_aboutme,
           U_degree: mp.U_degree,
-          U_Gender: mp.U_Gender
+          U_Gender: mp.U_Gender,
+          U_Country: mp.U_Country,
+          U_Timezone: mp.U_Timezone,
+          U_Photo: mp.U_Photo,
         }
       }).then(response => {
         this.saveStatus = { show: true, stataus: "success" };
-  
+
+   //// save Languages
+   this.uye_languages.filter(async k=>{
+
+      let data = {
+            url: process.env.baseURL + "U_Lang",
+            method: "create",
+            data: {
+              id: k.id,
+              uye_language: k.uye_language,
+              uye_language_degree: k.uye_language_degree
+            }
+      };
+
+      if(k.id){
+        data = {
+            url: process.env.baseURL + "U_Lang/" + this.auth.id,
+            method: "put",
+            data: {
+              id: k.id,
+              uye_language: k.uye_language	,
+              uye_language_degree: k.uye_language_degree
+            }
+          }
+      }
+          await axios(data).then(response => {
+            this.saveStatus = { show: true, stataus: "success" };
+          });
+
+   })
+      
+
+
         setTimeout(() => {
           window.scrollTo({
             top: 0,
@@ -1136,7 +1334,7 @@ export default {
             limit: 100,
             offset: 0,
             fields:
-              "U_mail,U_rname,U_surname,id,U_Status,U_likedPages,U_degree,U_BirthDate,U_Mtype,U_Photo,U_Gender,U_Mobil,U_aboutme",
+              "U_mail,U_rname,U_surname,id,U_Status,U_likedPages,U_degree,U_Timezone,U_BirthDate,U_Mtype,U_Photo,U_Gender,U_Mobil,U_aboutme",
             lang: this.$store.state.locale,
             sort: ["sort,ASC"],
             filter: filters
@@ -1209,6 +1407,11 @@ export default {
 };
 </script>
 <style>
+.imageUpload{
+  width: 150px;
+  max-height: 150px;
+  border-radius: 10px;
+}
 .pa-10 {
   padding: 10px !important;
 }
@@ -1225,5 +1428,15 @@ header.modal-header{
 }
 .list-group-item{
     margin-bottom: 15px;
+}
+.swdh19 textarea{ 
+  padding: 5px;
+    height: 100px;
+  
+}
+.account_setting p {
+  margin-bottom: 5px;
+	line-height: 20px;
+  padding-left: 10px;
 }
 </style>

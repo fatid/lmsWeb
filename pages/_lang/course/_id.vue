@@ -266,19 +266,71 @@
                   <div
                     class="lecture-container"
                     v-for="(les, num) in getCourses(unit.id)"
-                    @click="goPath('course/' + unit.id + '/' + les.id)"
+                    
                     :class="unit.accordion ? 'lecture-hidden' : ''"
                   >
                     <div class="left-content-number">
                       {{ num + 1 }}
                     </div>
-                    <div class="left-content">
+                    <div class="left-content" @click="goPath('course/' + unit.id + '/' + les.id)">
                       <div class="top">
                         <div class="title">{{ les.lesson_name }}</div>
                       </div>
                     </div>
                     <div class="details">
                       <span class="content-summary">{{ les.lesson_type }}</span>
+
+                       <a
+                      href="#"
+                      class="_215b11" 
+					   id="popover-button-event"
+                      v-if="!isLiked(data.id)"
+                    >
+                      <span>
+                        <i class="uil uil-heart red"></i> </span
+                      >{{ l("Add to List", "g") }}
+                    </a>
+                    <a
+                      href="#"
+                      class="_215b11"
+					   id="popover-button-event"
+                      @click="removeLikes(data.id)"
+                      v-else
+                    >
+                      <span>
+                        <i class="uil uil-heart red"></i> </span
+                      >{{ l("Remove List", "g") }}
+                    </a> 
+                    <b-popover
+                      :disabled.sync="likePopover"
+                      target="popover-button-event"
+                      :title="l('Add to List', 'g')"
+                      ref="popover" 
+					  triggers="hover"
+                    >
+                      <b-form-group>
+                        <b-form-select
+                          id="popover-input-2"
+                          v-model="inputList"
+                          :options="options['uye_Lists']"
+                          value-field="id"
+                          text-field="uye_list_name"
+                          size="sm"
+                        ></b-form-select>
+                      </b-form-group>
+                      <b-button
+                        size="sm"
+                        @click="setLikes(data, inputList)"
+                        variant="primary"
+                        >{{ l("Save", "g") }}</b-button
+                      >
+                      <b-button
+                        size="sm"
+                        @click="likePopover = false"
+                        variant="danger"
+                        >{{ l("Close", "g") }}</b-button
+                      >
+                    </b-popover>
                     </div>
                     <div class="end-detail">
                       <i :class="getCourseIcon(les)" class="icon_142"></i>
