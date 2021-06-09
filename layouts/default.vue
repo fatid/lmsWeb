@@ -51,7 +51,7 @@
           <!-- <li>
 					<a href="shopping_cart.html" class="option_links" title="cart"><i class='uil uil-shopping-cart-alt'></i><span class="noti_count">2</span></a>
 				</li> -->
-          <li class="ui dropdown" v-if="auth.token">
+          <li class="ui dropdown" v-if="auth && auth.token">
             <a href="#" class="option_links" title="Messages"
               ><i class="uil uil-envelope-alt"></i
               ><span class="noti_count">0</span></a
@@ -146,14 +146,14 @@
             </div> -->
           </li>
          
-          <li v-if="!auth.token" class="list-inline-item g-mx-4">
+          <li v-if="!auth || !auth.token" class="list-inline-item g-mx-4">
             <a
               class="g-color-black g-color-primary--hover g-text-underline--none--hover"
               @click="goPath('form/login')"
               >{{ l("LOGIN", "g") }}</a
             >
           </li>
-          <li class="ui dropdown" v-else-if="auth.token">
+          <li class="ui dropdown" v-else-if="auth && auth.token">
 
 <b-dropdown variant="link" toggle-class="text-decoration-none" no-caret>
                <template #button-content>
