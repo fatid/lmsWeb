@@ -165,7 +165,7 @@ const actions = {
                 } 
               })
                 .then(response => {  
-                    if(response.statusText == 'OK'){
+                    if(response.statusText == 'OK' && response.data){
                       let token = response.data.token;
                       commit("setAuth", { v: token, callback: resolve})
                       let a = response.data.formattedData[0]; 

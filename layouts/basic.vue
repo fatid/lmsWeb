@@ -71,7 +71,7 @@
             > 
           </li>
             
-          <li v-if="!auth.token" class="list-inline-item g-mx-4">
+          <li v-if="!auth || !auth.token" class="list-inline-item g-mx-4">
             <a
               class="g-color-black g-color-primary--hover g-text-underline--none--hover"
               @click="goPath('form/login')"
