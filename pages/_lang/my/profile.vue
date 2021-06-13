@@ -1,6 +1,8 @@
 <template>
   <div class="sa4d25">
     <div class="container-fluid">
+
+      <h3> My Lists </h3>
       <div class="row">
         <div class="col-lg-12">
           <h2 class="st_title">
@@ -212,9 +214,10 @@
                           </div> 
                           <div class="col-lg-12 mt-5 ">
                             <p>{{ l("Your Languages", "g") }}</p>
-                          </div> 
+                          </div>  
                           <div class="w-100" v-for="(lg, i) in uye_languages">
-                            <div class="row w-100">
+                          
+                            <div class="row w-100" v-if="typeof lg.status=='undefined' || lg.status!=2">
                               <div class="col-lg-1 mt-20"><strong>{{ (i+1) }}</strong></div>
                               <div class="col-lg-5">
                                 <div class="ui search focus mt-10">
@@ -227,23 +230,24 @@
                                         v-for="u in languages"
                                         :key="u.value"
                                         :value="u.value"
-                                        >{{ u.name }} ( {{u.special}} ) </option
+                                        >{{ u.name }} ( {{u.special}} )</option
                                       >
                                     </select>
                                   </div>
                                 </div>
                               </div>
-                              <div class="col-lg-5">
+                              <div class="col-lg-5">  
                                 <div class="ui search focus mt-10">
                                   <div class="ui left icon input swdh11 swdh19">
+                                   
                                     <select
                                       class="prompt srch_explore pa-10 w-100"
                                       v-model="lg.uye_language_degree"
                                     >
                                       <option
-                                        v-for="u in languageDegree"
-                                        :key="u.value"
-                                        :value="u.value"
+                                        v-for="(u,key) in languageDegree"
+                                        :key="key"
+                                        :value="key"
                                         >{{ u.name }} </option
                                       >
                                     </select>
@@ -1136,12 +1140,11 @@ export default {
     languages() {
       let objs = this.l("cat.Languages", "g").list;
       const sortable = Object.entries(objs);
-      let country = [];
-      sortable.forEach(k => {
-        country.push(k[1]);
-      });
+      let country = []; 
+      for (const [key, value] of sortable) { 
+        country.push({...value, value:key });
+      }
       country.sort((a, b) => (a.name > b.name ? 1 : b.name > a.name ? -1 : 0));
-
       return country;
     }
   },
@@ -1160,7 +1163,7 @@ export default {
       slang: this.$store.state.locale,
       group: "U_Lang",
       prev_id: this.myProfile.id,
-      fields: "id,uye_language,uye_language_degree"
+      fields: "id,uye_language,uye_language_degree,status"
     });
 
     // this.genders = this.l("cat.Membership.list.M_Gender.list",'g');
@@ -1206,7 +1209,14 @@ export default {
           .then(value => {
             this.boxTwo = value
                 if(value){
-                    this.uye_languages = this.uye_languages.filter((k,i)=> i!=index);
+                    // this.uye_languages = this.uye_languages.filter((k,i)=> i!=index);
+                    this.uye_languages = this.uye_languages.map((k,i)=> {
+                        if(i==index){
+                            k.status = 2;
+                        }
+                        return k; 
+                    });
+                     
                 }
           })
           .catch(err => {
@@ -1218,7 +1228,8 @@ export default {
       this.uye_languages.push({
         id: null,
         uye_language: "",
-        uye_language_degree: ""
+        uye_language_degree: "",
+        status:1
       });
     },
     addNewList() {
@@ -1235,14 +1246,17 @@ export default {
         }
     },
     async saveUyeList(mp) { 
+      let url = process.env.baseURL + "uye_Lists";
       let method = "post"
       if(mp.id){
           method='put';
+          url = process.env.baseURL + "uye_Lists/"+ mp.id
+
       }
 
      
       await axios({
-        url: process.env.baseURL + "uye_Lists",
+        url,
         method,
         data: {
           id: mp.id,
@@ -1277,39 +1291,51 @@ export default {
           U_Gender: mp.U_Gender,
           U_Country: mp.U_Country,
           U_Timezone: mp.U_Timezone,
+          U_BirthDate: mp.U_BirthDate,
           U_Photo: mp.U_Photo,
         }
       }).then(response => {
         this.saveStatus = { show: true, stataus: "success" };
 
    //// save Languages
-   this.uye_languages.filter(async k=>{
-
-      let data = {
-            url: process.env.baseURL + "U_Lang",
-            method: "create",
-            data: {
-              id: k.id,
-              uye_language: k.uye_language,
-              uye_language_degree: k.uye_language_degree
-            }
-      };
-
-      if(k.id){
-        data = {
-            url: process.env.baseURL + "U_Lang/" + this.auth.id,
+   console.log("this.uye_languages",this.uye_languages)
+    this.uye_languages = this.uye_languages.filter((k,i)=>  k.uye_language!='' )
+   this.uye_languages.filter(async k=>{ 
+      
+      if(k.id){ 
+          await axios({
+            url: process.env.baseURL + "U_Lang/" + k.id,
             method: "put",
             data: {
               id: k.id,
               uye_language: k.uye_language	,
+              status: k.status,
+               prevId: this.auth.id,
+                  prev_id: this.auth.id,
+                  prev: this.auth.id,
               uye_language_degree: k.uye_language_degree
-            }
-          }
-      }
-          await axios(data).then(response => {
+            }}
+            ).then(response => {
             this.saveStatus = { show: true, stataus: "success" };
           });
-
+      }else{ 
+          
+          await axios({
+                url: process.env.baseURL + "U_Lang",
+                method: "post",
+                data: {
+                  id: k.id,
+                  uye_language: k.uye_language,
+                  prevId: this.auth.id,
+                  prev_id: this.auth.id,
+                  prev: this.auth.id,
+                  status:1,
+                  uye_language_degree: k.uye_language_degree
+                }
+          }).then(response => {
+            this.saveStatus = { show: true, stataus: "success" };
+          });
+      }   
    })
       
 
@@ -1360,7 +1386,7 @@ export default {
           params: {
             limit: 100,
             offset: 0,
-            fields: "uye_language,uye_language_degree,id",
+            fields: "uye_language,uye_language_degree,id,status",
             lang: this.$store.state.locale,
             sort: ["sort,ASC"],
             filter: filters

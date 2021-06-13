@@ -30,9 +30,9 @@
         <!-- <p>Your Point: {{ score * 10 }}</p> 
       </div> -->
       <div class="col-12">
-      {{order}}
+    
         <div class="question" v-if="question.q.exa_type == 'ParagraphOrder'">
-          {{ l("Make the text correct", "g") }}
+            {{order}} {{ l("Make the text correct", "g") }}
           <div class="myParagraph" v-if="question.q.rs_Question">
             <!-- {{answerText == trueText ? "Yes true." : "Try Again"}}   {{answerText}}==={{trueText}} -->
             <div
@@ -43,16 +43,17 @@
             </div>
           </div>
           <div class="words" v-show="counterStatus != 'stopped'">
-            <div style="width: 100%;float: left;">
+            <div style="width: 100%;float: left;"> 
             <draggable v-model="splitparagraph_answer" @end="splitparagraph_setanswer()">
-                  <transition-group style=" display: flex;">
+                  <transition-group style=" text-align: right;">
                           <div
                             class="paragraph_item"
                             v-for="(alp,i) in splitparagraph_answer"
                             :key="'alp'+i"
                           >
                             <!-- @click="addToAnswer(alp, ' ')" -->
-                            {{ alp }}
+                            <i class="fas fa-sort"></i>  {{ alp }} 
+                            <span style="float: right; margin-left: 5px;">{{i+1}}</span>
                           </div>  
                   </transition-group>
             </draggable>
@@ -63,7 +64,7 @@
           <p><i>Please set answer drag and drop words.</i></p>
         </div> 
         <div class="question" v-else-if="question.q.exa_type == 'SentenceCorrect'">
-          {{ l("Make the sentence correct", "g") }}
+           {{order}} {{ l("Make the sentence correct", "g") }}
           <div class="myAlphabet" v-if="question.q.rs_Question">
             <!-- {{answerText == trueText ? "Yes true." : "Try Again"}}   {{answerText}}==={{trueText}} -->
             <div
@@ -76,14 +77,14 @@
           <div class="words" v-show="counterStatus != 'stopped'">
   
             <draggable v-model="splitwords_answer" @end="splitwords_setanswer()">
-                  <transition-group style=" display: inline-flex;">
+                  <transition-group style="display: inline-flex; flex-wrap: wrap;">
                           <div
                             class="words_item"
                             v-for="(alp,i) in splitwords_answer"
                             :key="'alp'+i"
                           >
                             <!-- @click="addToAnswer(alp, ' ')" -->
-                            {{ alp }}
+                           <i class="fas fa-sort rotate-180"></i>  {{ alp }}
                           </div>  
                   </transition-group>
             </draggable>
@@ -91,11 +92,11 @@
            
           </div>
         </div>
-        <div v-else>
-          {{ order }} - {{ parseQuestion(question.q.rs_Question) }} - 
+        <div v-else  style=" text-align: right;  font-size: 22px;"  >   
+          {{ parseQuestion(question.q.rs_Question) }}<span class="number-right">{{order}}</span>
         </div>
         <div v-if="question.q.exa_video">
-          <video   width="100%" style="max-width: 640px;"  height="480" controls autoplay>
+             <video   width="100%" style="max-width: 640px;"  height="480" controls autoplay>
             <source
               :src="getVideoPath(question.q.exa_video)"
               type="video/mp4"
@@ -141,6 +142,16 @@
           class="alphabets"
           v-if="question.q.exa_type == 'FillBlanks' && trueText.length"
         >
+
+        <div class="alphabet_item" @click="removeAnswer()">
+            <i class="fa fa-trash"></i>
+          </div>
+          <div class="alphabet_item" @click="backspaceAnswer()">
+            <-
+          </div>
+          <div class="alphabet_item" @click="spaceAnswer()">
+            _
+          </div>
           <div
             class="alphabet_item"
             v-for="alp in randomAlphabets"
@@ -148,15 +159,7 @@
           >
             {{ alp }}
           </div>
-          <div class="alphabet_item" @click="removeAnswer()">
-            <i class="fa fa-trash"></i>
-          </div>
-          <div class="alphabet_item" @click="backspaceAnswer()">
-            <-
-          </div>
-          <div class="alphabet_item" @click="spaceAnswer()">
-            |_|
-          </div>
+          
         </div>
         <a
           @click="setanswer()"
@@ -339,11 +342,13 @@ export default {
       ) {
         let s = this.activeCourse.lessons[id];
         this.updated = s.duration ? s.duration : this.updated ? this.updated : {value:120} ;
-        this.chance = s.chance ? s.chance : this.chance;
+        // this.chance = s.chance ? s.chance : this.chance;
+        this.chance = 1;
         this.answerText = s.answer ? s.answer : this.answerText;
         this.score = s.score ? s.score : this.score;
         this.isTimeOut = s.isTimeOut ? s.isTimeOut : this.isTimeOut;
-        this.isTrue = s.isTrue ? s.isTrue : this.isTrue;
+        // this.isTrue = s.isTrue ? s.isTrue : this.isTrue;
+        this.isTrue = null;
         this.counterStatus = s.counterStatus ? s.counterStatus : "start";
          this.timeCounterStartPoint = s && s.duration && s.duration.value ? s.duration.value  : this.question.q && this.question.q.exa_timer ?  this.question.q.exa_timer : 0;
       }else{
@@ -568,45 +573,49 @@ export default {
 .alphabets {
   width: 100%;
   display: inline-flex;
+  place-content: flex-end;
 }
 .alphabet_item {
   width: 35px;
   height: 35px;
   padding-top: 6px;
+  padding-bottom: 6px;
   margin-right: 3px;
   /* border-radius: 10px; */
-  background: #efefef;
-  border: 1px solid #afafaf;
+  background: #fcfcfc;
+  border: 1px solid #efefef;
+  border-radius: 5px;
   text-align: center;
   cursor: pointer;
   font-size: 20px;
 }
 
 .words {
-  width: 100%;
-  display: inline-flex;
+  width: 100%; 
 }
 .paragraph_item {
   width: auto;
-  height: 30px;
+  min-height: 30px;
   padding: 5px;
   margin-bottom: 3px;
   margin-right: 3px;
   /* border-radius: 10px; */
   background: #fff;
-  border: 1px solid #e6e6e6;
-  text-align: center;
+  border: 1px solid #efefef;
+  text-align: right;
+    border-radius: 3px;
   cursor: pointer;
   font-size: 14px;
 }
 .words_item {
   width: auto;
-  height: 30px;
-  padding: 5px;
-  margin-right: 3px;
+  height: 32px;
+  padding: 6px; 
+  margin-right: 5px;
   /* border-radius: 10px; */
-  background: #efefef;
-  border: 1px solid #afafaf;
+  background: #fff;
+  border: 1px solid #efefef;
+  border-radius: 3px;
   text-align: center;
   cursor: pointer;
   font-size: 18px;
@@ -615,7 +624,9 @@ export default {
 .myAlphabet {
   width: 100%;
   display: inline-flex;
+  flex-direction: right;
   margin: 10px 0;
+  place-content: flex-end;
 }
 .answerAlphabet {
   width: 35px;
@@ -633,9 +644,9 @@ export default {
   height: 25px;
   padding-top: 4px;
   margin-right: 3px;
-  background: #fff;
-  text-align: center;
+  background: #fff; 
   cursor: pointer;
+  text-align: right;
 }
 .answerSentence {
   width: 100%;
@@ -665,5 +676,18 @@ export default {
 
 .stopped {
   margin: 20px 0;
+}
+.rotate-180{
+   transform: rotate(90deg);
+}
+
+.number-right{
+  float: right; 
+  margin: 0px 3px;
+  padding: 0px 3px;
+  border-radius: 3px;
+  border: 1px solid #f9f9f9;
+  background: #fff;
+  color: rgb(230, 97, 8);
 }
 </style>

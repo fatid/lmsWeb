@@ -33,8 +33,8 @@
       </div>
       <div class="header_right">
        
-        <ul>
-          <li>
+        <ul >
+          <li v-if="!isMobile || !auth || !auth.token">
              <b-dropdown :text="LOCALE" variant="outline-danger" pill class="m-2" :key="'locale'+LOCALE">
                   <template #button-content>
                       <img class="image-lang" :src="'/img/'+LOCALE+'.png'"   />
@@ -51,7 +51,7 @@
           <!-- <li>
 					<a href="shopping_cart.html" class="option_links" title="cart"><i class='uil uil-shopping-cart-alt'></i><span class="noti_count">2</span></a>
 				</li> -->
-          <li class="ui dropdown" v-if="auth && auth.token">
+          <li class="ui dropdown" v-if="auth && auth!=null && auth.token">
             <a href="#" class="option_links" title="Messages"
               ><i class="uil uil-envelope-alt"></i
               ><span class="noti_count">0</span></a
@@ -98,7 +98,7 @@
               ></a>
             </div> -->
           </li>
-          <li class="ui dropdown" v-if="auth.token">
+          <li class="ui dropdown" v-if="auth && auth!=null && auth.token">
             <a href="#" class="option_links" title="Notifications"
               ><i class="uil uil-bell"></i><span class="noti_count">0</span></a
             >
@@ -276,26 +276,7 @@
                 </li>
               </ul>
             </li>
-            <li class="menu--item">
-              <a
-                @click="goPath('my/favorite-courses')"
-                class="menu--link"
-                title="Saved Courses"
-              >
-                <i class="uil uil-heart-alt menu--icon"></i>
-                <span class="menu--label">{{ l("Saved Courses", "g") }}</span>
-              </a>
-            </li>
-            <li class="menu--item">
-              <a
-                @click="goPath('my/favorite-words')"
-                class="menu--link"
-                title="Saved Courses"
-              >
-                <i class="uil uil-heart-alt menu--icon"></i>
-                <span class="menu--label">{{ l("Saved Words", "g") }}</span>
-              </a>
-            </li>
+            
           </ul>
         </div>
         <div class="left_section pt-2">
@@ -380,6 +361,7 @@
 
      
         <errorReport></errorReport>
+        <likeModal></likeModal>
 
     </div>
   </div>
@@ -393,11 +375,13 @@ import Multiselect from 'vue-multiselect';
 var Vue = require('vue');
 var VueScrollTo = require('vue-scrollto');
 import errorReport from "@/components/common/errorReport";
+import likeModal from "@/components/common/like";
 
 export default {
   mixins: [basicMixin, canoicalMixin, general],
   components:{
-    errorReport
+    errorReport,
+    likeModal
   },
   watch: {
     async $route(to, from) {

@@ -40,9 +40,9 @@
                   </div>
                   <div class="_215b10">
 					  
-                    <a
+                    <!-- <a
                       href="#"
-                      class="_215b11" 
+                      class="_215b11 mt-0" 
 					   id="popover-button-event"
                       v-if="!isLiked(data.id)"
                     >
@@ -52,7 +52,7 @@
                     </a>
                     <a
                       href="#"
-                      class="_215b11"
+                      class="_215b11 mt-0"
 					   id="popover-button-event"
                       @click="removeLikes(data.id)"
                       v-else
@@ -68,7 +68,7 @@
                       ref="popover" 
 					  triggers="hover"
                     >
-                      <b-form-group>
+                      <b-form-group v-if="options['uye_Lists']">
                         <b-form-select
                           id="popover-input-2"
                           v-model="inputList"
@@ -90,7 +90,7 @@
                         variant="danger"
                         >{{ l("Close", "g") }}</b-button
                       >
-                    </b-popover>
+                    </b-popover> -->
 
                     <a href="#" @click="$store.state.isErrorReportVisible=true" class="_215b12">
                       <span><i class="uil uil-windsock"></i></span>
@@ -114,7 +114,7 @@
                   </div>
 
                   <div class="_215b05">
-                    {{ l("Last updated", "g") }} 04/2021
+                    {{ l("Last updated", "g") }} 06/2021
                   </div>
                   <!-- <ul class="_215b31">										
 										<li><button class="btn_adcart">Add to Cart</button></li>
@@ -277,61 +277,27 @@
                         <div class="title">{{ les.lesson_name }}</div>
                       </div>
                     </div>
-                    <div class="details">
-                      <span class="content-summary">{{ les.lesson_type }}</span>
-
-                       <a
-                      href="#"
-                      class="_215b11" 
-					   id="popover-button-event"
-                      v-if="!isLiked(data.id)"
-                    >
-                      <span>
-                        <i class="uil uil-heart red"></i> </span
-                      >{{ l("Add to List", "g") }}
-                    </a>
-                    <a
-                      href="#"
-                      class="_215b11"
-					   id="popover-button-event"
-                      @click="removeLikes(data.id)"
-                      v-else
-                    >
-                      <span>
-                        <i class="uil uil-heart red"></i> </span
-                      >{{ l("Remove List", "g") }}
-                    </a> 
-                    <b-popover
-                      :disabled.sync="likePopover"
-                      target="popover-button-event"
-                      :title="l('Add to List', 'g')"
-                      ref="popover" 
-					  triggers="hover"
-                    >
-                      <b-form-group>
-                        <b-form-select
-                          id="popover-input-2"
-                          v-model="inputList"
-                          :options="options['uye_Lists']"
-                          value-field="id"
-                          text-field="uye_list_name"
-                          size="sm"
-                        ></b-form-select>
-                      </b-form-group>
-                      <b-button
-                        size="sm"
-                        @click="setLikes(data, inputList)"
-                        variant="primary"
-                        >{{ l("Save", "g") }}</b-button
-                      >
-                      <b-button
-                        size="sm"
-                        @click="likePopover = false"
-                        variant="danger"
-                        >{{ l("Close", "g") }}</b-button
-                      >
-                    </b-popover>
-                    </div>
+                       <a    
+                        href="#"  
+                        class="_215b11"
+                        v-if="!isLiked(les.id)"
+                        @click="openLikeModal(les,unit,'lesson')"
+                      >  <span class="text-black"> <i class="uil uil-heart "></i> </span> 
+                      </a>
+                      <a    
+                        href="#"  
+                        class="_215b11"
+                        v-else
+                        @click="removeLikeModal(les,unit,'lesson')"
+                      >  <span class="text-red"> <i class="uil uil-heart "></i> </span> 
+                      </a>
+                      <span class="content-summary">{{ les.lesson_type }}   
+                     
+                        
+                          </span>
+                  
+                   
+                  
                     <div class="end-detail">
                       <i :class="getCourseIcon(les)" class="icon_142"></i>
                       <div class="title">
@@ -551,16 +517,19 @@ export default {
       group: "co_labels",
       fields: "id,cou_label_name"
     });
-    await this.$store.dispatch("core/getOptions", {
-      slang: this.$store.state.locale,
-      group: "uye_Lists",
-      prev_id: this.auth.id,
-      fields: "id,uye_list_name,uye_list_cat"
-    });
+    if(this.auth){
+        await this.$store.dispatch("core/getOptions", {
+          slang: this.$store.state.locale,
+          group: "uye_Lists",
+          prev_id: this.auth.id,
+          fields: "id,uye_list_name,uye_list_cat"
+        });
+    }
     this.$store.dispatch("course/getAllCourseProcess", {});
     this.getCourse();
   },
   computed: {
+    
     courseProcess() {
       return this.$store.state.course.courseProcess;
     },
@@ -569,6 +538,25 @@ export default {
     }
   },
   methods: {
+    removeLikeModal(selected,topModuleData,type){
+      let data={
+        ...selected, 
+        type,
+        topModuleData:topModuleData
+      }
+      this.$store.state.likeModal.data = data;
+      this.$store.state.likeModal.show = true;
+    },
+    openLikeModal(selected,topModuleData,type){
+      let data={
+        ...selected, 
+        type,
+        topModuleData:topModuleData
+      }
+      this.$store.state.likeModal.data = data;
+      this.$store.state.likeModal.type = `Course`;
+      this.$store.state.likeModal.show = true;
+    },
     getCourseIcon(les) {
       if (les.lesson_type == "Course" && les.lesson_video) {
         return "uil uil-play-circle";
@@ -773,5 +761,20 @@ export default {
 }
 h3.popover-header {
   margin-top: 0;
+}
+.text-black{
+  color: #a0a0a0;
+  width: 25px;
+
+}
+.text-red{
+  color: #e71146;
+  width: 25px;
+}
+.details{
+  width: 200px;
+}
+.content-summary{
+  width: 150px!important;
 }
 </style>

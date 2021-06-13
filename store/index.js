@@ -24,7 +24,14 @@ export const state = () => ({
     isMobile: false, 
     isErrorReportVisible: false,
     langFile:{},
-    likes:[]
+    likes:[],
+    likeModal:{
+        show: false,
+        detail:{
+            type:'',
+            label:''
+        }
+    }
 });
 
 const checkIfMobile = (context) => {
@@ -52,8 +59,9 @@ export const mutations= {
     setLike(state, item){
         state.likes=[];
         if(item && item[0] && typeof item[0]=="object"){
+            console.log("imte",item)
             item.forEach(element => {
-            state.likes.push(element) 
+                state.likes.push(element) 
             });
         }
     },
@@ -84,18 +92,30 @@ export const actions = {
         commit('changeMobile', checkIfMobile(context))
     },
 
-    async setLikes({commit,state,rootState},item,list){
- 
+    async setLikes({commit,state,rootState},itemx){
+        
+        let item = itemx.item;
+        let list = itemx.list;
+
+        let options = rootState.core.options ? rootState.core.options['uye_Lists'] : [];
+        
         if(item && item.id && state.likes.find(k=>k.id==item.id)){
         }else{
             commit("pushLike",{...item,list:list}) 
+            let uye_fav_type = options.find(k=> k.uye_list_cat==list);
+            console.log("list",list,uye_fav_type)
             let t = JSON.stringify(state.likes); 
             if(rootState.user.auth && rootState.user.auth.id){
                 await axios({
                   url: process.env.baseURL+"Favorites",
                   method: "post",
                   data: { 
-                      U_likedPages:t
+                      fav_content:t,
+                      fav_list:list,
+                      status:1,
+                      uye_fav_type: uye_fav_type ? uye_fav_type.uye_fav_type : '',
+                      created_by: rootState.user.auth.id,
+                      fav_owner_user: rootState.user.auth.id
                   }
                 }).then(response => { 
 
@@ -131,32 +151,26 @@ export const actions = {
             }
         }
     },
-    async getLikes({state,dispatch,rootState},payload){
-        console.log("we area here 999 ")
-
+    async getLikes({state,dispatch,rootState},payload){ 
         if(rootState.user.auth && rootState.user.auth.id){
-            console.log("we area here 1 id")
-            try{
-
-                         await axios({
-                             url: process.env.baseURL+"uye",
-                             method: "get",
-                             params: {
-                             limit: 1,
-                             lang: 'NONE',
-                             filter: { id: ["=",rootState.user.auth.id] },
-                             fields: "U_likedPages",
-                             sort: ["created_on,DESC"]
-                             } 
-                         }).then(response=>{
-                             let a = response.data.formattedData[0]
-                         
-                             let likes = a.U_likedPages
-                   
-                             if(likes){
-                                dispatch("setLikesFirst", likes); 
-                            }
-                         })
+            try{ 
+                await axios({
+                    url: process.env.baseURL+"Favorites",
+                    method: "get",
+                    params: {
+                    limit: 1,
+                    lang: 'NONE',
+                    filter: { fav_owner_user: ["=",rootState.user.auth.id] },
+                    fields: "fav_content,fav_owner_user,fav_list,uye_fav_type,pdb_user",
+                    sort: ["created_on,DESC"]
+                    } 
+                }).then(response=>{
+                    let a = response.data.formattedData[0] 
+                    let likes = a.fav_content 
+                    if(likes){
+                       dispatch("setLikesFirst", likes); 
+                   }
+                })
              }
              catch(err){
                  console.log("Err",err)
@@ -172,6 +186,7 @@ export const actions = {
 
 
 export const store = new Vuex.Store({
+    strict: false,
     state,
     getters, 
     mutations,
