@@ -132,8 +132,7 @@ const actions = {
 
         localStorage.setItem('auth', JSON.stringify({})); 
         Cookies.set('auth', JSON.stringify({})); 
-        dispatch("getLikes", {} , {root: true })
-        console.log("local",rootState.locale)
+        dispatch("getLikes", {} , {root: true }) 
 
         // burada middleware auth üzerinden cookie req auth ile geldiği için state güncellenesede orası görmüyor. 
         // o nedenle reload ettiriyoruz.
@@ -160,7 +159,7 @@ const actions = {
                   limit: 1,
                   lang: 'NONE',
                   filter: { U_mail: ["=",sendobj.email], U_Password: ["=",sendobj.password] },
-                  fields: "U_mail,U_rname,U_surname,U_Timezone,U_Photo,U_aboutme,id,U_Status,U_likedPages",
+                  fields: "U_mail,U_rname,U_surname,U_Timezone,U_Photo,U_aboutme,id,U_Status,U_likedPages,U_BirthDate",
                   sort: ["created_on,DESC"]
                 } 
               })
@@ -171,7 +170,7 @@ const actions = {
                       let a = response.data.formattedData[0]; 
                       console.log("localStorage",token,response,a);
                       if (token) { 
-                            let authData=JSON.stringify({U_Timezone:a.U_Timezone,U_Photo:a.U_Photo,token,U_mail: a.U_mail,id:a.id,name:a.U_rname,surname:a.U_surname,fullName:`${a.U_rname} ${a.U_surname}`});
+                            let authData=JSON.stringify({U_BirthDate:a.U_BirthDate,U_Timezone:a.U_Timezone,U_Photo:a.U_Photo,token,U_mail: a.U_mail,id:a.id,name:a.U_rname,surname:a.U_surname,fullName:`${a.U_rname} ${a.U_surname}`});
                             localStorage.setItem('auth', authData);
                             Cookies.set('auth', authData); 
                         }

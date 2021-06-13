@@ -294,8 +294,8 @@ export default {
            console.log(e)
           })   
     },
-    setLikes(item,list){
-      this.$store.dispatch('setLikes',item,list);
+    setLikes(item){
+      this.$store.dispatch('setLikes',item);
     },
     removeLikes(selected){
  
@@ -307,14 +307,12 @@ export default {
     getLikes() {
       return this.$store.getters.getLikes
     },
-    isLiked(id){
-      console.log("isliked",id,this.likes,this.likes.find(k=> k.id == id))
-    
+    isLiked(id){ 
+      console.log("this.likes",this.likes)
       if(this.likes.find(k=> k.id == id)){
         return true
       }
-      return false
-      
+      return false 
     },
     getOptName(id,group,field){
         let options= this.$store.state.core.options
