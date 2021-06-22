@@ -1,13 +1,27 @@
 <template>
-  <div>
-    <b-list-group>
+  <div>  
+    <div v-if="listId">
+     <h4 style="margin-bottom: 5px;"> {{selectedList.uye_list_name}}   </h4>
+     <p> <a @click="goPath('my/list')">{{l('All Lists','g')}}</a> / {{selectedList.uye_list_cat}} </p>  
+        <b-list-group> 
+      <b-list-group-item  v-for="dt in getListData(listId,'data')"  class="d-flex justify-content-between align-items-center"  style="cursor: pointer;"
+        @click="goPath('course/'+dt.topModuleData.id+'/'+dt.id)"
+      >
+                {{dt.lesson_name}}
+               <p>Unite: {{dt.topModuleData.unit_name}}</p>
+      </b-list-group-item>
+        </b-list-group>
+
+    </div>
+    <div v-else>  
+    <b-list-group> 
       <b-list-group-item
         v-for="(list, i) in my_lists"
         :key="'l' + i"
         class="d-flex justify-content-between align-items-center"
       >
-        <span v-show="list.view == 'read'">
-          {{ list.uye_list_name }} - {{ list.uye_list_cat }}
+        <span v-show="list.view == 'read'" @click="goPath('my/list?id='+list.id)" style="cursor: pointer;">
+          {{ list.uye_list_name }} - {{ list.uye_list_cat }} (  {{getListData(list.id,'total')}} )
         </span>
         <span v-show="list.view && list.view == 'edit'">
           <div class="d-flex j align-items-start">
@@ -48,53 +62,31 @@
             variant="danger"
             @click="list.view = 'edit'"
             pill
-            ><i class="fa fa-pen"></i> Edit</b-button
+            ><i class="fa fa-pen"></i> </b-button
           >
           <b-button
             v-if="list.view == 'edit'"
             variant="danger"
             @click="list.view = 'read'"
             pill
-            >Close Edit</b-button
+            >Close</b-button
           >
            <b-button
             variant="warning"
             v-if="list.id"
             @click="removeList(list.id)"
             pill
-            ><i class="fa fa-trash"></i> Delete</b-button
+            ><i class="fa fa-trash"></i> </b-button
           >
-          <b-badge variant="success" class="pa-10" v-if="list.id" pill    
-            @click="goPath('my/list/'+list.id)">
-              
-                Total: {{list.fav_content ? list.fav_content.length : 0}} 
-          </b-badge>
+         
         </span>
       </b-list-group-item>
-    </b-list-group>
-
-    <!-- <div class="w-100" v-for="(lg, i) in my_lists">
-      <div class="row w-100">
-        <div class="col-lg-1 mt-20">
-          <strong>{{ i + 1 }}</strong>
-        </div>
-        <div class="col-lg-7">
-          <div class="ui search focus mt-10">
-            <div class="ui left icon input swdh11 swdh19">
-              <input
-                type="text"
-                class="prompt srch_explore pa-10 w-100"
-                v-model="lg.uye_list_name"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-    </div> -->
+    </b-list-group> 
     <div class="col-lg-12 mt-2 text-center align-center">
       <b-button variant="success" @click="addNewList()"
         >+ {{ l("Add New List", "g") }}</b-button
       >
+    </div>
     </div>
   </div>
 </template>
@@ -104,12 +96,23 @@ import axios from "axios";
 
 export default {
   mixins: [general],
-  created() {
-    this.getUyeLists();
+ async created() {
+   await this.getUyeLists();
+   await this.getLikes();
+    
+
+  },
+  watch:{
+    listId(val){
+      this.getList(val)
+    }
   },
   computed: {
     auth() {
       return this.$store.state.user.auth;
+    },
+    listId() {
+      return this.$route.query.id;
     },
     likeModal: {
       get() {
@@ -131,6 +134,7 @@ export default {
   data() {
     return {
       my_lists: [],
+      selectedList: {},
       uyeListItem: {
         id: null,
         uye_list_name: ""
@@ -143,6 +147,19 @@ export default {
     };
   },
   methods: {
+    getList(id){
+      if(id){
+        this.selectedList = this.my_lists.find(k=> k.id==id);  
+      }
+    },
+    getListData(id,type="data"){
+      let items  = this.likes.filter(k=> k.list==id);
+      if(type=="data"){
+        return items
+      }else{
+        return items.length
+      }
+    },
     addNewList() {
       this.my_lists.push({
         id: null,
@@ -206,6 +223,8 @@ export default {
             this.my_lists = response.data.formattedData.map(k => {
               return { ...k, view: "read" };
             });
+
+            this.getList(this.listId)
           }
         });
       });

@@ -104,8 +104,7 @@ export const actions = {
         }else{
 
           
-            commit("pushLike",{...item,list:list}) 
-            console.log("list",list,uye_fav_type)
+            commit("pushLike",{...item,list:list})  
             let t = JSON.stringify(state.likes); 
             if(rootState.user.auth && rootState.user.auth.id){
                 if(!uye_fav_type){

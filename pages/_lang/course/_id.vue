@@ -38,60 +38,7 @@
                       </div>
                     </a>
                   </div>
-                  <div class="_215b10">
-					  
-                    <!-- <a
-                      href="#"
-                      class="_215b11 mt-0" 
-					   id="popover-button-event"
-                      v-if="!isLiked(data.id)"
-                    >
-                      <span>
-                        <i class="uil uil-heart red"></i> </span
-                      >{{ l("Save", "g") }}
-                    </a>
-                    <a
-                      href="#"
-                      class="_215b11 mt-0"
-					   id="popover-button-event"
-                      @click="removeLikes(data.id)"
-                      v-else
-                    >
-                      <span>
-                        <i class="uil uil-heart red"></i> </span
-                      >{{ l("Unsave", "g") }}
-                    </a> 
-                    <b-popover
-                      :disabled.sync="likePopover"
-                      target="popover-button-event"
-                      :title="l('Add to List', 'g')"
-                      ref="popover" 
-					  triggers="hover"
-                    >
-                      <b-form-group v-if="options['uye_Lists']">
-                        <b-form-select
-                          id="popover-input-2"
-                          v-model="inputList"
-                          :options="options['uye_Lists']"
-                          value-field="id"
-                          text-field="uye_list_name"
-                          size="sm"
-                        ></b-form-select>
-                      </b-form-group>
-                      <b-button
-                        size="sm"
-                        @click="setLikes(data, inputList)"
-                        variant="primary"
-                        >{{ l("Save", "g") }}</b-button
-                      >
-                      <b-button
-                        size="sm"
-                        @click="likePopover = false"
-                        variant="danger"
-                        >{{ l("Close", "g") }}</b-button
-                      >
-                    </b-popover> -->
-
+                  <div class="_215b10"> 
                     <a href="#" @click="$store.state.isErrorReportVisible=true" class="_215b12">
                       <span><i class="uil uil-windsock"></i></span>
                       {{ l("Report abuse", "g") }}
@@ -107,14 +54,15 @@
                     <div class="crse_reviews mr-2">
                       <i class="uil uil-star"></i>4.5
                     </div>
-                    (N/A ratings)
+                    <!-- (N/A ratings) -->
                   </div>
                   <div class="_215b05">
-                    0 students enrolled
+                    <!-- 0 students enrolled -->
                   </div>
 
                   <div class="_215b05">
-                    {{ l("Last updated", "g") }} 06/2021
+                    {{ l("Last updated", "g") }} 
+                    <!-- 06/2021 -->
                   </div>
                   <!-- <ul class="_215b31">										
 										<li><button class="btn_adcart">Add to Cart</button></li>
@@ -134,36 +82,7 @@
     <div class="_215b15 _byt1458">
       <div class="container-fluid">
         <div class="row">
-          <div class="col-lg-12">
-            <!-- <div class="user_dt5">
-							<div class="user_dt_left">
-								<div class="live_user_dt">
-									<div class="user_img5">
-										<a href="#"><img src="images/left-imgs/img-1.jpg" alt=""></a>												
-									</div>
-									<div class="user_cntnt">
-										<a href="#" class="_df7852">Johnson Smith</a>
-										<button class="subscribe-btn">Subscribe</button>
-									</div>
-								</div>
-							</div>
-							<div class="user_dt_right">
-								<ul>
-									<li>
-										<a href="#" class="lkcm152"><i class="uil uil-eye"></i><span>1452</span></a>
-									</li>
-									<li>
-										<a href="#" class="lkcm152"><i class="uil uil-thumbs-up"></i><span>100</span></a>
-									</li>
-									<li>
-										<a href="#" class="lkcm152"><i class="uil uil-thumbs-down"></i><span>20</span></a>
-									</li>
-									<li>
-										<a href="#" class="lkcm152"><i class="uil uil-share-alt"></i><span>9</span></a>
-									</li>
-								</ul>
-							</div>
-						</div> -->
+          <div class="col-lg-12"> 
             <div class="course_tabs">
               <nav>
                 <div
@@ -544,7 +463,7 @@ export default {
   },
   methods: {
     removeLikeModal(selected,topModuleData,type){
-      console.log(selected,this.likes)
+     
       let f = this.likes.filter((k,i)=>  k.id!=selected.id ); 
       f = JSON.stringify(f) 
       this.$store.dispatch('removeLikes',{items:f,selected});

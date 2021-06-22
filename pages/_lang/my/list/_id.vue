@@ -1,5 +1,6 @@
 <template>
   <div>
+ 
     <b-list-group>
       <b-list-group-item
         v-for="(list, i) in my_lists"
@@ -115,6 +116,7 @@ export default {
   mixins: [general],
   created() {
     this.getUyeLists();
+    this.getLikes();
   },
   computed: {
     auth() {
