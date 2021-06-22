@@ -23,7 +23,7 @@
                       <b-button
                         size="sm"
                         :disabled="!inputList"
-                        @click="setLikesFav()"
+                        @click="setLikesFav();likeModalShow = false"
                         variant="primary"
                         ><i class="fa fa-save"></i> {{ l("Save", "g") }}</b-button
                       >
