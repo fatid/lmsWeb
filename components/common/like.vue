@@ -1,12 +1,12 @@
 <template>
  
-  <b-modal  hide-footer   id="modal-sm" size="sm" v-model="likeModalShow"  title="Like" v-if="options && options['uye_Lists']">
+  <b-modal  hide-footer   id="modal-sm" size="sm" v-model="likeModalShow"  
+  :title="l('Add to List','g')" v-if="options && options['uye_Lists']">
                          
 
-                              {{likeModal.topModuleData ? likeModal.topModuleData.unit_name+ ' > ' : '' }}
-                              {{likeModal.lesson_name ? likeModal.lesson_name : '' }}
-                        
-           
+        {{likeModal.topModuleData ? likeModal.topModuleData.unit_name+ ' > ' : '' }}
+        <p v-if="likeModal.data && likeModal.data.lesson_name">{{   likeModal.data.lesson_name   }}</p>
+       
         <b-row class="mb-1 text-center">
           <b-col cols="2">{{l('List','g')}}</b-col>
           <b-col > <b-form-select
@@ -15,12 +15,14 @@
                           :options="getSelect()"
                           value-field="id"
                           text-field="uye_list_name"
+                          :placeholder="l('Select List','g')"
                           size="sm"
                         ></b-form-select></b-col> 
         </b-row> 
                       <div style="width: 100%; text-align: center; margin-top: 15px;">
                       <b-button
                         size="sm"
+                        :disabled="!inputList"
                         @click="setLikesFav()"
                         variant="primary"
                         ><i class="fa fa-save"></i> {{ l("Save", "g") }}</b-button
@@ -80,11 +82,14 @@ export default {
         }
       },
   },
+  watch:{
+    likeModalShow(){
+      this.inputList = '';
+    }
+  },
   methods:{
-    getSelect(){
-
-            return this.options['uye_Lists'].filter(k=> k.uye_list_cat==this.likeModal.type);
-
+    getSelect(){ 
+      return this.options['uye_Lists'].filter(k=> k.uye_list_cat==this.likeModal.type);
     },
     setLikesFav(){
         console.log("this.likeModal.data,this.inputList",this.inputList)
@@ -123,7 +128,7 @@ export default {
 <style>
 .modal-body {
     padding: 10px 16px;
-    height: 100px;
+    height: 150px!important;
     overflow: auto;
 }
 </style>

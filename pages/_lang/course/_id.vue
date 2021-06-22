@@ -3,7 +3,7 @@
     <div class="_215b01">
       <div class="container-fluid">
         <div class="row">
-          <!-- <div class="col-lg-12">	courseProcess : {{courseProcess}}</div><x -->
+      
           <div class="col-lg-12">
             <div class="section3125">
               <div class="row justify-content-center">
@@ -278,23 +278,20 @@
                       </div>
                     </div>
                        <a    
-                        href="#"  
+                        href="javascript:;"  
                         class="_215b11"
                         v-if="!isLiked(les.id)"
-                        @click="openLikeModal(les,unit,'lesson')"
-                      >  <span class="text-black"> <i class="uil uil-heart "></i> </span> 
+                        @click="openLikeModal(les,unit,'Course')"
+                      >  <span class="text-black"><i class="uil uil-heart "></i> </span> 
                       </a>
                       <a    
-                        href="#"  
+                        href="javascript:;" 
                         class="_215b11"
                         v-else
-                        @click="removeLikeModal(les,unit,'lesson')"
+                        @click="removeLikeModal(les,unit,'Course')"
                       >  <span class="text-red"> <i class="uil uil-heart "></i> </span> 
                       </a>
-                      <span class="content-summary">{{ les.lesson_type }}   
-                     
-                        
-                          </span>
+                      <span class="content-summary">{{ les.lesson_type }}   </span>
                   
                    
                   
@@ -310,7 +307,7 @@
             </div>
           </div>
 
-          <div class="student_reviews" id="crse_comment">
+          <div class="student_reviews" id="crse_comment" v-if="1==2">
             <div class="row">
               <div class="col-lg-5">
                 <div class="reviews_left">
@@ -535,27 +532,35 @@ export default {
     },
     auth() {
       return this.$store.state.user.auth;
-    }
+    },
+    likeModal:{
+        get(){
+          return this.$store.state.likeModal;
+        },
+        set(val){
+          this.$store.state.likeModal=val;
+        }
+      },
   },
   methods: {
     removeLikeModal(selected,topModuleData,type){
-      let data={
-        ...selected, 
-        type,
-        topModuleData:topModuleData
-      }
-      this.$store.state.likeModal.data = data;
-      this.$store.state.likeModal.show = true;
+      console.log(selected,this.likes)
+      let f = this.likes.filter((k,i)=>  k.id!=selected.id ); 
+      f = JSON.stringify(f) 
+      this.$store.dispatch('removeLikes',{items:f,selected});
+
     },
     openLikeModal(selected,topModuleData,type){
-      let data={
+      
+      let datax={
         ...selected, 
         type,
         topModuleData:topModuleData
       }
-      this.$store.state.likeModal.data = data;
-      this.$store.state.likeModal.type = `Course`;
-      this.$store.state.likeModal.show = true;
+      this.likeModal.data = datax;
+      this.likeModal.type = type;
+      this.likeModal.show = true;  
+      
     },
     getCourseIcon(les) {
       if (les.lesson_type == "Course" && les.lesson_video) {
@@ -572,6 +577,7 @@ export default {
         return "fas fa-file-download";
       }
     },
+    
     async getUnits(prev) {
       let fields = `unit_name,unit_image,id,status,created_on,created_by,id,status`;
 

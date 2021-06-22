@@ -8,6 +8,7 @@
       >
         <span v-show="list.view == 'read'">
           {{ list.uye_list_name }} - {{ list.uye_list_cat }}
+          ( {{list.fav_content ? list.fav_content.length : 0}} )
         </span>
         <span v-show="list.view && list.view == 'edit'">
           <div class="d-flex j align-items-start">
@@ -42,33 +43,41 @@
           </div> 
         </span>
         <span>
-         
+                 <b-button
+            variant="success"
+            v-if="list.id"
+            @click="goPath('my/list/'+list+id)"
+            pill
+            :title="'Open'"
+           
+          
+            ><i class="fa fa-eye"></i> </b-button
+          >
           <b-button
             v-if="list.view == 'read'"
             variant="danger"
             @click="list.view = 'edit'"
             pill
-            ><i class="fa fa-pen"></i> Edit</b-button
+ :title="'Edit'"
+            ><i class="fa fa-pen"></i> </b-button
           >
           <b-button
             v-if="list.view == 'edit'"
             variant="danger"
             @click="list.view = 'read'"
             pill
+              :title="'Close Edit'"
             >Close Edit</b-button
           >
            <b-button
             variant="warning"
             v-if="list.id"
             @click="removeList(list.id)"
-            pill
-            ><i class="fa fa-trash"></i> Delete</b-button
+            pill :title="'Delete'"
+            ><i class="fa fa-trash"></i> </b-button
           >
-          <b-badge variant="success" class="pa-10" v-if="list.id" pill    @click="goPath('my/list/'+list+id)">
-              
-                Total: {{list.fav_content ? list.fav_content.length : 0}}
-
-          </b-badge>
+   
+         
         </span>
       </b-list-group-item>
     </b-list-group>
@@ -117,7 +126,8 @@ export default {
       },
       set(val) {
         this.$store.state.likeModal = val;
-      }
+      },
+      
     },
     likeModalShow: {
       get() {
@@ -219,7 +229,7 @@ export default {
             params: {
               limit: 1,
               lang: "NONE",
-              filter: { fav_owner_user: ["=", rootState.user.auth.id], fa_ },
+              filter: { fav_owner_user: ["=", rootState.user.auth.id] },
               fields:
                 "fav_content,fav_owner_user,fav_list,uye_fav_type,pdb_user",
               sort: ["created_on,DESC"]
