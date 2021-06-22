@@ -24,7 +24,7 @@
 											</a>
 											<div class="fcrse_content">
 												<div class="eps_dots more_dropdown">
-													<a href="#"><i class='uil uil-ellipsis-v'></i></a>
+													<a href="javascript:;" ><i class='uil uil-ellipsis-v'></i></a>
 													<div class="dropdown-content">
 														<span><i class='uil uil-share-alt'></i>Share</span>
 														<span><i class="uil uil-heart"></i>Save</span>

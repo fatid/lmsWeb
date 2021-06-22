@@ -1,34 +1,7 @@
 <template>
   <div v-if="question && question.q">
     <div class="row">
-      <!-- <div class="col-12">{{ activeCourse }}</div> -->
-      <!-- <div class="col-3" v-if="question.q && question.q.exa_timer">
-        {{ order }}
-         <counter
-          v-if="timeCounterStartPoint && counterStatus == 'start'"
-          :status="counterStatus"
-          ref="countDown"
-          :initial-value="parseInt(timeCounterStartPoint)"
-          :stroke-width="5"
-          :seconds-stroke-color="'#f00'"
-          :underneath-stroke-color="'lightgrey'"
-          :seconds-fill-color="'#efefef'"
-          :size="200"
-          :padding="14"
-          :second-label="''"
-          :show-second="true"
-          :show-minute="false"
-          :show-hour="false"
-          :show-negatives="false"
-          @update="updated = $event"
-          @finish="hasFinished($event)"
-        ></counter>  
-        <div v-if="counterStatus == 'stopped'" class="stopped">
-          <h2>{{ updated ? updated.value : '' }} / {{ question.q.exa_timer }}</h2>
-          <p>{{ l("seconds", "g") }}</p>
-        </div> -->
-        <!-- <p>Your Point: {{ score * 10 }}</p> 
-      </div> -->
+ 
       <div class="col-12">
     
         <div class="question" v-if="question.q.exa_type == 'ParagraphOrder'">
@@ -43,7 +16,7 @@
             </div>
           </div>
           <div class="words" v-show="counterStatus != 'stopped'">
-            <div style="width: 100%;float: left;"> 
+            <div style="width: 100%;float: right;"> 
             <draggable v-model="splitparagraph_answer" @end="splitparagraph_setanswer()">
                   <transition-group style=" text-align: right;">
                           <div
@@ -67,17 +40,26 @@
            {{order}} {{ l("Make the sentence correct", "g") }}
           <div class="myAlphabet" v-if="question.q.rs_Question">
             <!-- {{answerText == trueText ? "Yes true." : "Try Again"}}   {{answerText}}==={{trueText}} -->
-            <div
+            <div>
+
+                <span class="answerbox"   v-for="(alp,i) in splitwords_answer"   :key="'wrd'+i"></span>
+
+            </div>
+            <!-- <div
               class="answerSentence"
               :class="counterStatus == 'stopped' ? 'answered' : ''"
             >
               {{ l("Answer", "g") }}: {{ answerText }}
-            </div>
+            </div> -->
           </div>
           <div class="words" v-show="counterStatus != 'stopped'">
   
             <draggable v-model="splitwords_answer" @end="splitwords_setanswer()">
-                  <transition-group style="display: inline-flex; flex-wrap: wrap;">
+                  <transition-group style="justify-content: flex-end;
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: end;
+    width: 100%;">
                           <div
                             class="words_item"
                             v-for="(alp,i) in splitwords_answer"
@@ -93,7 +75,7 @@
           </div>
         </div>
         <div v-else  style=" text-align: right;  font-size: 22px;"  >   
-          {{ parseQuestion(question.q.rs_Question) }}<span class="number-right">{{order}}</span>
+          <span v-html="parseQuestion(question.q.rs_Question)"></span><span class="number-right">{{order}}</span>
         </div>
         <div v-if="question.q.exa_video">
              <video   width="100%" style="max-width: 640px;"  height="480" controls autoplay>
@@ -130,9 +112,9 @@
           v-if="question.q.exa_type == 'FillBlanks' && trueText.length"
         >
           <!-- {{answerText == trueText ? "Yes true." : "Try Again"}}   {{answerText}}==={{trueText}} -->
-          <div class="answerTitle">
+          <!-- <div class="answerTitle">
             {{ l("Answer", "g") }}: {{ answerText }}
-          </div>
+          </div> -->
 
           <!-- <div class="answerAlphabet" v-for="i in trueText.length">
             {{ answerText && answerText[i - 1] ? answerText[i - 1] : "" }}
@@ -389,7 +371,7 @@ export default {
       val = val.replaceAll("&gt;", ">"); 
       let before = val.split("++");
       let after = before[1] ? before[1].split("++") : ["", ""];
-      let newVal = before[0] + " .....  " + before[2]; 
+      let newVal = before[0] + " <span class='answerbox'>"+this.answerText+"</span>  " + before[2]; 
       let answer = before[1] ? before[1].split("+") : [];
       this.trueText = answer && answer[1] ?  answer[1].trim() : '';
       let answer_char = answer && answer[1] ?  answer[0].trim() : ''; 
@@ -560,7 +542,22 @@ export default {
   }
 };
 </script>
-<style scoped>
+<style >
+.answerbox{
+  height: 14px;
+  border: 1px solid #efefef;
+  background: rgb(240, 240, 240);
+  color: rgb(100, 100, 100);
+  border-radius: 5px;
+  padding: 3px 5px;
+  margin-left: 5px;
+  margin-right: 5px;
+  min-width: 32px;
+  height: 30px;
+  display: inline-block;
+}
+</style>
+  <style scoped>
 .question {
   font-size: 15px;
   font-weight: bold;
@@ -568,6 +565,7 @@ export default {
 }
 .download_btn {
   color: #fff !important;
+  float: right;
 }
 
 .alphabets {
@@ -592,6 +590,7 @@ export default {
 
 .words {
   width: 100%; 
+  float: right;
 }
 .paragraph_item {
   width: auto;
@@ -648,6 +647,7 @@ export default {
   cursor: pointer;
   text-align: right;
 }
+
 .answerSentence {
   width: 100%;
   height: 25px;

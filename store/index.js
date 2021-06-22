@@ -98,42 +98,115 @@ export const actions = {
         let list = itemx.list;
 
         let options = rootState.core.options ? rootState.core.options['uye_Lists'] : [];
-        
+        let uye_fav_type = options.find(k=> k.id==list);
+        console.log("uye_fav_type",uye_fav_type)
         if(item && item.id && state.likes.find(k=>k.id==item.id)){
         }else{
-            commit("pushLike",{...item,list:list}) 
-            let uye_fav_type = options.find(k=> k.uye_list_cat==list);
-            console.log("list",list,uye_fav_type)
+
+          
+            commit("pushLike",{...item,list:list})  
             let t = JSON.stringify(state.likes); 
             if(rootState.user.auth && rootState.user.auth.id){
-                await axios({
-                  url: process.env.baseURL+"Favorites",
-                  method: "post",
-                  data: { 
-                      fav_content:t,
-                      fav_list:list,
-                      status:1,
-                      uye_fav_type: uye_fav_type ? uye_fav_type.uye_fav_type : '',
-                      created_by: rootState.user.auth.id,
-                      fav_owner_user: rootState.user.auth.id
-                  }
-                }).then(response => { 
-
-                  console.log("res",response)
-                });
+                if(!uye_fav_type){
+                        await axios({
+                        url: process.env.baseURL+"Favorites",
+                        method: "post",
+                        data: { 
+                            fav_content:t,
+                            fav_list:list,
+                            status:1,
+                            uye_fav_type: uye_fav_type ? uye_fav_type.uye_fav_type : '',
+                            created_by: rootState.user.auth.id,
+                            fav_owner_user: rootState.user.auth.id
+                        }
+                        }).then(response => {  
+                        });
+                }else{
+                       await axios({
+                    url: process.env.baseURL+"Favorites",
+                    method: "get",
+                    params: {
+                    limit: 1,
+                    lang: 'NONE',
+                    filter: { fav_owner_user: ["=",rootState.user.auth.id],fav_list:["=",list] },
+                    fields: "id,fav_content,fav_owner_user,fav_list,uye_fav_type,pdb_user",
+                    sort: ["created_on,DESC"]
+                    } 
+                }).then(async response=>{ 
+                    let fav_id = response.data && response.data.formattedData && response.data.formattedData[0] ? response.data.formattedData[0].id : null
+                    await axios({
+                        url: process.env.baseURL+"Favorites/"+fav_id,
+                        method: "put",
+                        data: { 
+                            fav_content:t,
+                            fav_list:list,
+                            status:1,
+                            uye_fav_type: uye_fav_type ? uye_fav_type.uye_fav_type : '',
+                            created_by: rootState.user.auth.id,
+                            fav_owner_user: rootState.user.auth.id
+                        }
+                        }).then(response => {  
+                        });
+                        });
+                }
           }else{
             window.localStorage.setItem("likes", t);
-          }
-           
-            
+          } 
         }
+    }, 
+    async removeLikes({commit,state,rootState},itemx){
+        
+        let items = itemx.items;
+        let selected = itemx.selected;
+
+        let list_item = state.likes.find(k=> k.id==selected.id); 
+        let list = list_item ? list_item.list : ''; 
+        let options = rootState.core.options ? rootState.core.options['uye_Lists'] : []; 
+        let uye_fav_type = options.find(k=> k.id==list); 
+        let new_list = state.likes.filter(l=>{
+            return l.list==list && selected.id!=l.id
+        });
+        // console.log("state.likes",state.likes,list)
+        // console.log("selected",selected)
+        // console.log("new_list",new_list)
+        commit("setLike",new_list)
+        let t = JSON.stringify(new_list); 
+            console.log("Favorites", list_item,selected)
+            if(rootState.user.auth && rootState.user.auth.id){
+                // await axios({
+                //     url: process.env.baseURL+"Favorites",
+                //     method: "get",
+                //     params: {
+                //     limit: 1,
+                //     lang: 'NONE',
+                //     filter: { fav_owner_user: ["=",rootState.user.auth.id],fav_list:["=",list] },
+                //     fields: "fav_content,fav_owner_user,fav_list,uye_fav_type,pdb_user",
+                //     sort: ["created_on,DESC"]
+                //     } 
+                // }).then(async response=>{ 
+                    let fav_id = list_item.favoriteId;
+                        await axios({
+                        url: process.env.baseURL+"Favorites/"+fav_id,
+                        method: "put",
+                        data: {
+                            fav_content:t
+                        }
+                        }).then(response => { 
+
+                             
+                        });
+                        // });
+             
+          }else{
+            window.localStorage.setItem("likes", t);
+          } 
     }, 
     async setLikesFirst({commit ,state,rootState},item){
 
-        console.log("item",item)
+        // console.log("item",item)
         if (item && item.trim().charAt(0) == "[") {  
             let p = JSON.parse(item)  
-            commit("setLike",p)
+            // commit("setLike",p)
           
             if(rootState.user.auth && rootState.user.auth.id){
                
@@ -151,7 +224,7 @@ export const actions = {
             }
         }
     },
-    async getLikes({state,dispatch,rootState},payload){ 
+    async getLikes({state,dispatch,commit,rootState},payload){ 
         if(rootState.user.auth && rootState.user.auth.id){
             try{ 
                 await axios({
@@ -161,14 +234,24 @@ export const actions = {
                     limit: 1,
                     lang: 'NONE',
                     filter: { fav_owner_user: ["=",rootState.user.auth.id] },
-                    fields: "fav_content,fav_owner_user,fav_list,uye_fav_type,pdb_user",
+                    fields: "id,fav_content,fav_owner_user,fav_list,uye_fav_type,pdb_user",
                     sort: ["created_on,DESC"]
                     } 
                 }).then(response=>{
-                    let a = response.data.formattedData[0] 
-                    let likes = a.fav_content 
+                    let a = response.data.formattedData
+                    let likes=[]
+                    console.log("a",a)
+                    a.forEach(k=>{
+                        console.log("k")
+                        let fav_content= JSON.parse(k.fav_content)
+                        fav_content.forEach(f=>{
+                            let item = {...f, list:k.fav_list,favoriteId:k.id}
+                            likes.push(item)
+                        });
+                    }) 
+                    console.log("likes",likes)
                     if(likes){
-                       dispatch("setLikesFirst", likes); 
+                       commit("setLike", likes); 
                    }
                 })
              }

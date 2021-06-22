@@ -17,7 +17,7 @@
 										</a>
 										<div class="hs_content">
 											<div class="eps_dots eps_dots10 more_dropdown">
-												<a href="#"><i class="uil uil-ellipsis-v"></i></a>
+												<a href="javascript:;" ><i class="uil uil-ellipsis-v"></i></a>
 												<div class="dropdown-content">
 													<span><i class="uil uil-share-alt"></i>Share</span>
 													<span><i class="uil uil-heart"></i>Save</span>
@@ -32,9 +32,9 @@
 											<a @click="goPath('course/'+d.cou_link)" class="crse14s title900">{{d.cou_name}}</a>
 											<a href="#" class="crse-cate">{{d.cou_short}}</a>
 											<div class="crse-cate mt-1">
-												<a href="#" >{{getOptName(d.cou_category,'co_labels','cou_label_name')}} </a> 
+												<a href="javascript:;"  >{{getOptName(d.cou_category,'co_labels','cou_label_name')}} </a> 
 												<span class="  ml-1">|</span> 
-												<a href="#" v-if="d.cou_tags" :class="'ml-2'" :key="'tg'+tag"  v-for="tag in d.cou_tags.split(',')">{{tag}} </a>
+												<a href="javascript:;"  v-if="d.cou_tags" :class="'ml-2'" :key="'tg'+tag"  v-for="tag in d.cou_tags.split(',')">{{tag}} </a>
 											</div>
 									 
 										</div>
