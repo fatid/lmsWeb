@@ -4,10 +4,10 @@
      
       <div class="main_logo" id="logo">
         <a @click="goPath('home')"
-          ><img :src="l('siteInfo.G_Logo', 'g')" alt="logo"
+          ><img :src="'http://lms.fatihd.com/yonetim/images/resimler/normal/logo.png'" alt="logo"
         /></a>
         <a @click="goPath('home')"
-          ><img class="logo-inverse" :src="l('siteInfo.G_Logo', 'g')" alt="logo"
+          ><img class="logo-inverse" :src="'http://lms.fatihd.com/yonetim/images/resimler/normal/logo.png'" alt="logo"
         /></a>
       </div>
     
