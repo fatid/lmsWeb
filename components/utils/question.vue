@@ -34,10 +34,10 @@
             
            
           </div>
-          <p><i>Please set answer drag and drop words.</i></p>
+          <p :class="customClass.float"><i>Please set answer drag and drop words.</i></p>
         </div> 
         <div class="question" v-else-if="question.q.exa_type == 'SentenceCorrect'">
-           {{order}} {{ l("Make the sentence correct", "g") }}
+          <a :class="customClass.float"> {{order}} {{ l("Make the sentence correct", "g") }}</a>
           <div class="myAlphabet" v-if="question.q.rs_Question">
             <!-- {{answerText == trueText ? "Yes true." : "Try Again"}}   {{answerText}}==={{trueText}} -->
             <div>
@@ -54,12 +54,15 @@
           </div>
           <div class="words" v-show="counterStatus != 'stopped'">
   
-            <draggable v-model="splitwords_answer" @end="splitwords_setanswer()">
-                  <transition-group style="justify-content: flex-end;
-    display: inline-flex;
-    flex-wrap: wrap;
-    align-items: end;
-    width: 100%;">
+            <draggable v-model="splitwords_answer" :group="{ name: 'row' }" @end="splitwords_setanswer()">
+                  <transition-group 
+                             style="
+                                justify-content: flex-end;
+                                display: inline-flex;
+                                flex-wrap: wrap;
+                                align-items: end;
+                                width: 100%;
+                              ">
                           <div
                             class="words_item"
                             v-for="(alp,i) in splitwords_answer"
@@ -70,12 +73,12 @@
                           </div>  
                   </transition-group>
             </draggable>
-            <p><i>Please set answer drag and drop words.</i></p>
+            <p :class="customClass.float"><i>Please set answer drag and drop words.</i></p>
            
           </div>
         </div>
         <div v-else  style=" text-align: right;  font-size: 22px;"  >   
-          <span v-html="parseQuestion(question.q.rs_Question)"></span><span class="number-right">{{order}}</span>
+         <span class="number-right">{{order}}</span> <span v-html="parseQuestion(question.q.rs_Question)"></span>
         </div>
         <div v-if="question.q.exa_video">
              <video   width="100%" style="max-width: 640px;"  height="480" controls autoplay>
@@ -305,7 +308,7 @@ export default {
       let wp = words.split("\n"); 
       let ws = words.split(" "); 
       let w = ws.map(k => {
-        return k.replaceAll(".", "").trim();
+        return k.replaceAll(".", "").replaceAll(" ", "").trim();
       });
       this.trueText = w.join(" ").trim();
       this.splitwords_answer = w.sort(() => Math.random() - 0.5);
@@ -371,7 +374,11 @@ export default {
       val = val.replaceAll("&gt;", ">"); 
       let before = val.split("++");
       let after = before[1] ? before[1].split("++") : ["", ""];
-      let newVal = before[0] + " <span class='answerbox'>"+this.answerText+"</span>  " + before[2]; 
+      let add = "";
+      if(before[2]){
+        add = " <span class='answerbox'>"+this.answerText+"</span>  "+ before[2];
+      }
+      let newVal = before[0] + add ; 
       let answer = before[1] ? before[1].split("+") : [];
       this.trueText = answer && answer[1] ?  answer[1].trim() : '';
       let answer_char = answer && answer[1] ?  answer[0].trim() : ''; 
@@ -683,11 +690,16 @@ export default {
 
 .number-right{
   float: right; 
+  text-align: center;
   margin: 0px 3px;
-  padding: 0px 3px;
-  border-radius: 3px;
+  padding: 1px 3px;
+  min-width: 25px;
+  height: 25px;
+  border-radius: 5px;
+  font-size: 90%;
   border: 1px solid #f9f9f9;
-  background: #fff;
-  color: rgb(230, 97, 8);
+  color: #fff;
+  background: rgb(230, 97, 8);
 }
+
 </style>

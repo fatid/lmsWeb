@@ -56,7 +56,14 @@
           </div> 
         </span>
         <span>
-         
+          <b-button
+            v-if="list.view == 'read'"
+            variant="primary"
+            :title="'Copy Link'"
+             s
+            pill
+            ><i class="fa fa-copy"></i> </b-button
+          >
           <b-button
             v-if="list.view == 'read'"
             variant="danger"

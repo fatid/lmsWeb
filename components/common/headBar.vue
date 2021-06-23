@@ -244,9 +244,9 @@
 							<li class="sub_menu--item">
 								<a href="certification_test__result.html" class="sub_menu--link">Test Result</a>
 							</li>
-							<li class="sub_menu--item">
+							<!-- <li class="sub_menu--item">
 								<a href="http://www.gambolthemes.net/html-items/edututs+/Instructor_Dashboard/my_certificates.html" class="sub_menu--link">My Certification</a>
-							</li>
+							</li> -->
 						</ul>
 					</li>
 					<li class="menu--item">

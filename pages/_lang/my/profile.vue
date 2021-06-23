@@ -36,13 +36,14 @@
                   >{{ l("Change Password", "general") }}
                 </a>
               </li>
+              
               <li class="nav-item">
                 <a
                   class="nav-link"
                   id="pills-bllingpayment-tab"
                   @click="show = 'bllingpayment'"
                   :class="show == 'bllingpayment' ? 'active' : ''"
-                  >{{ l("Billing and Payouts", "general") }}
+                  >{{ l("Plan and Billing", "general") }}
                 </a>
               </li>
             </ul>
