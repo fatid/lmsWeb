@@ -34,7 +34,7 @@
       <div class="header_right">
        
         <ul >
-          <li v-if="!isMobile || !auth || !auth.token">
+          <li v-if="!isMobile">
              <b-dropdown :text="LOCALE" variant="outline-danger" pill class="m-2" :key="'locale'+LOCALE">
                   <template #button-content>
                       <img class="image-lang" :src="'/img/'+LOCALE+'.png'"   />
@@ -45,8 +45,8 @@
           </li>
           <li>
 
-            <b-button pill variant="outline-danger"  @click="goPath('courses/all_courses')">{{ l("My Courses", "g") }}</b-button>
-            
+            <b-button pill variant="outline-danger"  @click="goPath('courses/all_courses')">{{ l("Courses", "g") }}</b-button>
+            <b-button pill variant="outline-primary"   @click="goPath('words/all_words')" >{{ l("Words", "g") }}</b-button> 
           </li>
           <!-- <li>
 					<a href="shopping_cart.html" class="option_links" title="cart"><i class='uil uil-shopping-cart-alt'></i><span class="noti_count">2</span></a>
@@ -220,7 +220,7 @@
    
     <!-- Header End -->
     <!-- Left Sidebar Start -->
-    <nav class="vertical_nav">
+    <nav class="vertical_nav" v-if="isMobile">
       <div class="left_section menu_left" id="js-menu">
         <div class="left_section">
           <ul>
@@ -271,9 +271,7 @@
                 <li class="sub_menu--item">
                   <a href="#" class="sub_menu--link">Test Results</a>
                 </li>
-                <li>
-                  <a href="#" class="sub_menu--item">My Certification</a>
-                </li>
+                
               </ul>
             </li>
             
@@ -348,7 +346,7 @@
         </div>
       </div>
     </nav>
-    <div class="wrapper">
+    <div class="wrapper wrapper__minify">
       <div class="sa4d25">
         <div class="container-fluid">
           <div class="row">

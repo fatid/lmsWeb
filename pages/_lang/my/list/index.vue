@@ -1,6 +1,16 @@
 <template>
   <div>  
-    <div v-if="listId">
+    
+    <div v-if="listId && viewType && getListData(listId,'data')">
+        <h4 style="margin-bottom: 5px;"> {{selectedList.uye_list_name}}   </h4>
+     <p> <a @click="goPath('my/list')">{{l('All Lists','g')}}</a> / {{selectedList.uye_list_cat}} </p>  
+        <list-details
+          :listItems="getListData(listId,'data')"
+          :listId="listId"
+        ></list-details>
+    </div>
+    <div v-else-if="listId ">
+      
      <h4 style="margin-bottom: 5px;"> {{selectedList.uye_list_name}}   </h4>
      <p> <a @click="goPath('my/list')">{{l('All Lists','g')}}</a> / {{selectedList.uye_list_cat}} </p>  
         <b-list-group> 
@@ -20,7 +30,7 @@
         :key="'l' + i"
         class="d-flex justify-content-between align-items-center"
       >
-        <span v-show="list.view == 'read'" @click="goPath('my/list?id='+list.id)" style="cursor: pointer;">
+        <span v-show="list.view == 'read'" @click="goPath('my/list?id='+list.id+'&view=1')" style="cursor: pointer;">
           {{ list.uye_list_name }} - {{ list.uye_list_cat }} (  {{getListData(list.id,'total')}} )
         </span>
         <span v-show="list.view && list.view == 'edit'">
@@ -56,7 +66,14 @@
           </div> 
         </span>
         <span>
-         
+          <b-button
+            v-if="list.view == 'read'"
+            variant="primary"
+            :title="'Copy Link'"
+            @click="copyText('my/list?id='+list.id+'&view=1')"
+            pill
+            ><i class="fa fa-copy"></i> </b-button
+          >
           <b-button
             v-if="list.view == 'read'"
             variant="danger"
@@ -92,10 +109,13 @@
 </template>
 <script>
 import general from "@/mixins/general";
-import axios from "axios";
-
+import listDetails from "@/components/list/listDetails";
+import axios from "axios"; 
 export default {
   mixins: [general],
+  components:{
+    listDetails
+  },
  async created() {
    await this.getUyeLists();
    await this.getLikes();
@@ -113,6 +133,9 @@ export default {
     },
     listId() {
       return this.$route.query.id;
+    },
+    viewType() {
+      return this.$route.query.view;
     },
     likeModal: {
       get() {
@@ -147,6 +170,19 @@ export default {
     };
   },
   methods: {
+
+    copyText(text) {
+ 
+        const body = document.querySelector('body'); 
+        const area = document.createElement('textarea');
+        body.appendChild(area);
+
+        area.value = window.location.origin+'/'+this.$store.state.locale+'/'+text;
+        area.select();
+        document.execCommand('copy');
+
+        body.removeChild(area);
+     },
     getList(id){
       if(id){
         this.selectedList = this.my_lists.find(k=> k.id==id);  

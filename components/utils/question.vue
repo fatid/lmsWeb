@@ -34,48 +34,50 @@
             
            
           </div>
-          <p><i>Please set answer drag and drop words.</i></p>
+          <p :class="customClass.float"><i>Please set answer drag and drop words.</i></p>
         </div> 
+         
         <div class="question" v-else-if="question.q.exa_type == 'SentenceCorrect'">
-           {{order}} {{ l("Make the sentence correct", "g") }}
-          <div class="myAlphabet" v-if="question.q.rs_Question">
-            <!-- {{answerText == trueText ? "Yes true." : "Try Again"}}   {{answerText}}==={{trueText}} -->
-            <div>
+         <!-- {{trueText}} = {{answerText}}  --  {{splitwords_answer_ordered}} -->
+<div style="margin: 10px 0 ; justify-content: flex-end;
+                                display: inline-flex;
+                                flex-wrap: wrap;
+                                align-items: end;
+                                width: 100%;">
+            <span class="draggable words_item unselectable "
+                v-for="(dd,i) in splitwords_answer" :id="'drag'+i" draggable="true" @dragstart="drag($event)">{{dd}}</span> 
+                </div>
+    <br />
 
-                <span class="answerbox"   v-for="(alp,i) in splitwords_answer"   :key="'wrd'+i"></span>
+<div class="words" > 
+  <draggable  v-model="splitwords_answer"  @end="splitwords_setanswer()" 
+  style=" justify-content: flex-end;
+                                display: inline-flex;
+                                flex-wrap: wrap;
+                                align-items: end;
+                                width: 100%;"
+                                tag="div"
+                                id="allAnswers"
 
-            </div>
-            <!-- <div
-              class="answerSentence"
-              :class="counterStatus == 'stopped' ? 'answered' : ''"
-            >
-              {{ l("Answer", "g") }}: {{ answerText }}
-            </div> -->
-          </div>
-          <div class="words" v-show="counterStatus != 'stopped'">
-  
-            <draggable v-model="splitwords_answer" @end="splitwords_setanswer()">
-                  <transition-group style="justify-content: flex-end;
-    display: inline-flex;
-    flex-wrap: wrap;
-    align-items: end;
-    width: 100%;">
-                          <div
-                            class="words_item"
-                            v-for="(alp,i) in splitwords_answer"
-                            :key="'alp'+i"
-                          >
-                            <!-- @click="addToAnswer(alp, ' ')" -->
-                           <i class="fas fa-sort rotate-180"></i>  {{ alp }}
-                          </div>  
-                  </transition-group>
-            </draggable>
-            <p><i>Please set answer drag and drop words.</i></p>
-           
-          </div>
+ >
+ 
+    <div class="answerbox unselectable "
+                v-for="(dd,i) in splitwords_answer" 
+                :id="'answer'+i"  
+                @drop="drop($event)"
+                draggable="true"
+                @dragover="allowDrop($event)"></div> 
+            
+                </draggable>
+</div> 
+
+
+          <a :class="customClass.float"> {{ l("Make the sentence correct", "g") }}</a>
+          <br />
+      
         </div>
         <div v-else  style=" text-align: right;  font-size: 22px;"  >   
-          <span v-html="parseQuestion(question.q.rs_Question)"></span><span class="number-right">{{order}}</span>
+         <span class="number-right">{{order}}</span> <span v-html="parseQuestion(question.q.rs_Question)"></span>
         </div>
         <div v-if="question.q.exa_video">
              <video   width="100%" style="max-width: 640px;"  height="480" controls autoplay>
@@ -186,6 +188,7 @@ export default {
       isTrue: null,
       answerText: "",
       splitwords_answer: [],
+      splitwords_answer_ordered: [],
       splitparagraph_answer: [],
       answer: "",
       counterStatus: "start",
@@ -292,23 +295,62 @@ export default {
     getRandomResultText() {
       return "Başarılı Cevap Tebrikler";
     },
+      allowDrop(ev){ 
+        ev.preventDefault();
+      },
+      drag(ev){
+        ev.dataTransfer.setData("Text",ev.target.id);
+      },
+      drop(ev){
+        var data=ev.dataTransfer.getData("Text"); 
+        if(data && document.getElementById(data) && ev.target && ev.target.id){
+            ev.preventDefault();
+            console.log("id",data,ev.target)
+          //  document.getElementById(data).parentNode.replaceChild('',document.getElementById(data));
+            document.getElementById(ev.target.id).innerText = document.getElementById(data).innerText;
+            document.getElementById(data).className = 'item-hidden';
+              let total = this.splitwords_answer.length;
+            let answer="";
+            console.log("total",total)
+            if(total){
+                for(let i=0;i<total;i++){
+                      this.splitwords_answer_ordered[i]=document.getElementById('allAnswers').childNodes[i].innerText;
+                }
+            } 
+            this.answerText = this.splitwords_answer_ordered.join(" ");
+        }
+        // document.getElementById(data).className = "";
+        // this.splitwords_answer.forEach(k=>{
 
-    splitwords_setanswer(){
+        // })
+      },
+    splitwords_setanswer(event){
+        this.splitwords_answer_ordered =   this.splitwords_answer;
+        let total = this.splitwords_answer.length;
+        let answer="";
+     
+        if(total){
+            for(let i=0;i<total;i++){
+                   document.getElementById('allAnswers').childNodes[i].innerText = this.splitwords_answer[i];
+            }
+        }
         this.answerText = this.splitwords_answer.join(" ");
+
     },
     splitparagraph_setanswer(){
         this.answerText = this.splitparagraph_answer.join(" ");
     },
     splitwords() {
 
-      let words = this.question.q.rs_Question;
+      let words = this.question.q.rs_Question.trim();
       let wp = words.split("\n"); 
       let ws = words.split(" "); 
       let w = ws.map(k => {
-        return k.replaceAll(".", "").trim();
+        return k.replaceAll(".", "").replaceAll(" ", "").trim();
       });
       this.trueText = w.join(" ").trim();
       this.splitwords_answer = w.sort(() => Math.random() - 0.5);
+    
       this.splitparagraph_answer = wp.sort(() => Math.random() - 0.5);
       return [...this.splitwords_answer]
     }, 
@@ -371,7 +413,11 @@ export default {
       val = val.replaceAll("&gt;", ">"); 
       let before = val.split("++");
       let after = before[1] ? before[1].split("++") : ["", ""];
-      let newVal = before[0] + " <span class='answerbox'>"+this.answerText+"</span>  " + before[2]; 
+      let add = "";
+      if(before[2]){
+        add = " <span class='answerbox'>"+this.answerText+"</span>  "+ before[2];
+      }
+      let newVal = before[0] + add ; 
       let answer = before[1] ? before[1].split("+") : [];
       this.trueText = answer && answer[1] ?  answer[1].trim() : '';
       let answer_char = answer && answer[1] ?  answer[0].trim() : ''; 
@@ -387,8 +433,7 @@ export default {
         let lessonId = this.$route.params.id;
         let activeCourse = this.activeCourse;
         if (this.trueText) {
-          this.$emit("answered", true);
-          console.log("aaa");
+          this.$emit("answered", true); 
 
           this.isTrue = this.trueText === this.answerText ? true : false;
           if (this.trueText == this.answerText) {
@@ -549,11 +594,11 @@ export default {
   background: rgb(240, 240, 240);
   color: rgb(100, 100, 100);
   border-radius: 5px;
-  padding: 3px 5px;
+  padding: 4px 5px;
   margin-left: 5px;
   margin-right: 5px;
   min-width: 32px;
-  height: 30px;
+  height: 32px;
   display: inline-block;
 }
 </style>
@@ -683,11 +728,26 @@ export default {
 
 .number-right{
   float: right; 
+  text-align: center;
   margin: 0px 3px;
-  padding: 0px 3px;
-  border-radius: 3px;
+  padding: 1px 3px;
+  min-width: 25px;
+  height: 25px;
+  border-radius: 5px;
+  font-size: 90%;
   border: 1px solid #f9f9f9;
-  background: #fff;
-  color: rgb(230, 97, 8);
+  color: #fff;
+  background: rgb(230, 97, 8);
 }
+.unselectable {
+    /* -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none; */
+}
+ .item-hidden{
+   display: none;
+ }
 </style>
