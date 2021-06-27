@@ -33,10 +33,36 @@ export default {
       return this.$route.query.device
         ? this.$route.query.device
         : this.$device.isMobile;
-     }  
+     },  
+     likeModal:{
+      get(){
+        return this.$store.state.likeModal;
+      },
+      set(val){
+        this.$store.state.likeModal=val;
+      }
+    },
   },
   methods:{
+    removeLikeModal(selected,topModuleData,type){
+     
+      let f = this.likes.filter((k,i)=>  k.id!=selected.id ); 
+      f = JSON.stringify(f) 
+      this.$store.dispatch('removeLikes',{items:f,selected});
 
+    },
+    openLikeModal(selected,topModuleData,type){
+      
+      let datax={
+        ...selected, 
+        type,
+        topModuleData:topModuleData
+      }
+      this.likeModal.data = datax;
+      this.likeModal.type = type;
+      this.likeModal.show = true;  
+      
+    },
     showPhone(phone){
       let l = phone ? phone.length : 0 ;
       if(l && l==12){
@@ -157,6 +183,11 @@ export default {
     goPath(path,query={}){ 
       this.$router.push({path:'/'+this.LOCALE+'/'+path,query})
       this.collapse = false;
+    },
+    goPathBlank(path,query={}){ 
+      let href = this.$router.resolve({path:'/'+this.LOCALE+'/'+path,query})
+      this.collapse = false;
+      window.open(href.href, '_blank');
     },
     l(key,cat='main'){
       if(key){
@@ -311,7 +342,7 @@ export default {
       return this.$store.getters.getLikes
     },
     isLiked(id){ 
-      console.log("this.likes",this.likes)
+      console.log("this.likes",this.likes,id,this.likes.find(k=> k.id == id))
       if(this.likes.find(k=> k.id == id)){
         return true
       }

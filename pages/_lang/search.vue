@@ -1,7 +1,7 @@
 <template>
   <div :lang="LOCALE" class="w-100">
     <div class="_215v12">
-      <div class="container-fluid">
+      <div class="container">
         <div class="row">
           <div class="col-lg-12">
             <div class="section3125">

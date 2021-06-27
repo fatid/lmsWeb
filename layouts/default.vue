@@ -1,10 +1,11 @@
 <template>
   <div>
     <header class="header clearfix main-header"  >
-      <button type="button" id="toggleMenu" class="toggle_menu">
+      <div class="container">
+      <button type="button" id="toggleMenu" v-if="isMobile" class="toggle_menu">
         <i class="uil uil-bars"></i>
       </button>
-      <button id="collapse_menu" class="collapse_menu">
+      <button id="collapse_menu" class="collapse_menu" v-if="isMobile">
         <i class="uil uil-bars collapse_menu--icon "></i>
         <span class="collapse_menu--label"></span>
       </button>
@@ -45,6 +46,7 @@
           </li>
           <li>
 
+            <b-button pill variant="outline-danger"  @click="goPath('filter')">{{ l("Filter", "g") }}</b-button>
             <b-button pill variant="outline-danger"  @click="goPath('courses/all_courses')">{{ l("Courses", "g") }}</b-button>
             <b-button pill variant="outline-primary"   @click="goPath('words/all_words')" >{{ l("Words", "g") }}</b-button> 
           </li>
@@ -215,6 +217,7 @@
           </li>
         </ul>
       </div>
+      </div>
     </header>
 
    
@@ -234,7 +237,16 @@
                 <span class="menu--label">{{ l("Home", "g") }}</span>
               </a>
             </li>
-
+  <li class="menu--item">
+              <a
+                @click="goPath('filter')"
+                class="menu--link"
+                :title="l('Filter', 'g')"
+              >
+                <i class="uil uil-search menu--icon"></i>
+                <span class="menu--label">{{ l("Filter", "g") }}</span>
+              </a>
+            </li>
             <li class="menu--item">
               <a
                 @click="goPath('courses/all_courses')"
@@ -348,7 +360,7 @@
     </nav>
     <div class="wrapper wrapper__minify">
       <div class="sa4d25">
-        <div class="container-fluid">
+        <div class="container">
           <div class="row">
             <div class="col-12"> 
               <nuxt v-if="LANG_PACK.main" :key="$route.fullPath" />
@@ -720,18 +732,18 @@ a {
 
 .modal-body-wide::-webkit-scrollbar-track,
 ::-webkit-scrollbar-track {
-  -webkit-box-shadow: inset 0 0 0px rgba(0, 0, 0, 0.3);
+  -webkit-box-shadow: inset 0 0 0px rgba(0, 0, 0, 0);
   border-radius: 10px;
 }
 ::-webkit-scrollbar-track {
-  -webkit-box-shadow: inset 0 0 7px rgba(0, 0, 0, 0.3);
+  -webkit-box-shadow: inset 0 0 3px rgba(0, 0, 0, 0);
   border-radius: 10px;
 }
 
 .modal-body-wide::-webkit-scrollbar-thumb,
 ::-webkit-scrollbar-thumb {
-  border-radius: 10px;
-  -webkit-box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.5);
+  border-radius: 3px;
+  -webkit-box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.3);
   margin-right: 5px;
 }
 
@@ -805,5 +817,8 @@ img.image-lang{
 header.modal-header{
     position: relative;
         height: auto;
+}
+.search120{
+  margin-top: 20px;
 }
 </style>
