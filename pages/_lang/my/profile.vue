@@ -282,6 +282,23 @@
                               </div>
                             </div>
                           </div>
+                          <div class="col-lg-12 mt-5 ">
+                            <p>{{ l("Why do you learn Arabic ?", "g") }}</p>
+                          </div> 
+                           <div class="col-lg-12">
+                            <div class="ui search focus mt-30">
+                              <div class="ui left icon input swdh11 swdh19">
+                                <textarea
+                                  class="pa-5 w-100" 
+                                  name="headline"
+                                  v-model="myProfile.U_why_you_learn"
+                                  id="id_headline"
+                                  required="" 
+                                  :placeholder="l('Why do you learn Arabic ?', 'g')"
+                                ></textarea>
+                              </div>
+                            </div>
+                          </div>
                           <div class="col-lg-12">
                             <div class="divider-1"></div>
                           </div>
@@ -1288,6 +1305,7 @@ export default {
           U_surname: mp.U_surname,
           U_Mobil: mp.U_Mobil,
           U_aboutme: mp.U_aboutme,
+          U_why_you_learn: mp.U_why_you_learn,
           U_degree: mp.U_degree,
           U_Gender: mp.U_Gender,
           U_Country: mp.U_Country,
@@ -1361,7 +1379,7 @@ export default {
             limit: 100,
             offset: 0,
             fields:
-              "U_mail,U_rname,U_surname,id,U_Status,U_likedPages,U_degree,U_Timezone,U_BirthDate,U_Mtype,U_Photo,U_Gender,U_Mobil,U_aboutme",
+              "U_mail,U_rname,U_surname,id,U_Status,U_likedPages,U_degree,U_Timezone,U_BirthDate,U_Mtype,U_Photo,U_Gender,U_Mobil,U_aboutme,U_why_you_learn",
             lang: this.$store.state.locale,
             sort: ["sort,ASC"],
             filter: filters

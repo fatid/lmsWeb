@@ -159,7 +159,7 @@ const actions = {
                   limit: 1,
                   lang: 'NONE',
                   filter: { U_mail: ["=",sendobj.email], U_Password: ["=",sendobj.password] },
-                  fields: "U_mail,U_rname,U_surname,U_Timezone,U_Photo,U_aboutme,id,U_Status,U_likedPages,U_BirthDate",
+                  fields: "U_mail,U_rname,U_surname,U_Timezone,U_Photo,U_aboutme,id,U_Status,U_likedPages,U_BirthDate,U_why_you_learn",
                   sort: ["created_on,DESC"]
                 } 
               })

@@ -65,10 +65,8 @@ export default {
     async getMeanings() {
 
 
-  let fields = `dict_mean_explain,dict_mean_sound,dict_mean_image,id,status,created_on,created_by,id,status`;
-
-      let filters = { prev_id: ["=", this.data.id] };
- 
+      let fields = `dict_mean_explain,dict_mean_sound,dict_mean_image,id,status,created_on,created_by,id,status`; 
+      let filters = { prev_id: ["=", this.data.id] }; 
       return new Promise((resolve, reject) => {
         axios({
           url: process.env.baseURL + "dict_meanings",
@@ -103,10 +101,8 @@ export default {
 
     },
     async getDictionary() {
-      let fields = `dict_word,dict_mean,dict_image,dict_link,dict_tag,dict_w_similar,dict_tag,id,status,created_on,created_by,id,status`;
-
-      let filters = { dict_word: ["=", this.id] };
- 
+      let fields = `dict_word,dict_mean,dict_image,dict_link,dict_tag,dict_w_similar,dict_tag,id,status,created_on,created_by,id,status`; 
+      let filters = { dict_word: ["=", this.id] }; 
       return new Promise((resolve, reject) => {
         axios({
           url: process.env.baseURL + "dict_word",

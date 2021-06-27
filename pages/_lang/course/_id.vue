@@ -418,8 +418,7 @@ export default {
   data: () => ({
     data: [],
     units: [],
-    lessons: [],
-    likePopover: false,
+    lessons: [], 
     inputList: ""
   }),
   async created() {
@@ -452,35 +451,10 @@ export default {
     auth() {
       return this.$store.state.user.auth;
     },
-    likeModal:{
-        get(){
-          return this.$store.state.likeModal;
-        },
-        set(val){
-          this.$store.state.likeModal=val;
-        }
-      },
+    
   },
   methods: {
-    removeLikeModal(selected,topModuleData,type){
-     
-      let f = this.likes.filter((k,i)=>  k.id!=selected.id ); 
-      f = JSON.stringify(f) 
-      this.$store.dispatch('removeLikes',{items:f,selected});
-
-    },
-    openLikeModal(selected,topModuleData,type){
-      
-      let datax={
-        ...selected, 
-        type,
-        topModuleData:topModuleData
-      }
-      this.likeModal.data = datax;
-      this.likeModal.type = type;
-      this.likeModal.show = true;  
-      
-    },
+  
     getCourseIcon(les) {
       if (les.lesson_type == "Course" && les.lesson_video) {
         return "uil uil-play-circle";
@@ -687,6 +661,15 @@ export default {
 h3.popover-header {
   margin-top: 0;
 }
+
+.details{
+  width: 200px;
+}
+.content-summary{
+  width: 150px!important;
+}
+</style>
+<style>
 .text-black{
   color: #a0a0a0;
   width: 25px;
@@ -695,11 +678,5 @@ h3.popover-header {
 .text-red{
   color: #e71146;
   width: 25px;
-}
-.details{
-  width: 200px;
-}
-.content-summary{
-  width: 150px!important;
 }
 </style>

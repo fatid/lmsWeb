@@ -5,7 +5,7 @@
       <div class="col-12">
     
         <div class="question" v-if="question.q.exa_type == 'ParagraphOrder'">
-            {{order}} {{ l("Make the text correct", "g") }}
+            {{ l("Make the text correct", "g") }}
           <div class="myParagraph" v-if="question.q.rs_Question">
             <!-- {{answerText == trueText ? "Yes true." : "Try Again"}}   {{answerText}}==={{trueText}} -->
             <div
@@ -25,8 +25,8 @@
                             :key="'alp'+i"
                           >
                             <!-- @click="addToAnswer(alp, ' ')" -->
-                            <i class="fas fa-sort"></i>  {{ alp }} 
-                            <span style="float: right; margin-left: 5px;">{{i+1}}</span>
+                              {{ alp }} <i class="fas fa-sort"></i>
+                            <!-- <span style="float: right; margin-left: 5px;">{{i+1}}</span> -->
                           </div>  
                   </transition-group>
             </draggable>
@@ -38,32 +38,34 @@
         </div> 
          
         <div class="question" v-else-if="question.q.exa_type == 'SentenceCorrect'">
+          <!-- {{splitwords_answer_original}} {{splitwords_answer}} {{splitwords_answer_ordered}} -->
          <!-- {{trueText}} = {{answerText}}  --  {{splitwords_answer_ordered}} -->
 <div style="margin: 10px 0 ; justify-content: flex-end;
                                 display: inline-flex;
                                 flex-wrap: wrap;
                                 align-items: end;
                                 width: 100%;">
-            <span class="draggable words_item unselectable "
-                v-for="(dd,i) in splitwords_answer" :id="'drag'+i" draggable="true" @dragstart="drag($event)">{{dd}}</span> 
+                <span class="draggable words_item reset unselectable " @click="splitwords_answer=splitwords_answer_original;">Reset</span>
+            <span class="draggable words_item unselectable " 
+                v-for="(dd,i) in splitwords_answer" :id="'drag'+question.q.id+i" draggable="true" @dragstart="drag($event)">{{dd}}</span> 
                 </div>
     <br />
 
 <div class="words" > 
-  <draggable  v-model="splitwords_answer"  @end="splitwords_setanswer()" 
+  <draggable  v-model="splitwords_answer"  @end="splitwords_setanswer" 
   style=" justify-content: flex-end;
                                 display: inline-flex;
                                 flex-wrap: wrap;
                                 align-items: end;
                                 width: 100%;"
                                 tag="div"
-                                id="allAnswers"
+                                :id="'allAnswers'+question.q.id"
 
  >
  
     <div class="answerbox unselectable "
                 v-for="(dd,i) in splitwords_answer" 
-                :id="'answer'+i"  
+                :id="'answer'+question.q.id+i"  
                 @drop="drop($event)"
                 draggable="true"
                 @dragover="allowDrop($event)"></div> 
@@ -71,13 +73,13 @@
                 </draggable>
 </div> 
 
-
+<!-- {{answerText}} == {{trueText}} -->
           <a :class="customClass.float"> {{ l("Make the sentence correct", "g") }}</a>
           <br />
       
         </div>
         <div v-else  style=" text-align: right;  font-size: 22px;"  >   
-         <span class="number-right">{{order}}</span> <span v-html="parseQuestion(question.q.rs_Question)"></span>
+           <span v-html="parseQuestion(question.q.rs_Question)"></span>
         </div>
         <div v-if="question.q.exa_video">
              <video   width="100%" style="max-width: 640px;"  height="480" controls autoplay>
@@ -170,6 +172,8 @@
 import counter from "@/components/utils/counter.vue";
 import general from "@/mixins/general";
   import draggable from 'vuedraggable'
+import axios from "axios"; 
+
 export default {
   mixins: [general],
 
@@ -251,7 +255,7 @@ export default {
       let start = alp.split("");
       const total = start.length + 4;
       let total_given_alphabets = this.alternativeChars ? this.alternativeChars.length : 0; 
-      console.log("total_given_alphabets",total_given_alphabets,this.alternativeChars,this.trueText)
+      // console.log("total_given_alphabets",total_given_alphabets,this.alternativeChars,this.trueText)
       if(this.alternativeChars){
         this.alternativeChars.forEach(element => {
             start.push(element);
@@ -266,7 +270,11 @@ export default {
   },
   created() {
     this.chooseActive();
-   
+    console.log("bgf answer",this.question )
+    if(this.question && this.question.q && this.question.q.exa_type == 'FillBlanks' && !this.question.a[0]){
+      console.log("inside " )
+      this.getAnswers()
+    }
   },
   watch: {
     "activeCourse.last"(val) {
@@ -303,6 +311,7 @@ export default {
       },
       drop(ev){
         var data=ev.dataTransfer.getData("Text"); 
+        console.log("drop",data)
         if(data && document.getElementById(data) && ev.target && ev.target.id){
             ev.preventDefault();
             console.log("id",data,ev.target)
@@ -314,24 +323,58 @@ export default {
             console.log("total",total)
             if(total){
                 for(let i=0;i<total;i++){
-                      this.splitwords_answer_ordered[i]=document.getElementById('allAnswers').childNodes[i].innerText;
+                      this.splitwords_answer_ordered[i]=document.getElementById('allAnswers'+this.question.q.id).childNodes[i].innerText;
                 }
             } 
-            this.answerText = this.splitwords_answer_ordered.join(" ");
+            let s = this.splitwords_answer_ordered.reverse()
+            this.answerText = s.join(" ");
         }
         // document.getElementById(data).className = "";
         // this.splitwords_answer.forEach(k=>{
 
         // })
       },
+      async getAnswers() {
+      //   console.log("Answers",this.question)
+      // this.question.a = null;
+      // let fields =
+      //   "id,sort,status,exa_q_answer,exa_q_image,exa_q_sound,exa_q_true";
+      // axios({
+      //   url: process.env.baseURL + "exam_q_answer",
+      //   method: "get",
+      //   params: {
+      //     limit: 100,
+      //     offset: 0,
+      //     fields,
+      //     lang: this.$store.state.locale,
+      //     sort: ["sort,ASC"],
+      //     filter: { prev_id: ["=", this.question.q.id] }
+      //   }
+      // })
+      //   .then(response => {
+      //     if (
+      //       response && response.data &&
+      //       response.data.formattedData &&
+      //       response.data.formattedData[0]
+      //     ) {
+      //       this.answers = response.data.formattedData;
+      //     }
+      //   })
+      //   .catch(e => {
+      //     this.answers = null;
+      //   });
+    },
     splitwords_setanswer(event){
         this.splitwords_answer_ordered =   this.splitwords_answer;
         let total = this.splitwords_answer.length;
         let answer="";
-     
+         console.log("splitwords_setanswer",total,event,this.splitwords_answer_ordered)
         if(total){
             for(let i=0;i<total;i++){
-                   document.getElementById('allAnswers').childNodes[i].innerText = this.splitwords_answer[i];
+                   let t = document.getElementById('allAnswers'+this.question.q.id).childNodes[i].innerText;
+                   if(t){
+                      document.getElementById('allAnswers'+this.question.q.id).childNodes[i].innerText = this.splitwords_answer[i];
+                   }
             }
         }
         this.answerText = this.splitwords_answer.join(" ");
@@ -344,12 +387,13 @@ export default {
 
       let words = this.question.q.rs_Question.trim();
       let wp = words.split("\n"); 
-      let ws = words.split(" "); 
+      let ws = wp[0].trim().split(" ");  
       let w = ws.map(k => {
         return k.replaceAll(".", "").replaceAll(" ", "").trim();
       });
       this.trueText = w.join(" ").trim();
       this.splitwords_answer = w.sort(() => Math.random() - 0.5);
+      this.splitwords_answer_original = w.sort(() => Math.random() - 0.5);
     
       this.splitparagraph_answer = wp.sort(() => Math.random() - 0.5);
       return [...this.splitwords_answer]
@@ -384,10 +428,10 @@ export default {
     },
     addToAnswer(val, space) {
       let total = this.answerText ? this.answerText.length : 0;
-      if (total < this.trueText.length) {
+      
         this.answerText += space + val;
         this.answerText = this.answerText.trim();
-      }
+      
     },
     removeAnswer(val) {
       this.answerText = "";
@@ -409,20 +453,22 @@ export default {
       }
     },
     parseQuestion(val) {
-      val = val.replaceAll("&lt;", "<");
-      val = val.replaceAll("&gt;", ">"); 
-      let before = val.split("++");
-      let after = before[1] ? before[1].split("++") : ["", ""];
-      let add = "";
-      if(before[2]){
-        add = " <span class='answerbox'>"+this.answerText+"</span>  "+ before[2];
+      if(val){
+          val = val.replaceAll("&lt;", "<");
+          val = val.replaceAll("&gt;", ">"); 
+          let before = val.split("++");
+          let after = before[1] ? before[1].split("++") : ["", ""];
+          let add = "";
+          if(before[2]){
+            add = " <span class='answerbox'>"+this.answerText+"</span>  "+ before[2];
+          }
+          let newVal = before[0] + add ; 
+          let answer = before[1] ? before[1].split("+") : [];
+          this.trueText = answer && answer[1] ?  answer[1].trim() : '';
+          let answer_char = answer && answer[1] ?  answer[0].trim() : ''; 
+          this.alternativeChars = answer_char ? answer_char.trim().split("") : []
+          return newVal;
       }
-      let newVal = before[0] + add ; 
-      let answer = before[1] ? before[1].split("+") : [];
-      this.trueText = answer && answer[1] ?  answer[1].trim() : '';
-      let answer_char = answer && answer[1] ?  answer[0].trim() : ''; 
-      this.alternativeChars = answer_char ? answer_char.trim().split("") : []
-      return newVal;
     },
     nextQuestion() {
       this.$emit("answered", true);
@@ -611,6 +657,8 @@ export default {
 .download_btn {
   color: #fff !important;
   float: right;
+  padding: 7px 10px;
+  height: 32px;
 }
 
 .alphabets {
@@ -651,6 +699,14 @@ export default {
   cursor: pointer;
   font-size: 14px;
 }
+.words_item.reset{
+      margin-right: 20px;
+      background: #fff;
+      border: 0;
+    color: #d64b4b;
+    font-weight: 400;
+
+  }  
 .words_item {
   width: auto;
   height: 32px;
@@ -663,6 +719,7 @@ export default {
   text-align: center;
   cursor: pointer;
   font-size: 18px;
+ 
 }
 
 .myAlphabet {

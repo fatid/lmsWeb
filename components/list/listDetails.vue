@@ -1,39 +1,6 @@
 <template>
   <div class="container">
-    <div class="row">
-      <div class="col-lg-12">
-        <nav aria-label="breadcrumb">
-          <ol class="breadcrumb">
-            <li class="breadcrumb-item">
-              <a @click="goPath('courses')">{{ l("Course", "g") }}</a>
-            </li> 
-            <li
-              class="breadcrumb-item active"
-              @click="
-                goPath(
-                  'course/the_only_course_you_need_to_learn_web_development'
-                )
-              "
-              aria-current="page"
-            >
-              The only course you need to learn web development
-            </li>
-          </ol>
-
-          <a
-            class="download_btn2"
-            @click="
-              goPath('my/list?id='+listId)
-            "
-            >Back to Course</a
-          >
-        </nav>
-      </div>
-    </div>
-    <div class="card-header">
-
- 
-    </div>
+    
 <div class="card-header" v-if="1==1">
  
       <div
@@ -432,7 +399,7 @@ export default {
     },
     selectStep(step) {
       let id = this.allLessons[step - 1].id;
-      this.goPath('my/list?id='+listId+"view=1&lesson=" + id);
+      this.goPath('my/list?id='+this.listId+"&view=1&lesson=" + id);
       this.setSelect();
     },
     async getLesson() {

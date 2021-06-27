@@ -84,7 +84,7 @@
  
     <div class="wrapper wrapper__minify">
       <div class="sa4d25">
-        <div class="container-fluid">
+        <div class="container">
           <div class="row">
             <div class="col-12">
               <nuxt v-if="LANG_PACK.main" :key="$route.fullPath" />
@@ -442,18 +442,18 @@ a {
 
 .modal-body-wide::-webkit-scrollbar-track,
 ::-webkit-scrollbar-track {
-  -webkit-box-shadow: inset 0 0 0px rgba(0, 0, 0, 0.3);
+  -webkit-box-shadow: inset 0 0 0px rgba(0, 0, 0, 0);
   border-radius: 10px;
 }
 ::-webkit-scrollbar-track {
-  -webkit-box-shadow: inset 0 0 7px rgba(0, 0, 0, 0.3);
+  -webkit-box-shadow: inset 0 0 4px rgba(0, 0, 0, 0);
   border-radius: 10px;
 }
 
 .modal-body-wide::-webkit-scrollbar-thumb,
 ::-webkit-scrollbar-thumb {
   border-radius: 10px;
-  -webkit-box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.5);
+  -webkit-box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.3);
   margin-right: 5px;
 }
 

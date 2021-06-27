@@ -141,10 +141,16 @@ export default {
           prev_id: this.auth.id,
           fields: "id,uye_list_name,uye_list_cat"
         });
-
-        this.newAdd = {
-          uye_list_name: ""
-        };
+          if (
+            response  && response.data
+          ) {
+            // console.log("response",response)
+            this.inputList = response.data.id;
+                this.addNew = false;
+                this.newAdd = {
+                  uye_list_name: ""
+                };
+          }
       });
     },
     getSelect() {
