@@ -21,7 +21,7 @@
             </div>
             <div>
               <h5 class="mb-1">{{ d.dict_word }}  </h5>  
-              <small>{{ d.dict_mean }}</small>
+              <div class="font-11" v-html="HtmlEncode(d.dict_mean)"></div>
             </div>
           </a>
         </div>

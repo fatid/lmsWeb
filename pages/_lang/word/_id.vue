@@ -22,7 +22,7 @@
               alt="..."
             />
 
-        {{data.dict_mean}}
+        <div class="font-11" v-html="HtmlEncode(data.dict_mean)"></div>
         <br />
         <br />
         </div>

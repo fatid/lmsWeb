@@ -29,7 +29,7 @@
                                 <label> {{opt.cou_level_name}} </label>
 							</div>
 				</div>
-                <div class="serach-item">
+                <!-- <div class="serach-item">
                             <div class="search-title">
                                 {{l('Search keyword','g')}} 
                             </div>
@@ -38,7 +38,7 @@
                                         @change="getResults()"
                                         v-model="search.keyword" :placeholder="l('Type keyword','g')"  /> 
 							</div>
-				</div>    
+				</div>     -->
                 <div class="serach-item" v-if="search.module=='Exam'"> 
                 
                             <div class="search-title">
@@ -65,6 +65,24 @@
          </div>
         <div class="content" v-show="loading"> Loading </div>
         <div class="content" v-show="!loading">   
+             <div class="row">
+                    <div class="col-6 " :class="customClass.textDir+' '+customClass.dir">
+                         {{l('Total results','g')}} {{pagination.total}}   
+                            {{search.module=='Course' && search.selectionC && search.selectionC.length>0 ? '('+search.selectionC.length+' '+l('selected','g') +')' : '' }}
+                            {{search.module=='Word' && search.selectionW && search.selectionW.length>0 ? '('+search.selectionW.length+' '+l('selected','g')  +')' : '' }}
+                            <b-dropdown id="dropdown-1" size="sm"  :text="'Order by:'+orderByList[orderBy].label" class="m-md-2">
+                                <b-dropdown-item @click="orderBy=i" v-for="(order,i) in orderByList">{{order.label}}</b-dropdown-item>
+                               
+                            </b-dropdown>   
+                    </div> 
+                            <div class="col-6 " >
+								<input type="text" class="input-std" 
+                                        @change="getResults()"
+                                        v-model="search.keyword" :placeholder="l('Type keyword','g')"  /> 
+							</div>
+				     
+                    </div>
+
             <div class="content-table">
                 <div v-if="search.module=='Word'">
                     <div v-for="dt in data" class="list_item"  :class="customClass.textDir+' '+customClass.dir">
@@ -152,17 +170,8 @@
                     </div>
                 </div>
                 </div>
-                <div class="row">
-                    <div class="col-5 " :class="customClass.textDir+' '+customClass.dir">
-                            {{l('Total results','g')}} {{pagination.total}}   
-                            {{search.module=='Course' && search.selectionC && search.selectionC.length>0 ? '('+search.selectionC.length+' '+l('selected','g') +')' : '' }}
-                            {{search.module=='Word' && search.selectionW && search.selectionW.length>0 ? '('+search.selectionW.length+' '+l('selected','g')  +')' : '' }}
-                            <b-dropdown id="dropdown-1" size="sm"  :text="'Order by:'+orderByList[orderBy].label" class="m-md-2">
-                                <b-dropdown-item @click="orderBy=i" v-for="(order,i) in orderByList">{{order.label}}</b-dropdown-item>
-                               
-                            </b-dropdown>
-                    </div>
-                    <div class="col-7" :class="customClass.textDir+' '+customClass.dir">
+                <div class="row"> 
+                    <div class="col-12" :class="customClass.textDir+' '+customClass.dir">
                             <b-pagination
                             v-model="pagination.page"
                             :total-rows="pagination.total"
@@ -291,7 +300,7 @@ export default {
         height: calc(100vh - 100px);
         padding : 0px 10px;
         .content-table{
-            height: calc(100vh - 145px);
+            height: calc(100vh - 195px);
             overflow: auto;
             margin-bottom: 10px;
             padding-right:20px;
