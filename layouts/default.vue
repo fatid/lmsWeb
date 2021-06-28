@@ -31,25 +31,20 @@
             <i class="uil uil-search-alt icon icon1"></i>
           </div>
         </div>
+          
       </div>
-      <div class="header_right">
-       
-        <ul >
-          <li v-if="!isMobile">
-             <b-dropdown :text="LOCALE" variant="outline-danger" pill class="m-2" :key="'locale'+LOCALE">
-                  <template #button-content>
-                      <img class="image-lang" :src="'/img/'+LOCALE+'.png'"   />
-                  </template>
-                  <b-dropdown-item  @click="changeLanguage('ar')" ><img class="image-lang" :src="'/img/ar.png'"   /> Arabic</b-dropdown-item>
-                  <b-dropdown-item  @click="changeLanguage('en')" ><img class="image-lang" :src="'/img/en.png'" /> English</b-dropdown-item> 
-                </b-dropdown>
-          </li>
-          <li>
+     <div class="menu-select">
+        
 
             <b-button pill variant="outline-danger"  @click="goPath('filter')">{{ l("Filter", "g") }}</b-button>
             <b-button pill variant="outline-danger"  @click="goPath('courses/all_courses')">{{ l("Courses", "g") }}</b-button>
             <b-button pill variant="outline-primary"   @click="goPath('words/all_words')" >{{ l("Words", "g") }}</b-button> 
-          </li>
+     
+      </div>
+      <div class="header_right">
+       
+        <ul>
+          
           <!-- <li>
 					<a href="shopping_cart.html" class="option_links" title="cart"><i class='uil uil-shopping-cart-alt'></i><span class="noti_count">2</span></a>
 				</li> -->
@@ -148,7 +143,7 @@
             </div> -->
           </li>
          
-          <li v-if="!auth || !auth.token" class="list-inline-item g-mx-4">
+          <li v-if="!auth || !auth.token" class="list-inline-item g-mx-4 ">
             <a
               class="g-color-black g-color-primary--hover g-text-underline--none--hover"
               @click="goPath('form/login')"
@@ -170,6 +165,21 @@
                   <b-dropdown-item  @click="goPath('my/profile')" >  Profile</b-dropdown-item>
                   <b-dropdown-item  @click="goPath('courses/all_courses')" >  {{l('My Courses','g')}}</b-dropdown-item>
                   <b-dropdown-item  @click="goPath('my/list')" >   {{l('My List','g')}}</b-dropdown-item>
+                  <b-dropdown-text    >  
+                    
+                              <a  @click="changeLanguage('ar')" ><img class="image-lang" :src="'/img/ar.png'" title="Arabic"   /> </a>
+                              <a  @click="changeLanguage('en')" ><img class="image-lang" :src="'/img/en.png'" title="English"  /> </a>
+
+                  </b-dropdown-text>
+                  <!-- <b-dropdown-form bv::dropdown::show>  <b-dropdown @click="preventDefault()" :text="LOCALE" variant="outline-danger" pill class="m-2" :key="'locale'+LOCALE">
+                  <template #button-content>
+                      <img class="image-lang" :src="'/img/'+LOCALE+'.png'"   />
+                  </template>
+                  <b-dropdown-item  @click="preventDefault();changeLanguage('ar')" ><img class="image-lang" :src="'/img/ar.png'"   /> Arabic</b-dropdown-item>
+                  <b-dropdown-item  @click="preventDefault();changeLanguage('en')" ><img class="image-lang" :src="'/img/en.png'" /> English</b-dropdown-item> 
+          
+                </b-dropdown>
+                </b-dropdown-form> -->
                   <b-dropdown-item  @click="goPath('form/login?logout=true')" >  Sign Out</b-dropdown-item> 
                 </b-dropdown>
 
@@ -729,7 +739,11 @@ a {
 .modal-body-wide::-webkit-scrollbar {
   width: 12px;
 }
-
+::-webkit-scrollbar {
+    -webkit-appearance: none;
+    width: 4px!important;
+    height: 10px!important;
+}
 .modal-body-wide::-webkit-scrollbar-track,
 ::-webkit-scrollbar-track {
   -webkit-box-shadow: inset 0 0 0px rgba(0, 0, 0, 0);
@@ -820,5 +834,12 @@ header.modal-header{
 }
 .search120{
   margin-top: 20px;
+}
+
+.menu-select{
+    display: inline-block;
+    margin-right: 20px;
+    margin-top: 20px;
+    margin-left: 10px;
 }
 </style>

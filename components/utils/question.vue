@@ -94,9 +94,26 @@
           <img :src="question.q.exa_image" />
         </div>
 
-        <div class="ui form">
+        <div class="ui form" v-if="question.a && question.a[0]">
           <div class="grouped fields">
             <div class="field fltr-radio" v-for="(a, i) in question.a">
+              <div class="ui radio checkbox">
+                <input
+                  type="radio"
+                  name="example"
+                  v-model="answer"
+                  :value="a.id"
+                  class="hidden"
+                  :disable="isTrue"
+                />
+                <label @click="answer = a.id">{{ a.exa_q_answer }} </label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="ui form" v-else-if="answers && answers[0]">
+          <div class="grouped fields">
+            <div class="field fltr-radio" v-for="(a, i) in answers">
               <div class="ui radio checkbox">
                 <input
                   type="radio"
@@ -191,6 +208,7 @@ export default {
       isTimeOut: false,
       isTrue: null,
       answerText: "",
+      answers: [],
       splitwords_answer: [],
       splitwords_answer_ordered: [],
       splitparagraph_answer: [],
@@ -270,10 +288,11 @@ export default {
   },
   created() {
     this.chooseActive();
-    console.log("bgf answer",this.question )
-    if(this.question && this.question.q && this.question.q.exa_type == 'FillBlanks' && !this.question.a[0]){
+    console.log("bgf answer",this.question , this.question.q.exa_type, this.question.a)
+    if(this.question && this.question.q && this.question.q.exa_type == 'MultipleChoice' && !this.question.a[0]){
       console.log("inside " )
-      this.getAnswers()
+      this.getAnswers1() 
+
     }
   },
   watch: {
@@ -334,35 +353,35 @@ export default {
 
         // })
       },
-      async getAnswers() {
-      //   console.log("Answers",this.question)
-      // this.question.a = null;
-      // let fields =
-      //   "id,sort,status,exa_q_answer,exa_q_image,exa_q_sound,exa_q_true";
-      // axios({
-      //   url: process.env.baseURL + "exam_q_answer",
-      //   method: "get",
-      //   params: {
-      //     limit: 100,
-      //     offset: 0,
-      //     fields,
-      //     lang: this.$store.state.locale,
-      //     sort: ["sort,ASC"],
-      //     filter: { prev_id: ["=", this.question.q.id] }
-      //   }
-      // })
-      //   .then(response => {
-      //     if (
-      //       response && response.data &&
-      //       response.data.formattedData &&
-      //       response.data.formattedData[0]
-      //     ) {
-      //       this.answers = response.data.formattedData;
-      //     }
-      //   })
-      //   .catch(e => {
-      //     this.answers = null;
-      //   });
+      async getAnswers1() {
+        console.log("Answers")
+      this.question.a = null;
+      let fields =
+        "id,sort,status,exa_q_answer,exa_q_image,exa_q_sound,exa_q_true";
+      axios({
+        url: process.env.baseURL + "exam_q_answer",
+        method: "get",
+        params: {
+          limit: 100,
+          offset: 0,
+          fields,
+          lang: this.$store.state.locale,
+          sort: ["sort,ASC"],
+          filter: { prev_id: ["=", this.question.q.id] }
+        }
+      })
+        .then(response => {
+          if (
+            response && response.data &&
+            response.data.formattedData &&
+            response.data.formattedData[0]
+          ) {
+            this.answers = response.data.formattedData;
+          }
+        })
+        .catch(e => {
+          this.answers = null;
+        });
     },
     splitwords_setanswer(event){
         this.splitwords_answer_ordered =   this.splitwords_answer;
@@ -554,7 +573,8 @@ export default {
           }
         } else {
           this.$emit("answered", true);
-          let answer = this.question.a.find(
+          let multiple_options = this.question.a && this.question.a[0] ? this.question.a : this.answers;
+          let answer = multiple_options.find(
             k => k.id == this.answer && k.exa_q_true == "on"
           );
 
