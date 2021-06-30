@@ -12,7 +12,9 @@ export default  async ({store,app,redirect,error,route}) => {
        if(store.state.pages.pageData.id==""){ 
            app.error({ statusCode: 404, message: 'Sayfa bulunamadı' })
         }else{
-          store.dispatch("pages/setNewVisit",{contentId: store.state.pages.pageData.wa_content_id,pageId: store.state.pages.pageData.id, url:route.path,lang:store.state.locale})
+          if(store.state.pages.pageData.wa_content_id &&  store.state.pages.pageData.id){
+             store.dispatch("pages/setNewVisit",{contentId: store.state.pages.pageData.wa_content_id,pageId: store.state.pages.pageData.id, url:route.path,lang:store.state.locale})
+          }
         }
    }).catch(e => {
         error({ statusCode: 404, message: 'Sayfa bulunamadı' })

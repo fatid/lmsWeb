@@ -7,13 +7,11 @@ import axios from 'axios'
 import pages from './pages'
 import comments from './comments'
 import pageDetail from './pageDetail'
-import research from './research'
+import search from './search'
 import user from './user' 
 import form from './form'
 import core from './core'
-import poll from './poll'
-import expert from './expert'
-import course from './course'
+import poll from './poll'  
 // import note from './note'
 Vue.use(Vuex); 
 
@@ -281,9 +279,7 @@ export const store = new Vuex.Store({
             user,
             form,
             core,
-            research,
-            expert,
-            poll,
-            course
+            search, 
+            poll, 
     }
 });
