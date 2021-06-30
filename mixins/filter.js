@@ -25,26 +25,33 @@ export default {
     };
   },
   computed: {
+    counts(){
+        return this.$store.state.search.counts
+    },      
   },
   methods:{
     async getWords() {
-        let fields = `dict_word,dict_mean,dict_image,dict_link,dict_tag,dict_w_similar,dict_tag,id,status,created_on,created_by,id,status`;
+        let fields = `dict_degree,dict_category,dict_word,dict_mean,dict_image,dict_link,dict_tag,dict_w_similar,dict_tag,id,status,created_on,created_by,id,status`;
          this.loading=true;   
         let filters = { status: ["=", 1] };
   
         if (this.search.keyword) {
           filters.dict_word = ["LIKE", this.search.keyword];
         }
-        // if (this.search.level && this.search.level[0]) {
-        //     filters.exa_degree = ["=", this.search.level];
-        //   }
+        if (this.search.category && this.search.category[0]) {
+            filters.dict_category = ["=", this.search.category];
+        }
+        if (this.search.level && this.search.level[0]) {
+            filters.dict_degree = ["=", this.search.level];
+        }
+        this.$store.commit("search/setSearch",filters);
         return new Promise((resolve, reject) => {
           axios({
             url: process.env.baseURL + "dict_word",
             method: "get",
             params: {
               limit: this.pagination.limit,
-              offset:  this.pagination.page,
+              offset:  (this.pagination.page-1)*this.pagination.limit,
               fields,
               lang: this.$store.state.locale,
               sort: ["pdb_date,DESC"],
@@ -67,6 +74,8 @@ export default {
   
                 this.pagination.total = response.data.count;
                 this.data = d;
+                this.$store.dispatch("search/groupFields", {module:'dict_word', group:'dict_category',lang: this.LOCALE});
+                this.$store.dispatch("search/groupFields", {module:'dict_word', group:'dict_degree',lang: this.LOCALE});
               } else {
                 this.data = [];
                 this.pagination.total = 0;
@@ -81,9 +90,7 @@ export default {
             });
         });
       },
-    async getQuestition() {
-        console.log("search",this.search)
-    
+    async getQuestition() { 
         let filters = { status: ["=", 1] };
         this.loading=true;   
   
@@ -95,19 +102,36 @@ export default {
         }
         if (this.search.category && this.search.category[0]) {
           filters.exa_categories = ["=", this.search.category];
+        } 
+        if (this.search.media && this.search.media[0]) {
+        
+          if(this.search.media.includes('image')){
+              filters.exa_image = ["!=", ''];
+          }
+          if(this.search.media.includes('audio')){
+             filters.exa_sound = ["!=", ''];
+          }
+          if(this.search.media.includes('text')){
+             filters.rs_Question = ["!=", ''];
+          }
+          if(this.search.media.includes('video')){
+             filters.exa_video = ["!=", ''];
+          } 
         }
+   
         if (this.search.level && this.search.level[0]) {
           filters.exa_degree = ["=", this.search.level];
         }
-        filters.exa_image = {exa_image:["!=", ''],rs_Question:["!=", ''],exa_sound:["!=", ''],exa_video:["!=", '']};
-        let fields = "id,sort,status,exa_type,rs_Question,exa_image,exa_sound,exa_video,exa_timer";
+        filters.exa_timer = {exa_image:["!=", ''],rs_Question:["!=", ''],exa_sound:["!=", ''],exa_video:["!=", '']};
+        this.$store.commit("search/setSearch",filters);
+        let fields = "id,sort,status,exa_type,exa_degree,exa_categories,rs_Question,exa_image,exa_sound,exa_video,exa_timer";
         // this.getAnswers();
         axios({
             url: process.env.baseURL + "exam_q",
             method: "get",
             params: {
                 limit: this.pagination.limit,
-                offset:  this.pagination.page,
+                offset:  (this.pagination.page-1)*this.pagination.limit,
             fields,
             lang: this.$store.state.locale,
             sort: ["pdb_date,DESC"],
@@ -123,7 +147,9 @@ export default {
                 this.data = response.data.formattedData;
                 this.pagination.total = response.data.count;
                 this.loading=false;    
-
+                this.$store.dispatch("search/groupFields", {module:'exam_q', group:'exa_degree',lang: this.LOCALE});
+                this.$store.dispatch("search/groupFields", {module:'exam_q', group:'exa_type',lang: this.LOCALE});
+                this.$store.dispatch("search/groupFields", {module:'exam_q', group:'exa_categories',lang: this.LOCALE});   
 
             }else {
                 this.data = [];
@@ -161,7 +187,7 @@ export default {
             method: "get",
             params: {
                 limit: this.pagination.limit,
-                offset:  this.pagination.page,
+                offset:  (this.pagination.page-1)*this.pagination.limit,
               fields,
               lang: this.$store.state.locale,
               sort: ["pdb_date,DESC"],

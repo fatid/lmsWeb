@@ -121,12 +121,14 @@ export default {
         });
       }, 500);
       await this.$store.dispatch("pages/getPageInfo", {});
-      await this.$store.dispatch("pages/setNewVisit", {
-        contentId: this.$store.state.pages.pageData.wa_content_id,
-        pageId: this.$store.state.pages.pageData.id,
-        url: this.$route.path,
-        lang: this.$store.state.locale
-      });
+      if(this.$store.state.pages.pageData.wa_content_id &&  this.$store.state.pages.pageData.id){
+          await this.$store.dispatch("pages/setNewVisit", {
+            contentId: this.$store.state.pages.pageData.wa_content_id,
+            pageId: this.$store.state.pages.pageData.id,
+            url: this.$route.path,
+            lang: this.$store.state.locale
+          });
+      }
       this.keyMenu = "k" + Math.random(100, 9999999);
       this.rootKey = to.path;
     }

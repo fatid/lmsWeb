@@ -3,7 +3,9 @@
     <div class="row">
  
       <div class="col-12">
-    
+                 <div class="degree-class" v-if="question.q.exa_degree">
+           {{question.q.exa_degree  ? levels.find(k=> k.id== question.q.exa_degree) ? levels.find(k=> k.id== question.q.exa_degree).cou_level_name : '' : '' }}
+           </div>
         <div class="question" v-if="question.q.exa_type == 'ParagraphOrder'">
             {{ l("Make the text correct", "g") }}
           <div class="myParagraph" v-if="question.q.rs_Question">
@@ -39,20 +41,21 @@
          
         <div class="question" v-else-if="question.q.exa_type == 'SentenceCorrect'">
           <!-- {{splitwords_answer_original}} {{splitwords_answer}} {{splitwords_answer_ordered}} -->
-         <!-- {{trueText}} = {{answerText}}  --  {{splitwords_answer_ordered}} -->
-<div style="margin: 10px 0 ; justify-content: flex-end;
+         <!-- {{trueText}} = {{answerText}}  --  {{splitwords_answer_ordered}} --> 
+
+<div :key="setKeywordKey" style="margin: 10px 0 ; justify-content: flex-end;
                                 display: inline-flex;
                                 flex-wrap: wrap;
                                 align-items: end;
                                 width: 100%;">
-                <span class="draggable words_item reset unselectable " @click="splitwords_answer=splitwords_answer_original;">Reset</span>
+                <span class="draggable words_item reset unselectable " @click="resetSetwords()">Reset</span>
             <span class="draggable words_item unselectable " 
                 v-for="(dd,i) in splitwords_answer" :id="'drag'+question.q.id+i" draggable="true" @dragstart="drag($event)">{{dd}}</span> 
                 </div>
     <br />
 
-<div class="words" > 
-  <draggable  v-model="splitwords_answer"  @end="splitwords_setanswer" 
+<div class="words" >  
+  <draggable  v-model="splitwords_answer_ordered"  @end="splitwords_setanswer" 
   style=" justify-content: flex-end;
                                 display: inline-flex;
                                 flex-wrap: wrap;
@@ -64,7 +67,7 @@
  >
  
     <div class="answerbox unselectable "
-                v-for="(dd,i) in splitwords_answer" 
+                v-for="(dd,i) in splitwords_answer_ordered" 
                 :id="'answer'+question.q.id+i"  
                 @drop="drop($event)"
                 draggable="true"
@@ -196,6 +199,7 @@ export default {
 
   props: {
     question: [Object, Array],
+    levels: [Object, Array],
     order: Number
   },
   data() {
@@ -209,7 +213,9 @@ export default {
       isTrue: null,
       answerText: "",
       answers: [],
+      setKeywordKey: 'setKeywordKey',
       splitwords_answer: [],
+      splitwords_answer_in_sort: [],
       splitwords_answer_ordered: [],
       splitparagraph_answer: [],
       answer: "",
@@ -319,6 +325,15 @@ export default {
     }
   },
   methods: {
+  resetSetwords(){
+    this.splitwords_answer=this.splitwords_answer_original;
+    this.splitwords_answer_original.forEach((k,i)=>{
+
+      this.splitwords_answer_ordered[i]='';
+      this.splitwords_setanswer()
+    });
+    this.setKeywordKey = 'k'+Math.random(9,99999)
+  },
     getRandomResultText() {
       return "Başarılı Cevap Tebrikler";
     },
@@ -330,8 +345,8 @@ export default {
       },
       drop(ev){
         var data=ev.dataTransfer.getData("Text"); 
-        console.log("drop",data)
-        if(data && document.getElementById(data) && ev.target && ev.target.id){
+        
+        if(data.substr(0, 4)=='drag' && data && document.getElementById(data) && ev.target && ev.target.id){
             ev.preventDefault();
             console.log("id",data,ev.target)
           //  document.getElementById(data).parentNode.replaceChild('',document.getElementById(data));
@@ -345,7 +360,8 @@ export default {
                       this.splitwords_answer_ordered[i]=document.getElementById('allAnswers'+this.question.q.id).childNodes[i].innerText;
                 }
             } 
-            let s = this.splitwords_answer_ordered.reverse()
+            let c = [...this.splitwords_answer_ordered] 
+            let s = c.reverse()
             this.answerText = s.join(" ");
         }
         // document.getElementById(data).className = "";
@@ -384,19 +400,23 @@ export default {
         });
     },
     splitwords_setanswer(event){
-        this.splitwords_answer_ordered =   this.splitwords_answer;
-        let total = this.splitwords_answer.length;
-        let answer="";
-         console.log("splitwords_setanswer",total,event,this.splitwords_answer_ordered)
-        if(total){
-            for(let i=0;i<total;i++){
-                   let t = document.getElementById('allAnswers'+this.question.q.id).childNodes[i].innerText;
-                   if(t){
-                      document.getElementById('allAnswers'+this.question.q.id).childNodes[i].innerText = this.splitwords_answer[i];
-                   }
-            }
+      console.log('event')
+        // this.splitwords_answer_ordered =   this.splitwords_answer;
+        let total = this.splitwords_answer_ordered.length;
+        console.log("this.splitwords_answer_ordered",this.splitwords_answer_ordered)
+        let answer=""; 
+         if(total){
+         
+             for(let i=0;i<total;i++){
+                              let t = document.getElementById('allAnswers'+this.question.q.id).childNodes[i].innerText; 
+                                //  this.splitwords_answer_ordered[i]=t;
+                                // console.log(i,this.splitwords_answer_ordered[i],t)
+                              document.getElementById('allAnswers'+this.question.q.id).childNodes[i].innerText = this.splitwords_answer_ordered[i]; 
+                    }
+                        
+            
         }
-        this.answerText = this.splitwords_answer.join(" ");
+        this.answerText = this.splitwords_answer_ordered.join(" ");
 
     },
     splitparagraph_setanswer(){
@@ -412,6 +432,7 @@ export default {
       });
       this.trueText = w.join(" ").trim();
       this.splitwords_answer = w.sort(() => Math.random() - 0.5);
+      this.splitwords_answer.forEach((k,i)=> this.splitwords_answer_ordered[i] = '' );
       this.splitwords_answer_original = w.sort(() => Math.random() - 0.5);
     
       this.splitparagraph_answer = wp.sort(() => Math.random() - 0.5);
@@ -826,5 +847,14 @@ export default {
 }
  .item-hidden{
    display: none;
+ }
+ .degree-class{
+   padding: 5px;
+   border-radius: 10px;
+   background: red;
+   color: #fff;
+   position :absolute;
+       left: 0px;
+    top: -10px;
  }
 </style>

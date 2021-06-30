@@ -2,9 +2,9 @@
   <div class="view-filter">  
         <div class="side-bar"   data-simplebar :class="customClass.textDir+' '+customClass.dir"> 
                 <div class="serach-item">
-                            <div class="search-title">
+                            <!-- <div class="search-title">
                                 {{l('Type','g')}} 
-                            </div> 
+                            </div>  -->
                             <div class="search-box"  @click="search.module='Course'">
 								<input type="radio" tabindex="0" :checked="search.module=='Course' ? 'checked' : '' " value="Course"   />
 								<label> {{(l('Lessons','g'))}}  </label>
@@ -18,15 +18,18 @@
 								<label> {{(l('Question','g'))}}  </label>
 							</div>
                 </div>
+                
                 <div class="serach-item"> 
                 
                             <div class="search-title">
                                 {{l('Level','g')}} 
                             </div> 
-                            <div class="search-box"  v-for="(opt,key) in options['co_level']"    
+                            <div class="search-box inline"  v-for="(opt,key) in options['co_level']"    
                               @click="addSearch('level',opt.id)" >
 								<input type="checkbox"      :checked="search.level.includes(opt.id) ? 'checked' : false " />
-                                <label> {{opt.cou_level_name}} </label>
+                                <label> {{opt.cou_level_name}} 
+                                        {{counts['degree'][opt.id] ? '('+counts['degree'][opt.id]+')':''}}  
+                                </label>
 							</div>
 				</div>
                 <!-- <div class="serach-item">
@@ -44,10 +47,25 @@
                             <div class="search-title">
                                 {{l('Questition Type','g')}}  
                             </div> 
-                            <div class="search-box"  v-for="(opt,key) in l('cat.QuestionTypes.list','g')"    
-                            @click="addSearch('qtype',key)" >
-								<input type="checkbox"      :checked="search.qtype.includes(key) ? 'checked' : false "  />
-                                <label> {{opt.name}} </label>
+                             <div class="search-checkbox">
+                                <div class="search-box"  v-for="(opt,key) in l('cat.QuestionTypes.list','g')"    
+                                @click="addSearch('qtype',key)" >
+                                    <input type="checkbox"      :checked="search.qtype.includes(key) ? 'checked' : false "  />
+                                    <label> {{opt.name}} ({{counts['exa_type'][key]}}) </label>
+                                </div>
+							</div>
+				</div>
+                <div class="serach-item" v-if="search.module=='Exam'"> 
+                
+                            <div class="search-title">
+                                {{l('Questition Media','g')}}  
+                            </div> 
+                             <div class="search-checkbox">
+                                <div class="search-box"  v-for="(opt,key) in mediaTypes"    
+                                @click="addSearch('media',opt.value)" >
+                                    <input type="checkbox"      :checked="search.media.includes(opt.value) ? 'checked' : false "  />
+                                    <label> {{opt.name}} </label>
+                                </div>
 							</div>
 				</div>
                 <div class="serach-item"> 
@@ -55,10 +73,12 @@
                             <div class="search-title">
                                 {{l('Categories','g')}} 
                             </div> 
-                            <div class="search-box"  v-for="(opt,key) in options['co_labels']"    
-                              @click="addSearch('category',opt.id)" >
-								<input type="checkbox"      :checked="search.category.includes(opt.id) ? 'checked' : false " />
-                                <label> {{opt.cou_label_name}} </label>
+                            <div class="search-checkbox">
+                                <div class="search-box"  v-for="(opt,key) in options['co_labels']"  v-show="counts['categories'][opt.id]"  
+                                @click="addSearch('category',opt.id)" >
+                                    <input type="checkbox"      :checked="search.category.includes(opt.id) ? 'checked' : false " />
+                                    <label> {{opt.cou_label_name}} {{counts['categories'][opt.id] ? '('+counts['categories'][opt.id]+')':''}} </label>
+                                </div>
 							</div>
 				</div>
             
@@ -124,6 +144,7 @@
                                    <div class="content-side"> <question
                                         :question="{q:dt,a:[]}"
                                         :order="1"
+                                        :levels="options['co_level']"
                                         :isAnswered="false" 
                                     ></question>
                                     <!-- {{dt.id}} -->
@@ -208,25 +229,36 @@ export default {
   computed: {
     auth() {
       return this.$store.state.user.auth;
+    }, 
+    search() {
+      return this.$store.state.search.searchFilter;
+      
     }  
   },
   data() {
     return {
       lists: [],  
-      search:{
-          module:'Word',
-          keyword:'',
-          qtype:[],
-          category:[],
-          level:[],
-          selectionC:[],
-          selectionW:[],
-      },
+    //   search:{
+    //       module:'Word',
+    //       keyword:'',
+    //       qtype:[],
+    //       media:[],
+    //       category:[],
+    //       level:[],
+    //       selectionC:[],
+    //       selectionW:[],
+    //   },
       orderBy:0,
       orderByList:[
             {label:this.l('Recent','g'), value:'created_on' },
             {label:this.l('Popular','g'), value:'created_on'},
             {label:this.l('Best Rated','g'), value:'created_on'}
+      ],
+      mediaTypes:[
+            {name:this.l('Image','g'), value:'image' },
+            {name:this.l('Video','g'), value:'video'},
+            {name:this.l('Audio','g'), value:'audio'},
+            {name:this.l('Text','g'), value:'trext'},
       ]
     };
   },
@@ -237,6 +269,7 @@ export default {
         }else{
             this.search[field].push(key)
         } 
+        console.log("this.search",this.search,field,key)
         this.getResults()
     },
     getResults() {
@@ -282,15 +315,28 @@ export default {
         .search-title{
             font-weight: 600;
             border-bottom: 1px solid rgb(240, 240, 240);
-            padding-bottom: 7px;
-            margin-bottom: 7px;
-            margin-top: 12px;
-
-
+            padding-bottom: 5px;
+            margin-bottom: 5px;
+            margin-top: 7px;
+            font-family: Cairo; 
         }   
-        .search-box{
+        .search-checkbox{
             width: 100%;
             display: block;
+            max-height: 109px;
+            overflow: auto;
+        }
+        .search-box{
+            width: 100%;
+            display: block; 
+            label {
+                display: inline-block;
+                margin-bottom: .2rem;
+            }
+            &.inline{
+                display: inline-block;
+                width: 50%;
+            }
         }
     }
     .content{
@@ -330,7 +376,7 @@ export default {
         display: inline-flex;
         flex: auto 60px;
         width: 100%;
-              text-align:right;
+        text-align:right;
     }
     .word-container{
         padding: 10px;
@@ -344,8 +390,7 @@ export default {
             place-content: flex-end;
             img{
                 margin-left: 20px;
-            }
-
+            } 
         }
         h3{
             font-weight: 600;

@@ -413,12 +413,14 @@ export default {
         });
       }, 500);
       await this.$store.dispatch("pages/getPageInfo", {});
-      await this.$store.dispatch("pages/setNewVisit", {
-        contentId: this.$store.state.pages.pageData.wa_content_id,
-        pageId: this.$store.state.pages.pageData.id,
-        url: this.$route.path,
-        lang: this.$store.state.locale
-      });
+       if(this.$store.state.pages.pageData.wa_content_id &&  this.$store.state.pages.pageData.id){
+          await this.$store.dispatch("pages/setNewVisit", {
+            contentId: this.$store.state.pages.pageData.wa_content_id,
+            pageId: this.$store.state.pages.pageData.id,
+            url: this.$route.path,
+            lang: this.$store.state.locale
+          });
+       }
       this.keyMenu = "k" + Math.random(100, 9999999);
       this.rootKey = to.path;
     }
@@ -538,22 +540,23 @@ export default {
       var wrapper = document.querySelector(".wrapper");
 
       var menu = document.getElementById("js-menu");
-      var subnavs = menu.querySelectorAll(".menu--item__has_sub_menu");
+      if(menu){
+        var subnavs = menu.querySelectorAll(".menu--item__has_sub_menu");
 
-      // Toggle menu click
-      querySelector(".toggle_menu").onclick = function() {
-        nav.classList.toggle("vertical_nav__opened");
+        // Toggle menu click
+        querySelector(".toggle_menu").onclick = function() {
+          nav.classList.toggle("vertical_nav__opened");
 
-        wrapper.classList.toggle("toggle-content");
-      };
+          wrapper.classList.toggle("toggle-content");
+        };
 
-      // Minify menu on menu_minifier click
-      querySelector(".collapse_menu").onclick = function() {
-        nav.classList.toggle("vertical_nav__minify");
+        // Minify menu on menu_minifier click
+        querySelector(".collapse_menu").onclick = function() {
+          nav.classList.toggle("vertical_nav__minify");
 
-        wrapper.classList.toggle("wrapper__minify");
+          wrapper.classList.toggle("wrapper__minify");
 
-        for (var j = 0; j < subnavs.length; j++) {
+          for (var j = 0; j < subnavs.length; j++) {
           subnavs[j].classList.remove("menu--subitens__opened");
         }
       };
@@ -575,7 +578,8 @@ export default {
             false
           );
         }
-      }
+      }     
+      }                    
     }, 100);
   }
 };
