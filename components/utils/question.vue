@@ -48,7 +48,7 @@
                                 flex-wrap: wrap;
                                 align-items: end;
                                 width: 100%;">
-                <span class="draggable words_item reset unselectable " @click="resetSetwords();removeAnswer();">Reset</span>
+               
             <span class="draggable words_item unselectable " 
                 v-for="(dd,i) in splitwords_answer" :id="'drag'+question.q.id+i" draggable="true" @dragstart="drag($event)">{{dd}}</span> 
                 </div>
@@ -178,6 +178,7 @@
         <a @click="nextQuestion()" class="download_btn" v-else-if="isTimeOut"
           >Timeout. Just Answer to learn</a
         >
+         <a class="download_reset" @click="resetSetwords();removeAnswer();">Reset</a>
         <div class="success-result" v-if="isTrue">
           {{ getRandomResultText() }}
         </div>
@@ -475,6 +476,8 @@ export default {
     },
     removeAnswer(val) {
       this.answerText = "";
+      this.isTrue = null;
+      this.chance = 1;
     },
     backspaceAnswer(val) {
       this.answerText = this.answerText.slice(0, -1);
@@ -700,6 +703,22 @@ export default {
   float: right;
   padding: 7px 10px;
   height: 32px;
+}
+.download_reset {
+  background: #fff !important;
+  float: right; 
+      padding: 7px 10px;
+  height: 32px;
+      font-weight: 500; 
+    font-size: 14px;
+    margin-right: 20px;
+    font-family: 'Cairo', sans-serif;
+    text-align: center;
+    color: #ee682d !important;
+    border-radius: 20px; 
+    border: 0; 
+    display: inline-block;
+    margin-top: 25px;
 }
 
 .alphabets {
