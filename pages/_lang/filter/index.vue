@@ -1,5 +1,16 @@
 <template>
   <div class="view-filter">  
+      <div class="drawer" @click="closeDrawer()" :class="selectedItem.show ? 'visible': 'hidden'">
+          <div class="content" @click.stop="" >
+                    <h3>{{selectedItem.data.dict_word}}</h3>
+                    <div v-html="HtmlEncode(selectedItem.data.dict_mean)"></div>
+                     
+                                <span class="pull-right" v-if="selectedItem.data.dict_image">
+                                    <img :src="show_image(selectedItem.data.dict_image, '100', '100', true)" /></span>
+                                
+        
+            </div>
+      </div>
         <div class="side-bar"   data-simplebar :class="customClass.textDir+' '+customClass.dir"> 
                 <div class="serach-item">
                             <!-- <div class="search-title">
@@ -117,7 +128,8 @@
                     <div v-for="dt in data" class="list_item"  :class="customClass.textDir+' '+customClass.dir">
                             <div class="word-container">
                             <div class="content-side">
-                                <h3 @click="goPathBlank('word/'+dt.dict_word)">{{dt.dict_word}}</h3>
+                                <h3 @click="openDrawer('word',dt)">{{dt.dict_word}}</h3>
+                                <!-- <h3 @click="goPathBlank('word/'+dt.dict_word)">{{dt.dict_word}}</h3> -->
                                 <div class="word-content">
                                 <span v-html="HtmlEncode(dt.dict_mean)"></span>
                                 <span class="pull-right" v-if="dt.dict_image"><img :src="show_image(dt.dict_image, '100', '100', true)" /></span>
@@ -259,6 +271,13 @@ export default {
     //       selectionC:[],
     //       selectionW:[],
     //   },
+    selectedItem:{
+        show:false,
+        type:'',
+        data:{
+
+        }
+    },
       orderBy:0,
       orderByList:[
             {label:this.l('Recent','g'), value:'created_on' },
@@ -274,6 +293,20 @@ export default {
     };
   },
   methods: {
+      closeDrawer(){
+          this.selectedItem={
+                show:false,
+                type:'',
+                data:{}
+            }
+      },
+      openDrawer(type,data){
+            this.selectedItem={
+                show:true,
+                type,
+                data
+            }
+      },
     addSearch(field,key){
         if(this.search[field].includes(key)){
             this.search[field] = this.search[field].filter(k=> k!=key)
@@ -452,6 +485,37 @@ export default {
             padding-left: 10px; 
         }
 }
+
+.drawer{
+    width: 100%;
+   z-index:1000;
+   display: none;
+    position: fixed;
+    background: rgba(68, 68, 68, 0.508);
+        height: 100vh;
+ left: 0;
+        top:0;
+    &.visible{
+   display: block;
+        
+        .content{
+                right: 0;
+                top:0;
+       transition: 2s all;
+
+        }
+    }
+    .content{
+         width: 500px;
+        height: 100vh;
+        padding: 15px;
+        position: fixed;
+        right: -600px;
+          max-width: 80%;
+         background: #fff;
+       transition: 2s all;
+    }
+}
  
 </style>
 <style>
@@ -485,4 +549,5 @@ a.addListLink{
     cursor: pointer;
     text-decoration: underline!important;
 }
+
 </style>
