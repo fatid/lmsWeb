@@ -328,14 +328,30 @@ export default {
         }
         .search-box{
             width: 100%;
-            display: block; 
+            display: inline-flex; 
             label {
                 display: inline-block;
-                margin-bottom: .2rem;
+                margin-bottom: .2rem; 
+                width: 145px; 
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                overflow: hidden; 
+                margin-left: 5px;
+                margin-top: -2px;
             }
             &.inline{
-                display: inline-block;
+                display: inline-flex;
                 width: 50%;
+                 label {
+                        display: inline-block;
+                        margin-bottom: .2rem;
+                        display: inline-block;
+                        width: 55px; 
+                        text-overflow: ellipsis;
+                        white-space: nowrap;
+                        overflow: hidden;  
+                        margin-top: 0px;
+                }
             }
         }
     }
