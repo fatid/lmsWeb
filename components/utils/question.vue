@@ -48,7 +48,7 @@
                                 flex-wrap: wrap;
                                 align-items: end;
                                 width: 100%;">
-                <span class="draggable words_item reset unselectable " @click="resetSetwords()">Reset</span>
+                <span class="draggable words_item reset unselectable " @click="resetSetwords();removeAnswer();">Reset</span>
             <span class="draggable words_item unselectable " 
                 v-for="(dd,i) in splitwords_answer" :id="'drag'+question.q.id+i" draggable="true" @dragstart="drag($event)">{{dd}}</span> 
                 </div>
@@ -81,7 +81,7 @@
           <br />
       
         </div>
-        <div v-else  style=" text-align: right;  font-size: 22px;"  >   
+        <div v-else  style=" text-align: right; direction:rtl;  font-size: 22px;"  >   
            <span v-html="parseQuestion(question.q.rs_Question)"></span>
         </div>
         <div v-if="question.q.exa_video">
