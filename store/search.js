@@ -4,6 +4,10 @@ import axios from 'axios'
 const state = () => ({
  
   topics:[], 
+  selection:{
+      selectionC:[],
+      selectionW:[],
+  },
   searchFilter:{
           module:'Word',
           keyword:'',
@@ -11,8 +15,7 @@ const state = () => ({
           media:[],
           category:[],
           level:[],
-          selectionC:[],
-          selectionW:[],
+          
   },
   searchFilterQuery:{ 
     exa_type:null,

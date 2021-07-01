@@ -88,17 +88,26 @@
              <div class="row">
                     <div class="col-6 " :class="customClass.textDir+' '+customClass.dir">
                          {{l('Total results','g')}} {{pagination.total}}   
-                            {{search.module=='Course' && search.selectionC && search.selectionC.length>0 ? '('+search.selectionC.length+' '+l('selected','g') +')' : '' }}
-                            {{search.module=='Word' && search.selectionW && search.selectionW.length>0 ? '('+search.selectionW.length+' '+l('selected','g')  +')' : '' }}
+                           
+                            
                             <b-dropdown id="dropdown-1" size="sm"  :text="'Order by:'+orderByList[orderBy].label" class="m-md-2">
                                 <b-dropdown-item @click="orderBy=i" v-for="(order,i) in orderByList">{{order.label}}</b-dropdown-item>
                                
                             </b-dropdown>   
                     </div> 
-                            <div class="col-6 " >
+                            <div class="col-3 " >
+                                  <template v-if="search.module=='Course' && selection.selectionC && selection.selectionC.length>0">
+                                     <a class="addListLink">Add to list {{selection.selectionC.length+' '+l('selected','g')  }}</a>
+                            </template>
+                            <template v-if="search.module=='Word' && selection.selectionW && selection.selectionW.length>0">
+                                     <a class="addListLink">Add to list {{selection.selectionW.length+' '+l('selected','g')  }}</a>
+                            </template>
+                            </div>
+                            <div class="col-3 " >
+                                <i class="fa fa-search input-icon"></i>
 								<input type="text" class="input-std" 
                                         @change="getResults()"
-                                        v-model="search.keyword" :placeholder="l('Type keyword','g')"  /> 
+                                        v-model="search.keyword" :placeholder="l('Search keyword','g')"  /> 
 							</div>
 				     
                     </div>
@@ -132,8 +141,8 @@
                                     >  <span class="text-red"> <i class="uil uil-heart "></i> </span> 
                                     </a>  <br />
                                     <input type="checkbox" class="check-centered"  
-                                      :checked="search.selectionW.includes(dt.id) ? 'checked' : false " 
-                                      @click="addSearch('selectionW',dt.id)"/>
+                                      :checked="selection.selectionW.includes(dt.id) ? 'checked' : false " 
+                                      @click="addSelection('selectionW',dt.id)"/>
                             </div>
                             </div>
                     </div>
@@ -168,8 +177,8 @@
                                     </a>
                                     <br />
                                     <input type="checkbox"  class="check-centered"
-                                     :checked="search.selectionC.includes(dt.id) ? 'checked' : false " 
-                                      @click="addSearch('selectionW',dt.id)"
+                                     :checked="selection.selectionC.includes(dt.id) ? 'checked' : false " 
+                                      @click="addSelection('selectionW',dt.id)"
                                     />
 
                                     </div>
@@ -192,7 +201,7 @@
                 </div>
                 </div>
                 <div class="row"> 
-                    <div class="col-12" :class="customClass.textDir+' '+customClass.dir">
+                    <div class="col-12 text-center" :class="customClass.textDir+' '+customClass.dir" >
                             <b-pagination
                             v-model="pagination.page"
                             :total-rows="pagination.total"
@@ -231,8 +240,10 @@ export default {
       return this.$store.state.user.auth;
     }, 
     search() {
-      return this.$store.state.search.searchFilter;
-      
+      return this.$store.state.search.searchFilter; 
+    },
+    selection() {
+      return this.$store.state.search.selection; 
     }  
   },
   data() {
@@ -257,8 +268,8 @@ export default {
       mediaTypes:[
             {name:this.l('Image','g'), value:'image' },
             {name:this.l('Video','g'), value:'video'},
-            {name:this.l('Audio','g'), value:'audio'},
-            {name:this.l('Text','g'), value:'trext'},
+            {name:this.l('Listenin Skills','g'), value:'audio'},
+            {name:this.l('Reading Skills','g'), value:'trext'},
       ]
     };
   },
@@ -271,6 +282,13 @@ export default {
         } 
         console.log("this.search",this.search,field,key)
         this.getResults()
+    },
+    addSelection(field,key){
+        if(this.selection[field].includes(key)){
+            this.selection[field] = this.selection[field].filter(k=> k!=key)
+        }else{
+            this.selection[field].push(key)
+        }  
     },
     getResults() {
 
@@ -381,8 +399,13 @@ export default {
             -moz-box-shadow: 0px -1px 0px 0px rgba(186, 186, 186, 0.19);
         }
     }
+    .input-icon{
+        position: absolute;
+        left: 22px;
+        top: 7px;
+    }
     .input-std{
-        padding: 5px;
+        padding: 5px 5px 5px 26px;
         border-radius: 4px;
         border: .1em solid #f9f9f9;
         width: 100%;
@@ -451,5 +474,15 @@ body{
 }
 .liked-item{
     border: 1px solid #e71146;
+}
+.pagination{
+        text-align: center;
+    margin: 0 auto;
+    display: inline-flex;
+}
+a.addListLink{
+    color: #e71146!important;
+    cursor: pointer;
+    text-decoration: underline!important;
 }
 </style>
