@@ -138,7 +138,7 @@ optimizedImages: {
   postcss: {
     plugins: [
       purgecss({
-        content: ['./pages/**/*.vue',  './layouts/**/*.vue', './components/**/*.vue','~/static/vendor/bootstrap/css/bootstrap.min.css',],
+        content: ['./pages/**/*.vue',  './layouts/**/*.vue', './components/**/*.vue',  './components/**/*.scss', '~/static/vendor/bootstrap/css/bootstrap.min.css',],
         css: ['**/*.css','**/*.scss'], 
         whitelist: ['html', 'body','table', 'table-striped','fa-whatsapp','fa-whatsapp-square','fa-youtube','flex-row','flex-row-reverse','fa-twiter','fa-instagram','fa_youtube','fa-youtube','owl-stage-outer','owl-stage','owl-theme','owl-carousel','owl-stage-outer','owl-stage','owl-theme','stage-margin','nav-style-1','owl-loaded','owl-dot','owl-prev','owl-next','owl-nav', 'owl-dot active','owl-dots','owl-drag','owl-carousel-init'],
       })
