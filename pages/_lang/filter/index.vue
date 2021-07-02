@@ -1,4 +1,9 @@
 <template>
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+
+     
   <div class="view-filter">  
       <div class="drawer" @click="closeDrawer()" :class="selectedItem.show ? 'visible': 'hidden'">
           <div class="content" @click.stop="" >
@@ -53,20 +58,21 @@
                                         v-model="search.keyword" :placeholder="l('Type keyword','g')"  /> 
 							</div>
 				</div>     -->
+               
                 <div class="serach-item" v-if="search.module=='Exam'"> 
                 
                             <div class="search-title">
-                                {{l('Questition Type','g')}}  
+                                {{l('Questition Skills','g')}}  
                             </div> 
                              <div class="search-checkbox">
-                                <div class="search-box"  v-for="(opt,key) in l('cat.QuestionTypes.list','g')"    
-                                @click="addSearch('qtype',key)" >
-                                    <input type="checkbox"      :checked="search.qtype.includes(key) ? 'checked' : false "  />
-                                    <label> {{opt.name}} ({{counts['exa_type'][key]}}) </label>
+                                <div class="search-box"  v-for="(opt,key) in l('cat.QuestionSkills.list','g')"    
+                                @click="addSearch('skills',key)" >
+                                    <input type="checkbox"      :checked="search.skills.includes(key) ? 'checked' : false "  />
+                                    <label> {{opt.name}} {{counts['skills'] && counts['skills'][key] ? '('+counts['skills'][key]+')' : ''}} </label>
                                 </div>
 							</div>
 				</div>
-                <div class="serach-item" v-if="search.module=='Exam'"> 
+                <!-- <div class="serach-item" v-if="search.module=='Exam'"> 
                 
                             <div class="search-title">
                                 {{l('Questition Media','g')}}  
@@ -78,7 +84,7 @@
                                     <label> {{opt.name}} </label>
                                 </div>
 							</div>
-				</div>
+				</div> -->
                 <div class="serach-item"> 
                 
                             <div class="search-title">
@@ -89,6 +95,19 @@
                                 @click="addSearch('category',opt.id)" >
                                     <input type="checkbox"      :checked="search.category.includes(opt.id) ? 'checked' : false " />
                                     <label> {{opt.cou_label_name}} {{counts['categories'][opt.id] ? '('+counts['categories'][opt.id]+')':''}} </label>
+                                </div>
+							</div>
+				</div>
+                 <div class="serach-item" v-if="search.module=='Exam'"> 
+                
+                            <div class="search-title">
+                                {{l('Questition Type','g')}}  
+                            </div> 
+                             <div class="search-checkbox">
+                                <div class="search-box"  v-for="(opt,key) in l('cat.QuestionTypes.list','g')"    
+                                @click="addSearch('qtype',key)" >
+                                    <input type="checkbox"      :checked="search.qtype.includes(key) ? 'checked' : false "  />
+                                    <label> {{opt.name}} ({{counts['exa_type'][key]}}) </label>
                                 </div>
 							</div>
 				</div>
@@ -107,6 +126,9 @@
                             </b-dropdown>   
                     </div> 
                             <div class="col-3 " >
+                                  <template v-if="search.module=='Exam' && selection.selectionE && selection.selectionE.length>0">
+                                     <a class="addListLink">Add to list {{selection.selectionE.length+' '+l('selected','g')  }}</a>
+                            </template>
                                   <template v-if="search.module=='Course' && selection.selectionC && selection.selectionC.length>0">
                                      <a class="addListLink">Add to list {{selection.selectionC.length+' '+l('selected','g')  }}</a>
                             </template>
@@ -190,7 +212,7 @@
                                     <br />
                                     <input type="checkbox"  class="check-centered"
                                      :checked="selection.selectionC.includes(dt.id) ? 'checked' : false " 
-                                      @click="addSelection('selectionW',dt.id)"
+                                      @click="addSelection('selectionE',dt.id)"
                                     />
 
                                     </div>
@@ -224,6 +246,9 @@
                 </div>
         </div>
   </div>
+     </div>
+    </div>
+</div>
 </template>
 <script>
 import general from "@/mixins/general";
@@ -344,6 +369,7 @@ export default {
 <style lang="scss" scoped>
 .view-filter{
     margin-bottom: 0px;
+    margin-top: 10px;
         font-family: Cairo;
         text-align: right;
     flex: 190px auto;

@@ -91,7 +91,7 @@ const actions = {
                   offset:0,
                   lang:slang,
                   filter:{status:["=",1]},
-                  fields:'cou_label_name,id,status,cou_label_link,cou_label_image,cou_label_color',
+                  fields:'cou_label_name,id,status,cou_label_link,cou_label_image,cou_label_color,cou_top_category',
                   
                  
                   sort:['sort,DESC', 'created_on,ASC']

@@ -1,13 +1,11 @@
 <template>
-  <div class="container">
-    <div class="_215b01">
-      <div class="container-fluid">
-        <div class="row">
-      
-          <div class="col-lg-12">
-            <div class="section3125">
+  <div class="width-100">
+ <div class="_215b01">
+     <div class="section3125">
+       <div class="container">
+     
               <div class="row justify-content-center">
-                <div class="col-xl-4 col-lg-5 col-md-6">
+                <div  style="width:170px;">
                   <div class="preview_video">
                     <a
                       href="#"
@@ -29,41 +27,38 @@
                             )
                           }}
                         </div>
-                        <span class="play_btn1"
-                          ><i class="uil uil-play"></i
-                        ></span>
-                        <span class="_215b02">{{
-                          l("Preview this course", "g")
-                        }}</span>
+                     
+                    
                       </div>
                     </a>
                   </div>
                   <div class="_215b10"> 
                     <a href="#" @click="$store.state.isErrorReportVisible=true" class="_215b12">
-                      <span><i class="uil uil-windsock"></i></span>
+                      <span><i class="far fa-envelope"></i></span>
                       {{ l("Report abuse", "g") }}
                     </a>
                   </div>
                 </div>
-                <div class="col-xl-8 col-lg-7 col-md-6">
+               
+         
+                <div class="col-xl-8 col-lg-auto">
                   <div class="_215b03">
                     <h2>{{ data.cou_name }}</h2>
                     <span class="_215b04">{{ data.cou_short }} </span>
                   </div>
-                  <div class="_215b05">
+                  <!-- <div class="_215b05">
                     <div class="crse_reviews mr-2">
                       <i class="uil uil-star"></i>4.5
-                    </div>
-                    <!-- (N/A ratings) -->
+                    </div> 
                   </div>
                   <div class="_215b05">
-                    <!-- 0 students enrolled -->
+              
                   </div>
 
                   <div class="_215b05">
                     {{ l("Last updated", "g") }} 
-                    <!-- 06/2021 -->
-                  </div>
+                    
+                  </div> -->
                   <!-- <ul class="_215b31">										
 										<li><button class="btn_adcart">Add to Cart</button></li>
 										<li><button class="btn_buy">Buy Now</button></li>
@@ -74,10 +69,12 @@
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
-    </div>
+            </div>
+            </div>
+
+
+  <div class="container">
+    
 
     <div class="_215b15 _byt1458">
       <div class="container-fluid">
@@ -404,6 +401,7 @@
             </div>
           </div>
         </div>
+      </div>
       </div>
     </div>
   </div>

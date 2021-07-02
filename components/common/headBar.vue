@@ -43,7 +43,7 @@
 					<a href="shopping_cart.html" class="option_links" title="cart"><i class='uil uil-shopping-cart-alt'></i><span class="noti_count">2</span></a>
 				</li> -->
 				<li class="ui dropdown">
-					<a href="#" class="option_links" title="Messages"><i class='uil uil-envelope-alt'></i><span class="noti_count">3</span></a>
+					<a href="#" class="option_links" title="Messages"><i class="far fa-envelope"></i><span class="noti_count">3</span></a>
 					<div class="menu dropdown_ms">
 						<a href="#" class="channel_my item">
 							<div class="profile_link">

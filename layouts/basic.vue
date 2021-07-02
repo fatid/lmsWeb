@@ -66,8 +66,7 @@
 				</li> -->
           <li class="ui dropdown" v-if="auth && auth.token">
             <a href="#" class="option_links" title="Messages"
-              ><i class="uil uil-envelope-alt"></i
-              ><span class="noti_count">0</span></a
+              ><i class="far fa-envelope"></i><span class="noti_count">0</span></a
             > 
           </li>
             
