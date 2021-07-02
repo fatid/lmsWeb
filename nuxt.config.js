@@ -10,7 +10,7 @@ export default {
     API_KEY: process.env.API_KEY,
     mLang: "tr",
     pageError: "404",
-    company: 'ıstanbulmetal.com.tr',
+    company: 'daleel-ar.com',
     baseURL: "https://api3.fatihd.com/api/",
     baseURLFile: "https://api3.fatihd.com/",
     basePathFile: "http://lms.fatihd.com/yonetim/images/",
@@ -35,7 +35,7 @@ export default {
       { src: '/js/jquery-3.3.1.min.js' },
       { src: '/vendor/bootstrap/js/bootstrap.bundle.min.js' },
       { src: '/vendor/OwlCarousel/owl.carousel.js' },
-      { src: '/vendor/semantic/semantic.min.js' },
+      // { src: '/vendor/semantic/semantic.min.js' },
       { src: '/js/custom.js' },
       // { src: '/js/night-mode.js' },
   
@@ -80,7 +80,7 @@ optimizedImages: {
     '@nuxtjs/dotenv',
     '@nuxtjs/device',
     'bootstrap-vue/nuxt',  
-    '@nuxtjs/sitemap',
+    // '@nuxtjs/sitemap',
       ['vue-scrollto/nuxt', { duration: 300 }],
 
   ],
@@ -111,12 +111,12 @@ optimizedImages: {
   ** https://github.com/nuxt-community/vuetify-module
   */
   
- sitemap: {
-  path: '/sitemap.xml',
-  async routes() {
-    return getAppRoutes();
-  }
-},
+//  sitemap: {
+//   path: '/sitemap.xml',
+//   async routes() {
+//     return getAppRoutes();
+//   }
+// },
 
   /*
   ** Build configuration
