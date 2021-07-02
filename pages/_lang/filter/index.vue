@@ -143,14 +143,14 @@
                                         class="like-button"
                                         v-if="!isLiked(dt.id)"
                                         @click="openLikeModal(dt,null,'Word')"
-                                    >  <span class="text-black"><i class="uil uil-heart "></i> </span> 
+                                    >  <span class="text-black"><i class="far fa-heart "></i> </span> 
                                     </a>
                                     <a    
                                         href="javascript:;" 
                                         class="like-button"
                                         v-else
                                         @click="removeLikeModal(dt,null,'Word')"
-                                    >  <span class="text-red"> <i class="uil uil-heart "></i> </span> 
+                                    >  <span class="text-red"> <i class="far fa-heart "></i> </span> 
                                     </a>  <br />
                                     <input type="checkbox" class="check-centered"  
                                       :checked="selection.selectionW.includes(dt.id) ? 'checked' : false " 
@@ -178,14 +178,14 @@
                                         class="like_button"
                                         v-if="!isLiked(dt.id)"
                                         @click="openLikeModal(dt,{id:dt.lesson_unite},'Course')"
-                                    >  <span class="text-black"><i class="uil uil-heart "></i> </span> 
+                                    >  <span class="text-black"><i class="far fa-heart "></i> </span> 
                                     </a>
                                     <a    
                                         href="javascript:;" 
                                         class="like_button"
                                         v-else
                                         @click="removeLikeModal(dt,{id:dt.lesson_unite},'Course')"
-                                    >  <span class="text-red"> <i class="uil uil-heart "></i> </span> 
+                                    >  <span class="text-red"> <i class="far fa-heart "></i> </span> 
                                     </a>
                                     <br />
                                     <input type="checkbox"  class="check-centered"

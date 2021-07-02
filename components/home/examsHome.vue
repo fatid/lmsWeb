@@ -32,7 +32,7 @@
 													<a href="#"><i class='uil uil-ellipsis-v'></i></a>
 													<div class="dropdown-content">
 														<span><i class='uil uil-share-alt'></i>Share</span>
-														<span><i class="uil uil-heart"></i>Save</span>
+														<span><i class="far fa-heart"></i>Save</span>
 														<span><i class='uil uil-ban'></i>Not Interested</span>
 														<span><i class="uil uil-windsock"></i>Report</span>
 													 </div>																										
