@@ -100,6 +100,9 @@ export default {
         if (this.search.qtype && this.search.qtype[0]) {
           filters.exa_type = ["=", this.search.qtype];
         }
+        if (this.search.skills && this.search.skills[0]) {
+          filters.exa_skills = ["LIKE", this.search.skills];
+        }
         if (this.search.category && this.search.category[0]) {
           filters.exa_categories = ["=", this.search.category];
         } 
@@ -124,7 +127,7 @@ export default {
         }
         filters.exa_timer = {exa_image:["!=", ''],rs_Question:["!=", ''],exa_sound:["!=", ''],exa_video:["!=", '']};
         this.$store.commit("search/setSearch",filters);
-        let fields = "id,sort,status,exa_type,exa_degree,exa_categories,rs_Question,exa_image,exa_sound,exa_video,exa_timer";
+        let fields = "id,sort,status,exa_type,exa_degree,exa_categories,rs_Question,exa_image,exa_sound,exa_video,exa_timer,exa_skills";
         // this.getAnswers();
         axios({
             url: process.env.baseURL + "exam_q",
@@ -150,6 +153,8 @@ export default {
                 this.$store.dispatch("search/groupFields", {module:'exam_q', group:'exa_degree',lang: this.LOCALE});
                 this.$store.dispatch("search/groupFields", {module:'exam_q', group:'exa_type',lang: this.LOCALE});
                 this.$store.dispatch("search/groupFields", {module:'exam_q', group:'exa_categories',lang: this.LOCALE});   
+                this.$store.dispatch("search/groupFields", {module:'exam_q', group:'exa_skills',lang: this.LOCALE});
+
 
             }else {
                 this.data = [];

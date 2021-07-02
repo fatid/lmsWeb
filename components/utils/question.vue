@@ -1,12 +1,12 @@
 <template>
-  <div v-if="question && question.q">
+  <div v-if="question && question.q && question.q.exa_type">
     <div class="row">
  
       <div class="col-12">
                  <div class="degree-class" v-if="question.q.exa_degree">
            {{question.q.exa_degree  ? levels.find(k=> k.id== question.q.exa_degree) ? levels.find(k=> k.id== question.q.exa_degree).cou_level_name : '' : '' }}
            </div>
-        <div class="question" v-if="question.q.exa_type == 'ParagraphOrder'">
+        <div class="question" v-if="question.q && question.q.exa_type == 'ParagraphOrder'">
             {{ l("Make the text correct", "g") }}
           <div class="myParagraph" v-if="question.q.rs_Question">
             <!-- {{answerText == trueText ? "Yes true." : "Try Again"}}   {{answerText}}==={{trueText}} -->
@@ -97,7 +97,7 @@
           <img :src="question.q.exa_image" />
         </div>
 
-        <div class="ui form" v-if="question.a && question.a[0]">
+        <div class="ui form" v-if="question.q.exa_type=='MultipleChoice' && question.a && question.a[0]">
           <div class="grouped fields">
             <div class="field fltr-radio" v-for="(a, i) in question.a">
               <div class="ui radio checkbox">
@@ -295,7 +295,7 @@ export default {
   },
   created() {
     this.chooseActive();
-    console.log("bgf answer",this.question , this.question.q.exa_type, this.question.a)
+ 
     if(this.question && this.question.q && this.question.q.exa_type == 'MultipleChoice' && !this.question.a[0]){
       console.log("inside " )
       this.getAnswers1() 

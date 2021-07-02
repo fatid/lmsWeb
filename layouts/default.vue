@@ -49,13 +49,13 @@
 				</li> -->
           <li class="ui dropdown" v-show="auth && auth!=null && auth.token">
             <a href="#" class="option_links" title="Messages">
-              <i class="uil uil-envelope-alt"></i>
+              <i class="far fa-envelope"></i>
               <span class="noti_count">0</span>  
               </a> 
           </li>
           <li class="ui dropdown" v-show="auth && auth!=null && auth.token">
               <a href="#" class="option_links" title="Notifications">
-                <i class="uil uil-bell"></i>
+                <i class="far fa-bell"></i>
                  <span class="noti_count">0</span>  
               </a> 
           </li>
@@ -236,13 +236,9 @@
     </nav> -->
     <div class="wrapper wrapper__minify">
       <div class="sa4d25">
-        <div class="container">
-          <div class="row">
-            <div class="col-12"> 
+     
               <nuxt v-if="LANG_PACK.main" :key="$route.fullPath" />
-            </div>
-          </div>
-        </div>
+             
       </div>
 
      

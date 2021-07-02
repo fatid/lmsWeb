@@ -7,12 +7,14 @@ const state = () => ({
   selection:{
       selectionC:[],
       selectionW:[],
+      selectionE:[],
   },
   searchFilter:{
           module:'Word',
           keyword:'',
           qtype:[],
           media:[],
+          skills:[],
           category:[],
           level:[],
           
@@ -61,12 +63,29 @@ const mutations = {
     let g_from = g;
     if(g=="exa_categories" || g=="dict_category"){  g='categories'; counts[g]=[] }
     else if(g=="exa_degree" || g=="dict_degree"){ g='degree'; counts[g]=[]  }
-   
+    else if(g=="exa_skills" || g=="exa_skills"){ g='skills'; counts[g]=[]  }
+  
+    let obj ={} 
     payload.count.forEach(k=>{
       if(k[g_from]){
-        let obj ={} 
-        obj[k[g_from]]=k.count;
-        Object.assign(counts[g],obj); 
+        if(g=="skills"){
+          console.log(k[g_from])
+          if(k[g_from]){
+              let arr =k[g_from].split("---")
+             arr.forEach(item=>{
+              if(obj[item]){
+                obj[item]= obj[item] + k.count;
+              }else{
+                obj[item]=k.count;
+              }
+            })
+          }
+          Object.assign(counts[g],obj);  
+        }else{
+          obj[k[g_from]]=k.count;
+          Object.assign(counts[g],obj);  
+        }
+      
       }
     });
 
