@@ -35,9 +35,9 @@ export default {
       { src: '/js/jquery-3.3.1.min.js' },
       { src: '/vendor/bootstrap/js/bootstrap.bundle.min.js' },
       { src: '/vendor/OwlCarousel/owl.carousel.js' },
-      // { src: '/vendor/semantic/semantic.min.js' },
+      { src: '/vendor/semantic/semantic.min.js' },
       { src: '/js/custom.js' },
-      // { src: '/js/night-mode.js' },
+      { src: '/js/night-mode.js' },
   
     ], 
   },
@@ -59,7 +59,7 @@ export default {
    '~/static/vendor/OwlCarousel/assets/owl.theme.default.min.css', 
    '~/static/vendor/bootstrap/css/bootstrap.min.css', 
    '~/static/vendor/semantic/semantic.min.css', 
-  // '~/static/vendor/simple-line-icons/css/simple-line-icons.min.css'
+  '~/static/vendor/simple-line-icons/css/simple-line-icons.min.css'
 ],
 plugins: [
   { src: '~/plugins/pageInfo' },
@@ -126,21 +126,21 @@ optimizedImages: {
   '~/middleware/routing.js'
 ],
  build: { 
-  collapseBooleanAttributes: true,
-  decodeEntities: true,
-  minifyCSS: true,
-  minifyJS: true,
-  processConditionalComments: true,
-  removeEmptyAttributes: true,
-  removeRedundantAttributes: true,
-  trimCustomFragments: true,
-  useShortDoctype: true,
+  // collapseBooleanAttributes: true,
+  // decodeEntities: true,
+  // minifyCSS: true,
+  // minifyJS: true,
+  // processConditionalComments: true,
+  // removeEmptyAttributes: true,
+  // removeRedundantAttributes: true,
+  // trimCustomFragments: true,
+  // useShortDoctype: true,
   postcss: {
     plugins: [
       purgecss({
-        content: ['./pages/**/*.vue',  './layouts/**/*.vue', './components/**/*.vue',  './components/**/*.scss', '~/static/vendor/bootstrap/css/bootstrap.min.css',],
+        content: ['./pages/**/*.vue',  './layouts/**/*.vue', './components/**/*.vue',  './components/**/*.scss', '~/static/vendor/bootstrap/css/bootstrap.min.css','~/static/vendor/semantic/semantic.min.css'],
         css: ['**/*.css','**/*.scss'], 
-        whitelist: ['html', 'body','table', 'table-striped','fa-whatsapp','fa-whatsapp-square','fa-youtube','flex-row','flex-row-reverse','fa-twiter','fa-instagram','fa_youtube','fa-youtube','owl-stage-outer','owl-stage','owl-theme','owl-carousel','owl-stage-outer','owl-stage','owl-theme','stage-margin','nav-style-1','owl-loaded','owl-dot','owl-prev','owl-next','owl-nav', 'owl-dot active','owl-dots','owl-drag','owl-carousel-init'],
+        whitelist: ['html','uil','fa-heart','srch10','uil-envelope-alt','uil','uil-search-alt','icon','icon1','uil-bell', 'btn','btn-outline-danger','btn-outline-danger','btn-outline-primary','rounded-pill','body','table', 'dropdown','b-dropdown', 'ui','dropdown','pagination', 'b-pagination','page-item',  'b-dropdown','btn-group','dropdown-menu','page-link','dropdown-item','table-striped','fa-whatsapp','fa-whatsapp-square','fa-youtube','flex-row','flex-row-reverse','fa-twiter','fa-instagram','fa_youtube','fa-youtube','owl-stage-outer','owl-stage','owl-theme','owl-carousel','owl-stage-outer','owl-stage','owl-theme','stage-margin','nav-style-1','owl-loaded','owl-dot','owl-prev','owl-next','owl-nav', 'owl-dot active','owl-dots','owl-drag','owl-carousel-init'],
       })
     ]
   }, 

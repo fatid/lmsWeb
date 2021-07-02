@@ -251,7 +251,7 @@
 					</li>
 					<li class="menu--item">
 						<a href="saved_courses.html" class="menu--link" title="Saved Courses">
-						  <i class="uil uil-heart-alt menu--icon"></i>
+						  <i class="far fa-heart-alt menu--icon"></i>
 						  <span class="menu--label">Saved Courses</span>
 						</a>
 					</li>

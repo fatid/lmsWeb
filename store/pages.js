@@ -119,7 +119,7 @@ const actions = {
      let currentUrl = ""
      let slang = ""
      let mainUrl="";
-     let donen = {SA_Tag:"",SA_Title:"404",SA_Description:"404",SA_Keywords:"404",SA_Baslik:"404",SA_UstSayfa:"",SA_Fotograf:"",SA_Yazilar:"",created_on:"",created_by:"",id:"0",status:"1"}
+     let donen = {SA_Tag:"",SA_Title:"Daleel-ar",SA_Description:"Daleel-ar",SA_Keywords:"404",SA_Baslik:"Daleel-ar",SA_UstSayfa:"",SA_Fotograf:"",SA_Yazilar:"",created_on:"",created_by:"",id:"0",status:"1"}
       
      
      if (typeof (payload.url) == "undefined" && process.client) {

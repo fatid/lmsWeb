@@ -54,7 +54,7 @@
                 <span
                   ><i class="uil uil-share-alt"></i>{{ l("Share", "g") }}</span
                 >
-                <span><i class="uil uil-heart"></i>{{ l("Save", "g") }}</span>
+                <span><i class="far fa-heart"></i>{{ l("Save", "g") }}</span>
                 <!-- <span><i class="uil uil-ban"></i>{{l('Not Interested','g')}} </span>  -->
               </div>
             </div>

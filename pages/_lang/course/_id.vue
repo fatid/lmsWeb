@@ -201,14 +201,14 @@
                         class="_215b11"
                         v-if="!isLiked(les.id)"
                         @click="openLikeModal(les,unit,'Course')"
-                      >  <span class="text-black"><i class="uil uil-heart "></i> </span> 
+                      >  <span class="text-black"><i class="far fa-heart "></i> </span> 
                       </a>
                       <a    
                         href="javascript:;" 
                         class="_215b11"
                         v-else
                         @click="removeLikeModal(les,unit,'Course')"
-                      >  <span class="text-red"> <i class="uil uil-heart "></i> </span> 
+                      >  <span class="text-red"> <i class="far fa-heart "></i> </span> 
                       </a>
                       <span class="content-summary">{{ les.lesson_type }}   </span>
                   
