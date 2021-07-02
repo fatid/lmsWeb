@@ -1,8 +1,8 @@
 require('dotenv').config()
 const pkg = require('./package.json')
-// const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
-// const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin')
-// const purgecss = require('@fullhuman/postcss-purgecss')
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin')
+const purgecss = require('@fullhuman/postcss-purgecss')
 const getAppRoutes = require('./utils/getRoutes.js'); 
 export default {
   mode: 'universal',
@@ -15,7 +15,7 @@ export default {
     baseURLFile: "https://api3.fatihd.com/",
     basePathFile: "http://lms.fatihd.com/yonetim/images/",
     basePathFileVisual: "http://lms.fatihd.com/visual2",
-    baseDomain: "https://istanbulmetal.com.tr"
+    baseDomain: "https://daleel-ar.com/"
   },
   head: {
     title: pkg.title,
@@ -37,7 +37,7 @@ export default {
       { src: '/vendor/OwlCarousel/owl.carousel.js' },
       { src: '/vendor/semantic/semantic.min.js' },
       { src: '/js/custom.js' },
-      { src: '/js/night-mode.js' },
+      // { src: '/js/night-mode.js' },
   
     ], 
   },
@@ -126,36 +126,36 @@ optimizedImages: {
   '~/middleware/routing.js'
 ],
  build: { 
-  // collapseBooleanAttributes: true,
-  // decodeEntities: true,
-  // minifyCSS: true,
-  // minifyJS: true,
-  // processConditionalComments: true,
-  // removeEmptyAttributes: true,
-  // removeRedundantAttributes: true,
-  // trimCustomFragments: true,
-  // useShortDoctype: true,
-  // // postcss: {
-  //   plugins: [
-  //     purgecss({
-  //       content: ['./pages/**/*.vue',  './layouts/**/*.vue', './components/**/*.vue','~/static/vendor/bootstrap/css/bootstrap.min.css',],
-  //       css: ['**/*.css','**/*.scss'], 
-  //       whitelist: ['html', 'body','table', 'table-striped','fa-whatsapp','fa-whatsapp-square','fa-youtube','flex-row','flex-row-reverse','fa-twiter','fa-instagram','fa_youtube','fa-youtube','owl-stage-outer','owl-stage','owl-theme','owl-carousel','owl-stage-outer','owl-stage','owl-theme','stage-margin','nav-style-1','owl-loaded','owl-dot','owl-prev','owl-next','owl-nav', 'owl-dot active','owl-dots','owl-drag','owl-carousel-init'],
-  //     })
-  //   ]
-  // }, 
-  // extractCSS: true,
-  // optimization: {
-  //   minimizer: [
-  //     // new UglifyJsPlugin({
-  //     //   cache: true,
-  //     //   parallel: true,
-  //     //   sourceMap: true // set to true if you want JS source maps
-  //     // }),
-  //     new OptimizeCssAssetsPlugin({})
-  //   ],
+  collapseBooleanAttributes: true,
+  decodeEntities: true,
+  minifyCSS: true,
+  minifyJS: true,
+  processConditionalComments: true,
+  removeEmptyAttributes: true,
+  removeRedundantAttributes: true,
+  trimCustomFragments: true,
+  useShortDoctype: true,
+  postcss: {
+    plugins: [
+      purgecss({
+        content: ['./pages/**/*.vue',  './layouts/**/*.vue', './components/**/*.vue','~/static/vendor/bootstrap/css/bootstrap.min.css',],
+        css: ['**/*.css','**/*.scss'], 
+        whitelist: ['html', 'body','table', 'table-striped','fa-whatsapp','fa-whatsapp-square','fa-youtube','flex-row','flex-row-reverse','fa-twiter','fa-instagram','fa_youtube','fa-youtube','owl-stage-outer','owl-stage','owl-theme','owl-carousel','owl-stage-outer','owl-stage','owl-theme','stage-margin','nav-style-1','owl-loaded','owl-dot','owl-prev','owl-next','owl-nav', 'owl-dot active','owl-dots','owl-drag','owl-carousel-init'],
+      })
+    ]
+  }, 
+  extractCSS: true,
+  optimization: {
+    minimizer: [
+      // new UglifyJsPlugin({
+      //   cache: true,
+      //   parallel: true,
+      //   sourceMap: true // set to true if you want JS source maps
+      // }),
+      new OptimizeCssAssetsPlugin({})
+    ],
      
-  //   }
+    }
   }
 }
 
