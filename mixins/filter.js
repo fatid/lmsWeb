@@ -147,15 +147,20 @@ export default {
                 response.data.formattedData &&
                 response.data.formattedData[0]
             ) {
-                this.data = response.data.formattedData;
-                this.pagination.total = response.data.count;
-                this.loading=false;    
+                setTimeout(() => {
+                    
+                    this.data = response.data.formattedData;
+                    this.pagination.total = response.data.count;
+                }, 1000);
                 this.$store.dispatch("search/groupFields", {module:'exam_q', group:'exa_degree',lang: this.LOCALE});
                 this.$store.dispatch("search/groupFields", {module:'exam_q', group:'exa_type',lang: this.LOCALE});
                 this.$store.dispatch("search/groupFields", {module:'exam_q', group:'exa_categories',lang: this.LOCALE});   
                 this.$store.dispatch("search/groupFields", {module:'exam_q', group:'exa_skills',lang: this.LOCALE});
 
-
+                setTimeout(() => {
+                    this.loading=false;    
+                    
+                }, 3000);
             }else {
                 this.data = [];
                 this.pagination.total = 0;
