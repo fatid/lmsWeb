@@ -10,10 +10,8 @@
                     <h3>{{selectedItem.data.dict_word}}</h3>
                     <div v-html="HtmlEncode(selectedItem.data.dict_mean)"></div>
                      
-                                <span class="pull-right" v-if="selectedItem.data.dict_image">
-                                    <img :src="show_image(selectedItem.data.dict_image, '100', '100', true)" /></span>
-                                
-        
+                    <span class="pull-right" v-if="selectedItem.data.dict_image">
+                    <img :src="show_image(selectedItem.data.dict_image, '100', '100', true)" /></span> 
             </div>
       </div>
         <div class="side-bar"   data-simplebar :class="customClass.textDir+' '+customClass.dir"> 
@@ -184,7 +182,8 @@
                 <div v-else-if="search.module=='Exam'">
                     <div v-for="dt in data" class="list_item"  :class="customClass.textDir+' '+customClass.dir"> 
                         <div class="questition-container">
-                                   <div class="content-side"> <question
+                                   <div class="content-side">
+                                    <question
                                         :question="{q:dt,a:[]}"
                                         :order="1"
                                         :levels="options['co_level']"
@@ -265,6 +264,9 @@ export default {
    await this.getResults();  
   },
   watch:{
+    data(val){
+        console.log("data changed",val)
+    },
     'search.module'(val){
         this.getResults();
     },
@@ -333,6 +335,7 @@ export default {
             }
       },
     addSearch(field,key){
+        this.loading=true;
         if(this.search[field].includes(key)){
             this.search[field] = this.search[field].filter(k=> k!=key)
         }else{
