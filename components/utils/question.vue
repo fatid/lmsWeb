@@ -476,13 +476,15 @@ export default {
       let answer = "";
       if (total) {
         for (let i = 0; i < total; i++) {
-          let t = document.getElementById("allAnswers" + this.question.q.id)
-            .childNodes[i].innerText;
-          //  this.splitwords_answer_ordered[i]=t;
-          // console.log(i,this.splitwords_answer_ordered[i],t)
-          document.getElementById("allAnswers" + this.question.q.id).childNodes[
-            i
-          ].innerText = this.splitwords_answer_ordered[i];
+          let byId = document.getElementById("allAnswers" + this.question.q.id)
+          if(byId &&  byId.childNodes &&  byId.childNodes[i]){
+              let t = byId.childNodes[i].innerText;
+              //  this.splitwords_answer_ordered[i]=t;
+              // console.log(i,this.splitwords_answer_ordered[i],t)
+              document.getElementById("allAnswers" + this.question.q.id).childNodes[
+                i
+              ].innerText = this.splitwords_answer_ordered[i];
+          }
         }
       }
       this.answerText = this.splitwords_answer_ordered.join(" ");

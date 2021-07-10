@@ -72,6 +72,7 @@ const mutations = {
           console.log(k[g_from])
           if(k[g_from]){
               let arr =k[g_from].split("---")
+              console.log("arar",g,arr)
              arr.forEach(item=>{
               if(obj[item]){
                 obj[item]= obj[item] + k.count;

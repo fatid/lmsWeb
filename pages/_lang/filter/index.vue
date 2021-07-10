@@ -57,8 +57,7 @@
 							</div>
 				</div>     -->
                
-                <div class="serach-item" v-if="search.module=='Exam'"> 
-                
+                <div class="serach-item" v-if="search.module=='Exam'">  
                             <div class="search-title">
                                 {{l('Questition Skills','g')}}  
                             </div> 

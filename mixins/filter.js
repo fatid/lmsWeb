@@ -100,8 +100,13 @@ export default {
         if (this.search.qtype && this.search.qtype[0]) {
           filters.exa_type = ["=", this.search.qtype];
         }
+        console.log("skills",this.search)
         if (this.search.skills && this.search.skills[0]) {
-          filters.exa_skills = ["LIKE", this.search.skills];
+          filters.exa_skills = []
+          this.search.skills.forEach(h=>{
+            filters.exa_skills.push({exa_skills:["LIKE", h]});
+          }) 
+          
         }
         if (this.search.category && this.search.category[0]) {
           filters.exa_categories = ["=", this.search.category];
@@ -123,7 +128,12 @@ export default {
         }
    
         if (this.search.level && this.search.level[0]) {
-          filters.exa_degree = ["=", this.search.level];
+        //   filters.exa_degree = ["in", this.search.level];
+          filters.exa_degree = []
+          this.search.level.forEach(h=>{
+            filters.exa_degree.push({exa_degree:["LIKE", h]});
+          }) 
+          
         }
         filters.exa_timer = {exa_image:["!=", ''],rs_Question:["!=", ''],exa_sound:["!=", ''],exa_video:["!=", '']};
         this.$store.commit("search/setSearch",filters);
