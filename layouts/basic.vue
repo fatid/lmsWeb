@@ -1,7 +1,14 @@
 <template>
   <div>
-    <header class="header clearfix main-header">
-     
+    <header class="header clearfix main-header"  >
+      <div class="container">
+        <button type="button" id="toggleMenu" v-if="isMobile" class="toggle_menu">
+        <i class="uil uil-bars"></i>
+      </button>
+      <button id="collapse_menu" class="collapse_menu" v-if="isMobile">
+        <i class="uil uil-bars collapse_menu--icon "></i>
+        <span class="collapse_menu--label"></span>
+      </button>
       <div class="main_logo" id="logo">
         <a @click="goPath('home')"
           ><img :src="'http://lms.fatihd.com/yonetim/images/resimler/normal/logo.png'" alt="logo"
@@ -9,8 +16,7 @@
         <a @click="goPath('home')"
           ><img class="logo-inverse" :src="'http://lms.fatihd.com/yonetim/images/resimler/normal/logo.png'" alt="logo"
         /></a>
-      </div>
-    
+      </div>  
       <div class="search120">
         <div class="ui search">
           <div class="ui left icon input swdh10">
@@ -24,64 +30,212 @@
             <i class="uil uil-search-alt icon icon1"></i>
           </div>
         </div>
-      </div>
-      <div class="language-select">       <a
-              @click="changeLanguage('home')" 
-              title="Arabic"
-              :class="LOCALE=='en' ? 'selected-language' : '' "
-              >{{l('Home','g')}}</a>  
-               <a
-              @click="goPath('words/all_words')" 
-              title="Words" 
-              >{{l('Words','g')}}</a>
-               <a
-              @click="goPath('page/help')" 
-              title="FAQ" 
-              >{{l('FAQ','g')}}</a>
-              </div>
+          
+      </div>  
+       <div class="menu-select">
+        
+
+            <b-button pill variant="outline-danger"  @click="goPath('filter')">{{ l("Filter", "g") }}</b-button>
+            <b-button pill variant="outline-danger"  @click="goPath('courses/all_courses')">{{ l("Courses", "g") }}</b-button>
+            <b-button pill variant="outline-primary"   @click="goPath('words/all_words')" >{{ l("Words", "g") }}</b-button> 
+     
+      </div>  
       <div class="header_right">
        
         <ul>
-          <li>
-
-               <b-dropdown :text="LOCALE" variant="outline-danger" class="m-2" :key="'locale'+LOCALE">
-                  <template #button-content>
-                      <img class="image-lang" :src="'/img/'+LOCALE+'.png'"   />
-                  </template>
-                  <b-dropdown-item  @click="changeLanguage('ar')" ><img class="image-lang" :src="'/img/ar.png'"   /> Arabic</b-dropdown-item>
-                  <b-dropdown-item  @click="changeLanguage('en')" ><img class="image-lang" :src="'/img/en.png'" /> English</b-dropdown-item> 
-                </b-dropdown>
-
-          </li>
-          <li>
-            <a
-              @click="goPath('courses/all_courses')"
-              class="upload_btn"
-              title="Create New Course"
-              >{{ l("My Courses", "g") }}</a
-            >
-          </li>
+          <!-- <li v-show="!auth || !auth.token"  ><a>Test</a></li> -->
           <!-- <li>
 					<a href="shopping_cart.html" class="option_links" title="cart"><i class='uil uil-shopping-cart-alt'></i><span class="noti_count">2</span></a>
 				</li> -->
-          <li class="ui dropdown" v-if="auth && auth.token">
-            <a href="#" class="option_links" title="Messages"
-              ><i class="far fa-envelope"></i><span class="noti_count">0</span></a
-            > 
+          <li class="ui dropdown" v-show="auth && auth!=null && auth.token">
+            <a href="#" class="option_links" title="Messages">
+              <i class="far fa-envelope"></i>
+              <span class="noti_count">0</span>  
+              </a> 
           </li>
-            
-          <li v-if="!auth || !auth.token" class="list-inline-item g-mx-4">
+          <li class="ui dropdown" v-show="auth && auth!=null && auth.token">
+              <a href="#" class="option_links" title="Notifications">
+                <i class="far fa-bell"></i>
+                 <span class="noti_count">0</span>  
+              </a> 
+          </li>
+         
+            <li v-show="!auth || !auth.token" class="list-inline-item g-mx-4 ">
             <a
               class="g-color-black g-color-primary--hover g-text-underline--none--hover"
               @click="goPath('form/login')"
               >{{ l("LOGIN", "g") }}</a
             >
           </li> 
+            <li class="ui dropdown" v-show="auth && auth.token">  
+
+  <b-dropdown variant="link" toggle-class="text-decoration-none" no-caret>
+               <template #button-content>
+                          <a
+                          
+                            class="opts_account"
+                            title="Account"
+                          >
+                            <img :src="auth.U_Photo ? auth.U_Photo : '/images/hd_dp.jpg'" alt="" />
+                          </a>
+                  </template>
+                  <b-dropdown-item  @click="goPath('my/profile')" >  Profile</b-dropdown-item>
+                  <b-dropdown-item  @click="goPath('courses/all_courses')" >  {{l('My Courses','g')}}</b-dropdown-item>
+                  <b-dropdown-item  @click="goPath('my/list')" >   {{l('My List','g')}}</b-dropdown-item>
+                  <b-dropdown-text    >  
+                    
+                              <a  @click="changeLanguage('ar')" ><img class="image-lang" :src="'/img/ar.png'" title="Arabic"   /> </a>
+                              <a  @click="changeLanguage('en')" ><img class="image-lang" :src="'/img/en.png'" title="English"  /> </a>
+
+                  </b-dropdown-text> 
+                  <b-dropdown-item  @click="goPath('form/login?logout=true')" >  Sign Out</b-dropdown-item> 
+                </b-dropdown>  
+           </li> 
         </ul>
       </div>
+      </div>
     </header>
- 
-    <div class="wrapper wrapper__minify">
+
+   
+    <!-- Header End -->
+    <!-- Left Sidebar Start -->
+    <!-- <nav class="vertical_nav" v-if="isMobile">
+      <div class="left_section menu_left" id="js-menu">
+        <div class="left_section">
+          <ul>
+            <li class="menu--item">
+              <a
+                @click="goPath('home')"
+                class="menu--link active"
+                :title="l('Home', 'g')"
+              >
+                <i class="uil uil-home-alt menu--icon"></i>
+                <span class="menu--label">{{ l("Home", "g") }}</span>
+              </a>
+            </li>
+  <li class="menu--item">
+              <a
+                @click="goPath('filter')"
+                class="menu--link"
+                :title="l('Filter', 'g')"
+              >
+                <i class="uil uil-search menu--icon"></i>
+                <span class="menu--label">{{ l("Filter", "g") }}</span>
+              </a>
+            </li>
+            <li class="menu--item">
+              <a
+                @click="goPath('courses/all_courses')"
+                class="menu--link"
+                :title="l('Courses', 'g')"
+              >
+                <i class="uil uil-search menu--icon"></i>
+                <span class="menu--label">{{ l("Courses", "g") }}</span>
+              </a>
+            </li>
+            <li class="menu--item">
+              <a
+                @click="goPath('words/all_words')"
+                class="menu--link"
+                :title="l('Words', 'g')"
+              >
+                <i class="uil uil-search menu--icon"></i>
+                <span class="menu--label">{{ l("Words", "g") }}</span>
+              </a>
+            </li>
+            <li class="menu--item  menu--item__has_sub_menu">
+              <label class="menu--link" title="Tests">
+                <i class="uil uil-clipboard-alt menu--icon"></i>
+                <span class="menu--label">{{ l("Tests", "g") }}</span>
+              </label>
+              <ul class="sub_menu">
+                <li class="sub_menu--item">
+                  <a
+                    @click="goPath('tests/all_tests')"
+                    class="sub_menu--link"
+                    >{{ l("Tests") }}</a
+                  >
+                </li>
+                <li class="sub_menu--item">
+                  <a href="#" class="sub_menu--link">Test Results</a>
+                </li>
+                
+              </ul>
+            </li>
+            
+          </ul>
+        </div>
+        <div class="left_section pt-2">
+          <ul>
+            <li class="menu--item">
+              <a
+                @click="goPath('my/profile')"
+                class="menu--link"
+                title="Setting"
+              >
+                <i class="uil uil-cog menu--icon"></i>
+                <span class="menu--label">Setting</span>
+              </a>
+            </li>
+            <li class="menu--item">
+              <a @click="goPath('page/help')" class="menu--link" title="Help">
+                <i class="uil uil-question-circle menu--icon"></i>
+                <span class="menu--label">Help</span>
+              </a>
+            </li>
+            <li class="menu--item"> 
+              <a
+                @click="goPath('reports/all')"
+                class="menu--link"
+                title="Report History"
+              >
+                <i class="uil uil-windsock menu--icon"></i>
+                <span class="menu--label">Report History</span>
+              </a>
+            </li>
+            <li class="menu--item">
+              <a @click="isErrorReportVisible=true" class="menu--link" title="Send Feedback">
+                <i class="uil uil-comment-alt-exclamation menu--icon"></i>
+                <span class="menu--label">Send Feedback</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+        <div class="left_footer">
+          <ul>
+            <li>
+              <a @click="goPath('page/about')">{{ l("About", "g") }}</a>
+            </li>
+            <li>
+              <a @click="goPath('page/contact')">{{ l("Contact Us", "g") }}</a>
+            </li>
+            <li>
+              <a @click="goPath('page/copyright')"
+                >{{ l("Copyright", "g") }}
+              </a>
+            </li>
+            <li>
+              <a @click="goPath('page/privacy_policy')"
+                >{{ l("Privacy Policy", "g") }}
+              </a>
+            </li>
+            <li>
+              <a @click="goPath('page/terms_of_use')"
+                >{{ l("Terms of Use", "g") }}
+              </a>
+            </li>
+          </ul>
+          <div class="left_footer_content">
+            <p>
+              © {{ year }} <strong>{{ l("Daleel", "g") }}</strong
+              >. {{ l("All Rights Reserved.", "g") }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </nav> -->
+
+     <div class="wrapper wrapper__minify">
       <div class="sa4d25">
         <div class="container">
           <div class="row">
@@ -89,26 +243,39 @@
               <nuxt v-if="LANG_PACK.main" :key="$route.fullPath" />
             </div>
           </div>
+         
         </div>
       </div>
+ <footer-comp></footer-comp>
+         <errorReport></errorReport>
+        <likeModal></likeModal>
     </div>
 
-        <errorReport></errorReport>
+   
 
-  </div>
+     
+     
  
+  </div>
 </template>
 <script>
 import general from "@/mixins/general";
 import axios from "axios";
 import basicMixin from "~/mixins/basic.js";
 import canoicalMixin from "~/mixins/canoical.js";
+import Multiselect from 'vue-multiselect';
+var Vue = require('vue');
+var VueScrollTo = require('vue-scrollto');
 import errorReport from "@/components/common/errorReport";
+import likeModal from "@/components/common/like";
+import footerComp from "@/components/common/footer";
 
 export default {
   mixins: [basicMixin, canoicalMixin, general],
   components:{
-    errorReport
+    errorReport,
+    likeModal,
+    footerComp
   },
   watch: {
     async $route(to, from) {
@@ -120,19 +287,18 @@ export default {
         });
       }, 500);
       await this.$store.dispatch("pages/getPageInfo", {});
-      if(this.$store.state.pages.pageData.wa_content_id &&  this.$store.state.pages.pageData.id){
+       if(this.$store.state.pages.pageData.wa_content_id &&  this.$store.state.pages.pageData.id){
           await this.$store.dispatch("pages/setNewVisit", {
             contentId: this.$store.state.pages.pageData.wa_content_id,
             pageId: this.$store.state.pages.pageData.id,
             url: this.$route.path,
             lang: this.$store.state.locale
           });
-      }
+       }
       this.keyMenu = "k" + Math.random(100, 9999999);
       this.rootKey = to.path;
     }
-  },
-
+  }, 
   transition: "page",
   head() {
     return {
@@ -206,7 +372,19 @@ export default {
     },
     LANG_PACK() {
       return this.$store.state.langFile;
+    },
+    isErrorReportVisible: {
+      get(){
+        return this.$store.state.isErrorReportVisible;
+
+      },set(val){
+          this.$store.state.isErrorReportVisible = val;
+      }
     }
+  },
+ async beforeMount(){
+      await this.$store.dispatch('user/findAuth',{headers:null})
+
   },
   created() {
     this.getLikes();
@@ -237,46 +415,45 @@ export default {
 
       var menu = document.getElementById("js-menu");
       if(menu){
-             var subnavs = menu.querySelectorAll(".menu--item__has_sub_menu");
-     
+        var subnavs = menu.querySelectorAll(".menu--item__has_sub_menu");
 
-            // Toggle menu click
-            querySelector(".toggle_menu").onclick = function() {
-              nav.classList.toggle("vertical_nav__opened");
+        // Toggle menu click
+        querySelector(".toggle_menu").onclick = function() {
+          nav.classList.toggle("vertical_nav__opened");
 
-              wrapper.classList.toggle("toggle-content");
-            };
+          wrapper.classList.toggle("toggle-content");
+        };
 
-            // Minify menu on menu_minifier click
-            querySelector(".collapse_menu").onclick = function() {
-              nav.classList.toggle("vertical_nav__minify");
+        // Minify menu on menu_minifier click
+        querySelector(".collapse_menu").onclick = function() {
+          nav.classList.toggle("vertical_nav__minify");
 
-              wrapper.classList.toggle("wrapper__minify");
+          wrapper.classList.toggle("wrapper__minify");
 
+          for (var j = 0; j < subnavs.length; j++) {
+          subnavs[j].classList.remove("menu--subitens__opened");
+        }
+      };
+
+      // Open Sub Menu
+
+      for (var i = 0; i < subnavs.length; i++) {
+        if (subnavs[i].classList.contains("menu--item__has_sub_menu")) {
+          subnavs[i].querySelector(".menu--link").addEventListener(
+            "click",
+            function(e) {
               for (var j = 0; j < subnavs.length; j++) {
-                subnavs[j].classList.remove("menu--subitens__opened");
+                if (e.target.offsetParent != subnavs[j])
+                  subnavs[j].classList.remove("menu--subitens__opened");
               }
-            };
 
-            // Open Sub Menu
-
-            for (var i = 0; i < subnavs.length; i++) {
-              if (subnavs[i].classList.contains("menu--item__has_sub_menu")) {
-                subnavs[i].querySelector(".menu--link").addEventListener(
-                  "click",
-                  function(e) {
-                    for (var j = 0; j < subnavs.length; j++) {
-                      if (e.target.offsetParent != subnavs[j])
-                        subnavs[j].classList.remove("menu--subitens__opened");
-                    }
-
-                    e.target.offsetParent.classList.toggle("menu--subitens__opened");
-                  },
-                  false
-                );
-              }
-            }
-       }
+              e.target.offsetParent.classList.toggle("menu--subitens__opened");
+            },
+            false
+          );
+        }
+      }     
+      }                    
     }, 100);
   }
 };
@@ -440,21 +617,25 @@ a {
 .modal-body-wide::-webkit-scrollbar {
   width: 12px;
 }
-
+::-webkit-scrollbar {
+    -webkit-appearance: none;
+    width: 4px!important;
+    height: 10px!important;
+}
 .modal-body-wide::-webkit-scrollbar-track,
 ::-webkit-scrollbar-track {
   -webkit-box-shadow: inset 0 0 0px rgba(0, 0, 0, 0);
   border-radius: 10px;
 }
 ::-webkit-scrollbar-track {
-  -webkit-box-shadow: inset 0 0 4px rgba(0, 0, 0, 0);
+  -webkit-box-shadow: inset 0 0 3px rgba(0, 0, 0, 0);
   border-radius: 10px;
 }
 
 .modal-body-wide::-webkit-scrollbar-thumb,
 ::-webkit-scrollbar-thumb {
-  border-radius: 10px;
-  -webkit-box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.3);
+  border-radius: 3px;
+  -webkit-box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.3);
   margin-right: 5px;
 }
 
@@ -513,13 +694,31 @@ a {
     display: block;
     margin-right: 20px;
 }
-.language-select a{
-  padding: 8px;
-  margin: 2px 4px;
-  font-size: 12px;
-}
+
 a.selected-language{
   color: #a0a0a0!important;
+}
+img.image-lang{
+  height: 15px;
+  width: 20px;
+}
+.no-border{
+  border: 0;
+  padding: 0;
+}
+header.modal-header{
+    position: relative;
+        height: auto;
+}
+.search120{
+  margin-top: 20px;
+}
 
+.menu-select{
+    display: inline-block;
+    margin-right: 20px;
+    margin-top: 20px;
+    margin-left: 10px;
 }
 </style>
+ 
