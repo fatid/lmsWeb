@@ -221,12 +221,11 @@
                     <div v-for="dt in data" class="list_item"  :class="customClass.textDir+' '+customClass.dir"> 
                         <div class="questition-container">
                                    <div class="questition-container">
-                                   <div class="content-side"> <h3>{{dt.lesson_name  }}</h3></div> 
-                                              <div class="button-side">
-                                <a @click="goPathBlank('course/'+dt.prev_id)">Detail</a><br />
-                                
-                                   
-                                    </div> 
+                                   <div class="content-side" @click="goPathBlank('course/'+(dt.from_prev ? dt.from_prev.cou_link : ''))"> 
+                                                <h3>{{dt.section_name  }}</h3> 
+                                                {{dt.from_prev ? dt.from_prev.cou_name : ''}} / 
+                                                {{dt.from_lesson_unite ? dt.from_lesson_unite.unit_name : ''}}
+                                   </div>  
                                     </div>
                                     </div>
                     </div>
@@ -396,7 +395,7 @@ export default {
     getResults() {
 
         if(this.search.module=="Course"){
-                this.getLesson();
+                this.getSections();
         }else if(this.search.module=="Word"){
                 this.getWords();
 
@@ -550,7 +549,7 @@ export default {
 
            
         .content-side{
-
+                cursor: pointer;
                width: inherit;
             padding: 10px;
         }
