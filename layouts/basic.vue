@@ -47,6 +47,9 @@
           <!-- <li>
 					<a href="shopping_cart.html" class="option_links" title="cart"><i class='uil uil-shopping-cart-alt'></i><span class="noti_count">2</span></a>
 				</li> -->
+            <li> <a  @click="changeLanguage('ar')" ><div class="image-lang" :class="$store.state.locale=='ar' ? 'selected':''"  style="background-image: url('/img/ar.svg') " title="Arabic"  ></div> </a></li> 
+           <li><a  @click="changeLanguage('en')" ><div class="image-lang" :class="$store.state.locale=='en' ? 'selected':''"  style="background-image: url('/img/en.svg') " title="English" ></div> </a></li> 
+
           <li class="ui dropdown" v-show="auth && auth!=null && auth.token">
             <a href="#" class="option_links" title="Messages">
               <i class="far fa-envelope"></i>
@@ -82,12 +85,7 @@
                   <b-dropdown-item  @click="goPath('my/profile')" >  Profile</b-dropdown-item>
                   <b-dropdown-item  @click="goPath('courses/all_courses')" >  {{l('My Courses','g')}}</b-dropdown-item>
                   <b-dropdown-item  @click="goPath('my/list')" >   {{l('My List','g')}}</b-dropdown-item>
-                  <b-dropdown-text    >  
-                    
-                              <a  @click="changeLanguage('ar')" ><img class="image-lang" :src="'/img/ar.png'" title="Arabic"   /> </a>
-                              <a  @click="changeLanguage('en')" ><img class="image-lang" :src="'/img/en.png'" title="English"  /> </a>
-
-                  </b-dropdown-text> 
+              
                   <b-dropdown-item  @click="goPath('form/login?logout=true')" >  Sign Out</b-dropdown-item> 
                 </b-dropdown>  
            </li> 
@@ -698,9 +696,18 @@ a {
 a.selected-language{
   color: #a0a0a0!important;
 }
-img.image-lang{
-  height: 15px;
-  width: 20px;
+div.image-lang{
+  height: 40px;
+  width: 40px;
+  border-radius: 50%;
+  border: 4px solid #fafafa;
+background-size: 60px auto;
+    background-repeat: no-repeat;
+    /* background-attachment: fixed; */
+    background-position: center;
+    &.selected{
+         border: 4px solid #d2ed8a;
+    }
 }
 .no-border{
   border: 0;

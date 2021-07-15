@@ -241,6 +241,64 @@ export default {
         }); 
 
  
+    },
+  async getSections() {
+    
+    let filters = { status: ["=", 1] };
+    this.loading=true;   
+
+    if (this.search.keyword) {
+      filters.section_name = ["LIKE", this.search.keyword];
+    }
+   
+    // if (this.search.category) {
+    //   filters.exa_type = ["=", this.search.category];
+    // }
+ 
+    let fields = `prev.cou_link,prev.cou_name,lesson_unite,lesson_unite.unit_name,lesson_unite.unit_image,section_name,id,prev_id,status,created_on,created_by`;
+
+    // let filters = { status: ["=", 1], prev_id: ["=", prev] };
+
+    return new Promise((resolve, reject) => {
+      axios({
+        url: process.env.baseURL + "sections",
+            method: "get",
+            params: {
+                limit: this.pagination.limit,
+                offset:  (this.pagination.page-1)*this.pagination.limit,
+              fields,
+              lang: this.$store.state.locale,
+              sort: ["pdb_date,DESC"],
+              filter: filters
+            }
+          })
+            .then(response => {
+                if (
+                    response.data &&
+                    response.data.formattedData &&
+                    response.data.formattedData[0]
+                ) {
+                    this.data = response.data.formattedData;
+                    this.pagination.total = response.data.count;
+                    this.loading=false;    
+        
+        
+                }else {
+                    this.data = [];
+                    this.pagination.total = 0;
+                }
+                this.loading=false;    
+            
+            })
+            .catch(e => {
+                this.question.q = null;
+                this.loading=false;  
+                this.data = [];
+                this.pagination.total = 0;
+            });
+        }); 
+
+ 
     }
 
   }

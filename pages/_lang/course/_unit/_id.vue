@@ -9,24 +9,24 @@
             </li>
 
             <li
-              class="breadcrumb-item active"
+              class="breadcrumb-item active" v-if="data.from_prev"
               @click="
                 goPath(
-                  'course/the_only_course_you_need_to_learn_web_development'
+                  'course/'+data.from_prev.cou_link
                 )
               "
               aria-current="page"
             >
-              The only course you need to learn web development
+              {{data.from_prev.cou_name}}
             </li>
           </ol>
 
           <a
             class="download_btn2"
             @click="
-              goPath('course/the_only_course_you_need_to_learn_web_development')
+              goPath('course/'+data.from_prev.cou_link)
             "
-            >Back to Course</a
+            >{{l('Back to Course','g')}}</a
           >
         </nav>
       </div>
@@ -186,7 +186,7 @@ export default {
     total: 0,
     order: 1,
     allLessons: [],
-    fields: `lesson_question,sort,lesson_photo,lesson_counter,lesson_unite,lesson_type,lesson_description,lesson_name,id,status,created_on,created_by,lesson_video_url,lesson_video`,
+    fields: `prev.cou_name,prev.cou_link,prev.cou_level,sections.section_name,lesson_question,sort,lesson_photo,lesson_counter,lesson_unite,lesson_type,lesson_description,lesson_name,id,status,created_on,created_by,lesson_video_url,lesson_video`,
     unit: null,
     next: null,
     prev: null
@@ -393,6 +393,9 @@ console.log("list",list)
     setSelect() {
       let id = this.$route.params.id;
       this.data = this.allLessons.find(k => k.id == id);
+      if(!this.data){
+        this.data = this.allLessons[0]
+      }
       this.next = this.allLessons[this.data.sort];
       this.prev = this.allLessons[this.data.sort - 2];
       this.order = this.data.sort;
@@ -464,7 +467,7 @@ console.log("list",list)
       });
     },
     "data.lesson_question"(val) {
-      console.log("get question", this.data.lesson_question);
+      // console.log("get question", this.data.lesson_question);
       if (val) {
         this.getQuestion();
         this.isAnswered = false;

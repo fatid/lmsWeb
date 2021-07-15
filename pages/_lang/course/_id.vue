@@ -132,9 +132,9 @@
             <h3>{{ l("Course content", "g") }}</h3>
             <div class="_112456">
               <ul class="accordion-expand-holder">
-                <li>
+                <!-- <li>
                   <span class="accordion-expand-all _d1452">Expand all</span>
-                </li>
+                </li> -->
                 <li><span class="_fgr123"></span></li>
                 <li><span class="_fgr123"></span></li>
               </ul>
@@ -181,7 +181,7 @@
                 >
                   <div
                     class="lecture-container"
-                    v-for="(les, num) in getCourses(unit.id)"
+                    v-for="(les, num) in filterSections(unit.id)"
                     
                     :class="unit.accordion ? 'lecture-hidden' : ''"
                   >
@@ -190,7 +190,7 @@
                     </div>
                     <div class="left-content" @click="goPath('course/' + unit.id + '/' + les.id)">
                       <div class="top">
-                        <div class="title">{{ les.lesson_name }}</div>
+                        <div class="title">{{ les.section_name }}</div>
                       </div>
                     </div>
                        <a    
@@ -207,15 +207,15 @@
                         @click="removeLikeModal(les,unit,'Course')"
                       >  <span class="text-red"> <i class="far fa-heart "></i> </span> 
                       </a>
-                      <span class="content-summary">{{ les.lesson_type }}   </span>
+                      <!-- <span class="content-summary">{{ les.lesson_type }}   </span> -->
                   
                    
                   
                     <div class="end-detail">
-                      <i :class="getCourseIcon(les)" class="icon_142"></i>
+                      <!-- <i :class="getCourseIcon(les)" class="icon_142"></i>
                       <div class="title">
                         {{ les.lesson_total_time | minuteDuration }}
-                      </div>
+                      </div> -->
                     </div>
                   </div>
                 </div>
@@ -417,6 +417,7 @@ export default {
     data: [],
     units: [],
     lessons: [], 
+    sections: [], 
     inputList: ""
   }),
   async created() {
@@ -517,7 +518,46 @@ export default {
     },
 
     getCourses(prev) {
-      return this.lessons.filter(k => k.lesson_unite == prev);
+      return this.lessons ? this.lessons.filter(k => k.lesson_unite == prev) : [];
+    },
+     filterSections(prev) {
+      return this.sections.filter ? this.sections.filter(k => k.lesson_unite == prev) : [];
+    },
+     async getSections(prev) {
+      let fields = `lesson_unite,section_name,id,status,created_on,created_by`;
+
+      let filters = { status: ["=", 1], prev_id: ["=", prev] };
+
+      return new Promise((resolve, reject) => {
+        axios({
+          url: process.env.baseURL + "sections",
+          method: "get",
+          params: {
+            limit: 100,
+            offset: 0,
+            fields,
+            lang: this.$store.state.locale,
+            sort: ["sort,ASC"],
+            filter: filters
+          }
+        })
+          .then(response => {
+            if (
+              response.data &&
+              response.data.formattedData &&
+              response.data.formattedData[0]
+            ) {
+              let d = response.data.formattedData;
+              this.sections = d;
+            } else {
+              this.sections = {};
+            }
+          })
+          .catch(e => {
+            this.sections = {};
+            console.log(e);
+          });
+      });
     },
     async getLesson(prev) {
       let fields = `lesson_photo,lesson_unite,lesson_type,lesson_total_time,lesson_description,lesson_name,id,status,created_on,created_by,lesson_video_url,lesson_video`;
@@ -588,6 +628,7 @@ export default {
                 let x = unescape(d.cou_description);
 
                 this.getUnits(d.id);
+                this.getSections(d.id);
                 this.getLesson(d.id);
                 this.data = d;
               } else {
