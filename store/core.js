@@ -2,6 +2,7 @@ import axios from 'axios'
 
 const state = () => ({
     countries: [],
+    banners:[],
     options: {
       'co_level':[],
       'uye_Lists':[],
@@ -12,6 +13,9 @@ const state = () => ({
 const mutations= {
     setCountries(state, payload){
        state.countries = payload 
+    },
+    setBanners(state, payload){
+       state.banners = payload 
     },
     setOptions(state, payload){
        state.options[payload.group] = payload.data
@@ -72,6 +76,26 @@ async getCountries({ commit, dispatch, state },payload){
   })
     .then(response => {
       commit('setCountries',response.data.formattedData);
+    })
+    .catch(e => {
+      console.log("ERR", e);
+    });
+},
+async getBanners({ commit, dispatch, state },payload){
+    let slang = payload &&  payload.lang  ? payload.lang : "ar"
+    await axios({
+    url: process.env.baseURL+'Card_Banner',
+    method: "get",
+    params: {
+      limit: 100,
+      lang: slang,
+      filter: { status: ["=",1] },
+      fields: "id,cbanner_title,cbanner_subtitle,cbanner_buttontext,cbanner_buttonurl,cbanner_bg,cbanner_part,cbanner_style,cbanner_who",
+ 
+    }
+  })
+    .then(response => {
+      commit('setBanners',response.data.formattedData);
     })
     .catch(e => {
       console.log("ERR", e);

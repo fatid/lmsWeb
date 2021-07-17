@@ -19,6 +19,7 @@ export default {
         sended(){
             return  this.$store.state.form.form;
           },
+   
         isMobile() {
             return this.$route.query.device
               ? this.$route.query.device

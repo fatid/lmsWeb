@@ -278,6 +278,7 @@ export default {
         });
       }, 500);
       await this.$store.dispatch("pages/getPageInfo", {});
+     
        if(this.$store.state.pages.pageData.wa_content_id &&  this.$store.state.pages.pageData.id){
           await this.$store.dispatch("pages/setNewVisit", {
             contentId: this.$store.state.pages.pageData.wa_content_id,
@@ -380,6 +381,7 @@ export default {
   created() {
     this.getLikes();
     this.$store.dispatch("course/getCourseCategories");
+     this.$store.dispatch("core/getBanners", {});
   },
   methods: {},
 
