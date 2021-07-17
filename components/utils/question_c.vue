@@ -109,8 +109,7 @@
           v-else
           style=" text-align: right; direction:rtl;  font-size: 22px;"
         >
-          <!-- <span v-html="parseQuestion(question.q.rs_Question)"></span> -->
-          <span v-html="parsedQuestion"></span>
+          <span v-html="parseQuestion(question.q.rs_Question)"></span>
         </div>
         <div v-if="question.q.exa_video">
           <video
@@ -274,7 +273,6 @@ export default {
       counterStatus: "start",
       trueText: "",
       alternativeChars: [],
-      parsedQuestion:'',
       alphabets: [
         "ا",
         "أ",
@@ -558,9 +556,9 @@ export default {
       this.isTimeOut = true;
     },
     addToAnswer(val, space) {
-      let total = this.answerText ? this.answerText.length : 0; 
+      let total = this.answerText ? this.answerText.length : 0;
+
       this.answerText += space + val;
-      this.parseQuestion(this.question.q.rs_Question);
       this.answerText = this.answerText ? this.answerText.trim() : this.answerText;
     },
     removeAnswer(val) {
@@ -603,8 +601,7 @@ export default {
         this.trueText = answer && answer[1] ? answer[1].trim() : "";
         let answer_char = answer && answer[1] ? answer[0].trim() : "";
         this.alternativeChars = answer_char ? answer_char.trim().split("") : [];
-        this.parsedQuestion = newVal;
-        // return newVal;
+        return newVal;
       }
     },
     nextQuestion() {
