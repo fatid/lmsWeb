@@ -106,7 +106,7 @@
           <br />
         </div>
         <div
-          v-else
+        v-if="parsedQuestion"
           style=" text-align: right; direction:rtl;  font-size: 22px;"
         >
           <!-- <span v-html="parseQuestion(question.q.rs_Question)"></span> -->
@@ -357,16 +357,10 @@ export default {
       this.question.q.exa_type == "MultipleChoice" &&
       !this.question.a[0]
     ) {
-        this.parseQuestion(this.question.q.rs_Question);
+     
       console.log("inside ");
       this.getAnswers1();
-    }else if (
-      this.question &&
-      this.question.q &&
-      this.question.q.rs_Question
-    ){
-        this.parseQuestion(this.question.q.rs_Question);
-    }
+    } 
   },
   watch: {
     "activeCourse.last"(val) {
@@ -374,6 +368,7 @@ export default {
     },
     "question.q"(val) {
       this.splitwords();
+      this.parseQuestion(val.rs_Question);
     },
     "updated.value"(val) {
       let unitId = this.$route.params.unit;
