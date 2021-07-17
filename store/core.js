@@ -23,7 +23,7 @@ async getOptions({ commit, dispatch, state },payload){
     let slang = payload &&  payload.lang  ? payload.lang : "ar"
     let prev_id = payload &&  payload.prev_id  ? payload.prev_id :  null
     let group = payload &&  payload.group  ? payload.group : null
-    let sort = payload &&  payload.sort  ? [payload.sort] : ["id,DESC"]
+    let sort = payload &&  payload.sort  ? [payload.sort] : ["id,ASC"]
 
     let filter= { status: ["=",1] };
     if(prev_id){

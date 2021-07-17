@@ -140,7 +140,8 @@
         >
           <div class="grouped fields">
             <div class="field fltr-radio" v-for="(a, i) in question.a">
-              <div class="ui radio checkbox">
+              <div class="ui radio checkbox toRight">
+                 <label @click="answer = a.id">{{ a.exa_q_answer }} </label>
                 <input
                   type="radio"
                   name="example"
@@ -149,7 +150,7 @@
                   class="hidden"
                   :disable="isTrue"
                 />
-                <label @click="answer = a.id">{{ a.exa_q_answer }} </label>
+               
               </div>
             </div>
           </div>
@@ -781,6 +782,40 @@ export default {
   height: 32px;
   display: inline-block;
 }
+
+.ui.radio.checkbox .box:before, .ui.radio.checkbox label:before {
+ 
+    right: 0!important;
+    left: auto!important;
+}
+
+.ui.radio.checkbox .box:after, .ui.radio.checkbox label:after {
+ 
+    right: 0!important; 
+    left: auto!important; 
+}
+
+.ui.checkbox {
+    position: relative;
+    display: inline-block;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    outline: 0;
+    vertical-align: baseline;
+    font-style: normal;
+    min-height: 17px;
+    font-size: 1rem;
+    line-height: 17px;
+    min-width: 17px;
+}
+.ui.checkbox input[type=checkbox], .ui.checkbox input[type=radio] {
+    right: 0!important; 
+    left: auto!important; 
+}
+.ui.radio.checkbox .box, .ui.radio.checkbox label {
+    padding-right: 1.85714em;
+    padding-left: 0!important;
+}
 </style>
 <style scoped>
 .question {
@@ -964,4 +999,5 @@ export default {
   left: 0px;
   top: -10px;
 }
+
 </style>
