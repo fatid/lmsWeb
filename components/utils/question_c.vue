@@ -384,10 +384,12 @@ export default {
   methods: {
     resetSetwords() {
       this.splitwords_answer = this.splitwords_answer_original;
-      this.splitwords_answer_original.forEach((k, i) => {
-        this.splitwords_answer_ordered[i] = "";
-        this.splitwords_setanswer();
-      });
+      if(this.splitwords_answer_original){
+          this.splitwords_answer_original.forEach((k, i) => {
+            this.splitwords_answer_ordered[i] = "";
+            this.splitwords_setanswer();
+          });
+      }
       this.setKeywordKey = "k" + Math.random(9, 99999);
     },
     getRandomResultText() {
@@ -645,7 +647,7 @@ export default {
             if (!activeCourse.lessons) {
               activeCourse.lessons = {};
             }
-
+          if(lessonId){
             activeCourse.lessons[lessonId] = {
               completed: true,
               isTimeOut: this.isTimeOut,
@@ -662,6 +664,7 @@ export default {
               courseId: "all",
               unitData: activeCourse
             });
+          }
           } else {
             this.chance += 1;
             activeCourse.point = activeCourse.point + this.score;
@@ -669,6 +672,7 @@ export default {
             if (!activeCourse.lessons) {
               activeCourse.lessons = {};
             }
+             if(lessonId){
             activeCourse.lessons[lessonId] = {
               completed: false,
               isTimeOut: this.isTimeOut,
@@ -685,6 +689,7 @@ export default {
               courseId: "all",
               unitData: activeCourse
             });
+             }
           }
         } else {
           this.$emit("answered", true);
@@ -725,41 +730,44 @@ export default {
             if (!activeCourse.lessons) {
               activeCourse.lessons = {};
             }
-
-            activeCourse.lessons[lessonId] = {
-              completed: true,
-              isTimeOut: this.isTimeOut,
-              isTrue: true,
-              duration: this.updated,
-              chance: this.chance,
-              score: this.score,
-              answer: this.answerText,
-              counterStatus: this.counterStatus
-            };
-            this.$store.dispatch("course/setCourseLast", {
-              unitId,
-              lessonId,
-              courseId: "all",
-              unitData: activeCourse
-            });
+              if(lessonId &&  activeCourse.lessons){
+                          activeCourse.lessons[lessonId] = {
+                            completed: true,
+                            isTimeOut: this.isTimeOut,
+                            isTrue: true,
+                            duration: this.updated,
+                            chance: this.chance,
+                            score: this.score,
+                            answer: this.answerText,
+                            counterStatus: this.counterStatus
+                          };
+                          this.$store.dispatch("course/setCourseLast", {
+                            unitId,
+                            lessonId,
+                            courseId: "all",
+                            unitData: activeCourse
+                          });
+              }
           } else {
-            this.chance += 1;
-            activeCourse.lessons[lessonId] = {
-              completed: false,
-              isTimeOut: this.isTimeOut,
-              isTrue: false,
-              duration: this.updated,
-              chance: this.chance,
-              score: this.score,
-              answer: this.answerText,
-              counterStatus: this.counterStatus
-            };
-            this.$store.dispatch("course/setCourseLast", {
-              unitId,
-              lessonId,
-              courseId: "all",
-              unitData: activeCourse
-            });
+              if(lessonId &&  activeCourse.lessons){
+                  this.chance += 1;
+                  activeCourse.lessons[lessonId] = {
+                    completed: false,
+                    isTimeOut: this.isTimeOut,
+                    isTrue: false,
+                    duration: this.updated,
+                    chance: this.chance,
+                    score: this.score,
+                    answer: this.answerText,
+                    counterStatus: this.counterStatus
+                  };
+                  this.$store.dispatch("course/setCourseLast", {
+                    unitId,
+                    lessonId,
+                    courseId: "all",
+                    unitData: activeCourse
+                  });
+              }
           }
           this.isTrue = answer ? true : false;
         }

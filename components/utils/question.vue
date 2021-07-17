@@ -18,6 +18,7 @@
           {{ l("Make the text correct", "g") }}
           <div class="myParagraph" v-if="question.q.rs_Question">
             <!-- {{answerText == trueText ? "Yes true." : "Try Again"}}   {{answerText}}==={{trueText}} -->
+           
             <div
               class="answerSentence"
               :class="counterStatus == 'stopped' ? 'answered' : ''"
@@ -25,6 +26,7 @@
               <!-- {{ l("Answer", "g") }}: {{ answerText }} -->
             </div>
           </div>
+          
           <div class="words" v-show="counterStatus != 'stopped'">
             <div style="width: 100%;float: right;">
               <draggable
@@ -65,6 +67,7 @@
                                 align-items: end;
                                 width: 100%;"
           >
+         
             <span
               class="draggable words_item unselectable "
               v-for="(dd, i) in splitwords_answer"
@@ -106,8 +109,8 @@
           <br />
         </div>
         <div
-        v-if="parsedQuestion"
-          style=" text-align: right; direction:rtl;  font-size: 22px;"
+        v-if="parsedQuestion &&  question.q.exa_type != 'MultipleChoice' &&  question.q.exa_type != 'ParagraphOrder' &&  question.q.exa_type != 'SentenceCorrect'"
+          style=" text-align: right; direction:rtl;  font-size: 22px; line-height: 2;"
         >
           <!-- <span v-html="parseQuestion(question.q.rs_Question)"></span> -->
           <span v-html="parsedQuestion"></span>
@@ -139,6 +142,10 @@
               question.a[0]
           "
         >
+
+         <div  style=" text-align: right; direction:rtl;  font-size: 22px;"   > 
+         <span v-html="question.q.rs_Question"></span>  
+        </div>
           <div class="grouped fields">
             <div class="field fltr-radio" v-for="(a, i) in question.a">
               <div class="ui radio checkbox toRight">
@@ -156,8 +163,11 @@
             </div>
           </div>
         </div>
-        <div class="ui form" v-else-if="answers && answers[0]">
-          <div class="grouped fields">
+        <div class="ui form" v-else-if="question.q.exa_type == 'MultipleChoice'">
+             <div  style=" text-align: right; direction:rtl;  font-size: 22px;"   > 
+         <span v-html="question.q.rs_Question"></span>  
+        </div>
+          <div class="grouped fields" v-if="answers && answers[0]">
             <div class="field fltr-radio" v-for="(a, i) in answers">
               <div class="ui radio checkbox">
                 <input
@@ -173,23 +183,14 @@
             </div>
           </div>
         </div>
-        <div
-          class="myAlphabet"
-          v-if="question.q.exa_type == 'FillBlanks' && trueText.length"
-        >
-          <!-- {{answerText == trueText ? "Yes true." : "Try Again"}}   {{answerText}}==={{trueText}} -->
-          <!-- <div class="answerTitle">
-            {{ l("Answer", "g") }}: {{ answerText }}
-          </div> -->
-
-          <!-- <div class="answerAlphabet" v-for="i in trueText.length">
-            {{ answerText && answerText[i - 1] ? answerText[i - 1] : "" }}
-          </div> -->
-        </div>
+      
         <div
           class="alphabets"
+          
           v-if="question.q.exa_type == 'FillBlanks' && trueText.length"
         >
+
+      
           <div class="alphabet_item" @click="removeAnswer()">
             <i class="fa fa-trash"></i>
           </div>
@@ -199,6 +200,7 @@
           <div class="alphabet_item" @click="spaceAnswer()">
             _
           </div>
+      
           <div
             class="alphabet_item"
             v-for="alp in randomAlphabets"
@@ -388,10 +390,12 @@ export default {
   methods: {
     resetSetwords() {
       this.splitwords_answer = this.splitwords_answer_original;
-      this.splitwords_answer_original.forEach((k, i) => {
-        this.splitwords_answer_ordered[i] = "";
-        this.splitwords_setanswer();
-      });
+      if(this.splitwords_answer_original){ 
+            this.splitwords_answer_original.forEach((k, i) => {
+            this.splitwords_answer_ordered[i] = "";
+            this.splitwords_setanswer();
+          });
+      }
       this.setKeywordKey = "k" + Math.random(9, 99999);
     },
     getRandomResultText() {
@@ -501,22 +505,46 @@ export default {
       if(this.question && this.question.q && this.question.q.rs_Question){
       let words = this.question.q.rs_Question.trim();
       let wp = words.split("\n");
-      let ws = wp[0].trim().split(" ");
-      let w = ws.map(k => {
-        return k
-          .replaceAll(".", "")
-          .replaceAll(" ", "")
-          .trim();
-      });
-      this.trueText = w.join(" ").trim();
-      this.splitwords_answer = w.sort(() => Math.random() - 0.5);
-      this.splitwords_answer.forEach(
-        (k, i) => (this.splitwords_answer_ordered[i] = "")
-      );
-      this.splitwords_answer_original = w.sort(() => Math.random() - 0.5);
+      if(this.question.q.exa_type == 'FillBlanks'){
+        let val = this.question.q.rs_Question;
+        val = val.replaceAll("&lt;", "<");
+        val = val.replaceAll("&gt;", ">");
+        let before = val.split("++");
+        let after = before[1] ? before[1].split("++") : ["", ""];
+    
+        let answer = before[1] ? before[1].split("+") : [];
+        this.trueText = answer && answer[1] ? answer[1].trim() : "";
+         let answer_char = answer && answer[1] ? answer[0].trim() : "";
+         this.alternativeChars = answer_char ? answer_char.trim().split("") : [];
+      }else
+      if(this.question.q.exa_type == 'ParagraphOrder'){
+         this.trueText = wp.join(" ").trim();
+         this.splitparagraph_answer = wp.sort(() => Math.random() - 0.5);
+          this.splitwords_answer_original = wp.sort(() => Math.random() - 0.5);
 
-      this.splitparagraph_answer = wp.sort(() => Math.random() - 0.5);
-      return [...this.splitwords_answer];
+          return [...this.splitwords_answer];
+      }else{
+        if(wp){
+           var ws = wp[0].trim().split(" ");
+            let w = ws.map(k => {
+            return k
+              .replaceAll(".", "")
+              .replaceAll(" ", "")
+              .trim();
+            });
+      
+          this.trueText = w.join(" ").trim();
+          this.splitwords_answer = w.sort(() => Math.random() - 0.5);
+          this.splitwords_answer.forEach(
+            (k, i) => (this.splitwords_answer_ordered[i] = "")
+          );
+          this.splitwords_answer_original = w.sort(() => Math.random() - 0.5);
+
+          this.splitparagraph_answer = wp.sort(() => Math.random() - 0.5);
+          return [...this.splitwords_answer];
+        }
+      }
+    
       }
     },
     chooseActive() {
@@ -568,10 +596,15 @@ export default {
     removeAnswer(val) {
       this.answerText = "";
       this.isTrue = null;
+      if(this.question.q && this.question.q.rs_Question){
+        this.parseQuestion(this.question.q.rs_Question);
+      }
       this.chance = 1;
     },
     backspaceAnswer(val) {
       this.answerText = this.answerText.slice(0, -1);
+      this.parseQuestion(val.rs_Question);
+
     },
     spaceAnswer(val) {
       this.answerText += " ";
@@ -601,10 +634,6 @@ export default {
             before[2];
         }
         let newVal = before[0] + add;
-        let answer = before[1] ? before[1].split("+") : [];
-        this.trueText = answer && answer[1] ? answer[1].trim() : "";
-        let answer_char = answer && answer[1] ? answer[0].trim() : "";
-        this.alternativeChars = answer_char ? answer_char.trim().split("") : [];
         this.parsedQuestion = newVal;
         // return newVal;
       }
@@ -617,6 +646,7 @@ export default {
         let unitId = this.$route.params.unit;
         let lessonId = this.$route.params.id;
         let activeCourse = this.activeCourse;
+        console.log("this.trueText",this.trueText,"anser",this.answerText)
         if (this.trueText) {
           this.$emit("answered", true);
 
@@ -650,7 +680,7 @@ export default {
             if (!activeCourse.lessons) {
               activeCourse.lessons = {};
             }
-
+ if(lessonId &&  activeCourse.lessons){
             activeCourse.lessons[lessonId] = {
               completed: true,
               isTimeOut: this.isTimeOut,
@@ -667,6 +697,7 @@ export default {
               courseId: "all",
               unitData: activeCourse
             });
+ }
           } else {
             this.chance += 1;
             activeCourse.point = activeCourse.point + this.score;
@@ -674,22 +705,24 @@ export default {
             if (!activeCourse.lessons) {
               activeCourse.lessons = {};
             }
-            activeCourse.lessons[lessonId] = {
-              completed: false,
-              isTimeOut: this.isTimeOut,
-              isTrue: false,
-              duration: this.updated,
-              chance: this.chance,
-              score: this.score,
-              answer: this.answerText,
-              counterStatus: this.counterStatus
-            };
-            this.$store.dispatch("course/setCourseLast", {
-              unitId,
-              lessonId,
-              courseId: "all",
-              unitData: activeCourse
-            });
+             if(lessonId &&  activeCourse.lessons){
+                  activeCourse.lessons[lessonId] = {
+                    completed: false,
+                    isTimeOut: this.isTimeOut,
+                    isTrue: false,
+                    duration: this.updated,
+                    chance: this.chance,
+                    score: this.score,
+                    answer: this.answerText,
+                    counterStatus: this.counterStatus
+                  };
+                  this.$store.dispatch("course/setCourseLast", {
+                    unitId,
+                    lessonId,
+                    courseId: "all",
+                    unitData: activeCourse
+                  });
+             }
           }
         } else {
           this.$emit("answered", true);
@@ -730,7 +763,7 @@ export default {
             if (!activeCourse.lessons) {
               activeCourse.lessons = {};
             }
-
+ if(lessonId &&  activeCourse.lessons){
             activeCourse.lessons[lessonId] = {
               completed: true,
               isTimeOut: this.isTimeOut,
@@ -747,8 +780,10 @@ export default {
               courseId: "all",
               unitData: activeCourse
             });
+ }
           } else {
             this.chance += 1;
+             if(lessonId &&  activeCourse.lessons){
             activeCourse.lessons[lessonId] = {
               completed: false,
               isTimeOut: this.isTimeOut,
@@ -765,6 +800,7 @@ export default {
               courseId: "all",
               unitData: activeCourse
             });
+             }
           }
           this.isTrue = answer ? true : false;
         }
@@ -786,6 +822,7 @@ export default {
   min-width: 32px;
   height: 32px;
   display: inline-block;
+  line-height: 1;
 }
 
 .ui.radio.checkbox .box:before, .ui.radio.checkbox label:before {

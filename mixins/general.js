@@ -7,7 +7,9 @@ export default {
     };
   },
   computed: {
-    
+    banners(){
+      return  this.$store.state.core.banners;
+    },
     options() { 
       return this.$store.state.core.options
     },

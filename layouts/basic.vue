@@ -387,6 +387,7 @@ export default {
   created() {
     this.getLikes();
     this.$store.dispatch("course/getCourseCategories");
+    this.$store.dispatch("core/getBanners", {});
   },
   methods: {},
 
