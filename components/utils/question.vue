@@ -357,8 +357,15 @@ export default {
       this.question.q.exa_type == "MultipleChoice" &&
       !this.question.a[0]
     ) {
+        this.parseQuestion(this.question.q.rs_Question);
       console.log("inside ");
       this.getAnswers1();
+    }else if (
+      this.question &&
+      this.question.q &&
+      this.question.q.rs_Question
+    ){
+        this.parseQuestion(this.question.q.rs_Question);
     }
   },
   watch: {
