@@ -19,6 +19,17 @@
             >
               {{data.from_prev.cou_name}}
             </li>
+            <li
+              class="breadcrumb-item active" v-if="data.from_lesson_subject"
+              @click="
+                goPath(
+                  'course/'+data.from_prev.cou_link
+                )
+              "
+              aria-current="page"
+            >
+              {{data.from_lesson_subject.section_name}}
+            </li>
           </ol>
 
           <a
@@ -31,9 +42,7 @@
         </nav>
       </div>
     </div>
-    <div class="card-header">
-
- 
+    <div class="card-header"> 
     </div>
 <div class="card-header" v-if="1==1">
  
@@ -186,7 +195,7 @@ export default {
     total: 0,
     order: 1,
     allLessons: [],
-    fields: `prev.cou_name,prev.cou_link,prev.cou_level,sections.section_name,lesson_question,sort,lesson_photo,lesson_counter,lesson_unite,lesson_type,lesson_description,lesson_name,id,status,created_on,created_by,lesson_video_url,lesson_video`,
+    fields: `prev.cou_name,prev.cou_link,lesson_subject.section_name,prev.cou_level,sections.section_name,lesson_question,sort,lesson_photo,lesson_counter,lesson_subject,lesson_type,lesson_description,lesson_name,id,status,created_on,created_by,lesson_video_url,lesson_video`,
     unit: null,
     next: null,
     prev: null
@@ -291,7 +300,7 @@ console.log("list",list)
       //   let fields = `sort,lesson_photo,lesson_unite,lesson_type,lesson_description,lesson_name,id,status,created_on,created_by,lesson_video_url,lesson_video`;
       let fields = this.fields;
 
-      let lesson_unite = this.$route.params.unit;
+      let lesson_section = this.$route.params.unit;
 
       axios({
         url: process.env.baseURL + "lesson",
@@ -302,7 +311,7 @@ console.log("list",list)
           fields,
           lang: this.$store.state.locale,
           sort: ["sort,ASC"],
-          filter: { lesson_unite: ["=", lesson_unite] }
+          filter: { lesson_subject: ["=", lesson_section] }
         }
       })
         .then(response => {
