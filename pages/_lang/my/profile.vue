@@ -1,12 +1,12 @@
 <template>
   <div class="sa4d25">
-    <div class="container-fluid">
+    <div class="container mt-10">
 
-      <h3> My Lists </h3>
+      <div class="div-container">
       <div class="row">
         <div class="col-lg-12">
           <h2 class="st_title">
-            <i class="uil uil-cog"></i> {{ l("Settings", "general") }}
+            <i class="uil uil-cog"></i> {{ l("My Profile", "general") }}
           </h2>
           <div class="setting_tabs">
             <ul class="nav nav-pills mb-4" id="pills-tab" role="tablist">
@@ -216,10 +216,10 @@
                           <div class="col-lg-12 mt-5 ">
                             <p>{{ l("Your Languages", "g") }}</p>
                           </div>  
-                          <div class="w-100" v-for="(lg, i) in uye_languages">
+                          <div class="w-100 ml-10" v-for="(lg, i) in uye_languages">
                           
                             <div class="row w-100" v-if="typeof lg.status=='undefined' || lg.status!=2">
-                              <div class="col-lg-1 mt-20"><strong>{{ (i+1) }}</strong></div>
+                              <div class="col-lg-1 mt-20" style="text-align:center;"><strong>{{ (i+1) }}</strong></div>
                               <div class="col-lg-5">
                                 <div class="ui search focus mt-10">
                                   <div class="ui left icon input swdh11 swdh19">
@@ -528,461 +528,25 @@
                 <button class="save_btn" type="submit" @click="changePasswordAction">{{l('Change Password','g')}}</button>
               </div>
             </div>
-            <div
+    
+             <div
               class="tab-pane fade"
-              id="pills-bllingpayment"
-              role="tabpanel"
-              aria-labelledby="pills-bllingpayment-tab"
+              :class="show == 'bllingpayment' ? 'show active' : ''"
             >
               <div class="account_setting">
                 <h4>Billing and Payouts</h4>
                 <p>
-                  Want to charge for a course? Provide your payment info and opt
-                  in for our promotional programs
+                  You are currently in Standart Plan <a>Change Plan</a>
                 </p>
-                <div class="basic_form">
-                  <div class="row">
-                    <div class="col-lg-8">
-                      <div class="basic_ptitle mt-30">
-                        <h4>Billing Address</h4>
-                      </div>
-                      <div class="row">
-                        <div class="col-lg-6">
-                          <div class="ui search focus mt-30">
-                            <div class="ui left icon input swdh11 swdh19">
-                              <input
-                                class="prompt srch_explore"
-                                type="text"
-                                name="name"
-                                value="Joginder"
-                                id="id[name1]"
-                                required=""
-                                maxlength="64"
-                                placeholder="First Name"
-                              />
-                            </div>
-                          </div>
-                        </div>
-                        <div class="col-lg-6">
-                          <div class="ui search focus mt-30">
-                            <div class="ui left icon input swdh11 swdh19">
-                              <input
-                                class="prompt srch_explore"
-                                type="text"
-                                name="surname"
-                                value="Singh"
-                                id="id[surname1]"
-                                required=""
-                                maxlength="64"
-                                placeholder="Last Name"
-                              />
-                            </div>
-                          </div>
-                        </div>
-                        <div class="col-lg-12">
-                          <div class="ui search focus mt-30">
-                            <div class="ui left icon input swdh11 swdh19">
-                              <input
-                                class="prompt srch_explore"
-                                type="text"
-                                name="academyname"
-                                value="Gambolthemes"
-                                id="id_academy"
-                                required=""
-                                maxlength="64"
-                                placeholder="Academy Name"
-                              />
-                            </div>
-                            <div class="help-block">
-                              If you want your invoices addressed to a academy.
-                              Leave blank to use your full name.
-                            </div>
-                          </div>
-                        </div>
-                        <div class="col-lg-12">
-                          <div class="ui search focus mt-30">
-                            <div class="ui left icon input swdh11 swdh19">
-                              <input
-                                class="prompt srch_explore"
-                                type="text"
-                                name="addressname"
-                                value="#1234, Sks Nagar, Near MBD Mall, 141001 Ludhiana, Punjab, India"
-                                id="id_address1"
-                                required=""
-                                maxlength="64"
-                                placeholder="Address Line 1"
-                              />
-                            </div>
-                          </div>
-                        </div>
-                        <div class="col-lg-12">
-                          <div class="ui search focus mt-30">
-                            <div class="ui left icon input swdh11 swdh19">
-                              <input
-                                class="prompt srch_explore"
-                                type="text"
-                                name="addressname2"
-                                id="id_address2"
-                                required=""
-                                maxlength="64"
-                                placeholder="Address Line 2"
-                              />
-                            </div>
-                          </div>
-                        </div>
-                        <div class="col-lg-12">
-                          <div class="ui search focus mt-30">
-                            <div class="ui left icon input swdh11 swdh19">
-                              <input
-                                class="prompt srch_explore"
-                                type="text"
-                                name="city"
-                                value="Ludhiana"
-                                id="id_city"
-                                required=""
-                                maxlength="64"
-                                placeholder="City"
-                              />
-                            </div>
-                          </div>
-                        </div>
-                        <div class="col-lg-12">
-                          <div class="ui search focus mt-30">
-                            <div class="ui left icon input swdh11 swdh19">
-                              <input
-                                class="prompt srch_explore"
-                                type="text"
-                                name="state"
-                                value="Punjab"
-                                id="id_state"
-                                required=""
-                                maxlength="64"
-                                placeholder="State / Province / Region"
-                              />
-                            </div>
-                          </div>
-                        </div>
-                        <div class="col-lg-12">
-                          <div class="ui search focus mt-30">
-                            <div class="ui left icon input swdh11 swdh19">
-                              <input
-                                class="prompt srch_explore"
-                                type="text"
-                                name="zip"
-                                value="141001"
-                                id="id_zip"
-                                required=""
-                                maxlength="64"
-                                placeholder="Zip / Postal Code"
-                              />
-                            </div>
-                          </div>
-                        </div>
-                        <div class="col-lg-12">
-                          <div class="ui search focus mt-30">
-                            <div class="ui left icon input swdh11 swdh19">
-                              <input
-                                class="prompt srch_explore"
-                                type="text"
-                                name="phone"
-                                value="+911234567890"
-                                id="id_phone"
-                                required=""
-                                maxlength="12"
-                                placeholder="Phone Number"
-                              />
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="divider-1 mb-50"></div>
-                <div class="basic_form">
-                  <div class="row">
-                    <div class="col-lg-12">
-                      <div class="basic_ptitle">
-                        <h4>Exclusive Sales</h4>
-                        <p>
-                          Sell more of your exclusive products of this type
-                          (equal to the amount on the left) to get % cut from
-                          further exclusive sales.
-                        </p>
-                      </div>
-                      <div class="billing-percentages">
-                        <div class="billing-percentages-progress-bar">
-                          <ul class="billing-percentages-progress-bar__labels">
-                            <li>
-                              <div
-                                class="billing-percentages-progress-bar__label billing-percentages-progress-bar__label_zero-level"
-                              >
-                                <span
-                                  class="billing-percentages-progress-bar__profit t5"
-                                >
-                                  <strong class="format-currency ">$0</strong>
-                                </span>
-                                <span
-                                  class="billing-percentages-progress-bar__percent t5"
-                                  >50%</span
-                                >
-                              </div>
-                            </li>
-                            <li>
-                              <div
-                                class="billing-percentages-progress-bar__label"
-                              >
-                                <span
-                                  class="billing-percentages-progress-bar__profit t5"
-                                >
-                                  <strong class="format-currency "
-                                    >$2,000</strong
-                                  >
-                                </span>
-                                <span
-                                  class="billing-percentages-progress-bar__percent t5"
-                                  >53%</span
-                                >
-                              </div>
-                            </li>
-                            <li>
-                              <div
-                                class="billing-percentages-progress-bar__label"
-                              >
-                                <span
-                                  class="billing-percentages-progress-bar__profit t5"
-                                >
-                                  <strong class="format-currency "
-                                    >$8,000</strong
-                                  >
-                                </span>
-                                <span
-                                  class="billing-percentages-progress-bar__percent t5"
-                                  >55%</span
-                                >
-                              </div>
-                            </li>
-                            <li>
-                              <div
-                                class="billing-percentages-progress-bar__label"
-                              >
-                                <span
-                                  class="billing-percentages-progress-bar__profit t5"
-                                >
-                                  <strong class="format-currency "
-                                    >$18,000</strong
-                                  >
-                                </span>
-                                <span
-                                  class="billing-percentages-progress-bar__percent t5"
-                                  >58%</span
-                                >
-                              </div>
-                            </li>
-                            <li>
-                              <div
-                                class="billing-percentages-progress-bar__label"
-                              >
-                                <span
-                                  class="billing-percentages-progress-bar__profit t5"
-                                >
-                                  <strong class="format-currency "
-                                    >$40,000</strong
-                                  >
-                                </span>
-                                <span
-                                  class="billing-percentages-progress-bar__percent t5"
-                                  >62%</span
-                                >
-                              </div>
-                            </li>
-                            <li>
-                              <div
-                                class="billing-percentages-progress-bar__label"
-                              >
-                                <span
-                                  class="billing-percentages-progress-bar__profit t5"
-                                >
-                                  <strong class="format-currency "
-                                    >$75,000</strong
-                                  >
-                                </span>
-                                <span
-                                  class="billing-percentages-progress-bar__percent t5"
-                                  >70%</span
-                                >
-                              </div>
-                            </li>
-                            <li>
-                              <div
-                                class="billing-percentages-progress-bar__label"
-                              >
-                                <span
-                                  class="billing-percentages-progress-bar__profit t5"
-                                >
-                                  <strong class="format-currency "
-                                    >$100,000</strong
-                                  >
-                                </span>
-                                <span
-                                  class="billing-percentages-progress-bar__percent t5"
-                                  >80%</span
-                                >
-                              </div>
-                            </li>
-                          </ul>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="basic_form mt-50">
-                  <div class="row">
-                    <div class="col-lg-12">
-                      <div class="basic_ptitle">
-                        <h4>Non-Exclusive Sales</h4>
-                        <p>
-                          Sell more of your non-exclusive products of this type
-                          (equal to the amount on the left) to get 70% cut from
-                          every non-exclusive sales.
-                        </p>
-                      </div>
-                      <div class="billing-percentages">
-                        <div class="billing-percentages-progress-bar">
-                          <ul class="billing-percentages-progress-bar__labels">
-                            <li>
-                              <div
-                                class="billing-percentages-progress-bar__label billing-percentages-progress-bar__label_zero-level"
-                              >
-                                <span
-                                  class="billing-percentages-progress-bar__profit t5"
-                                >
-                                  <strong class="format-currency ">$0</strong>
-                                </span>
-                                <span
-                                  class="billing-percentages-progress-bar__percent t5"
-                                  >30%</span
-                                >
-                              </div>
-                            </li>
-                            <li>
-                              <div
-                                class="billing-percentages-progress-bar__label"
-                              >
-                                <span
-                                  class="billing-percentages-progress-bar__profit t5"
-                                >
-                                  <strong class="format-currency "
-                                    >$2,000</strong
-                                  >
-                                </span>
-                                <span
-                                  class="billing-percentages-progress-bar__percent t5"
-                                  >30%</span
-                                >
-                              </div>
-                            </li>
-                            <li>
-                              <div
-                                class="billing-percentages-progress-bar__label"
-                              >
-                                <span
-                                  class="billing-percentages-progress-bar__profit t5"
-                                >
-                                  <strong class="format-currency "
-                                    >$8,000</strong
-                                  >
-                                </span>
-                                <span
-                                  class="billing-percentages-progress-bar__percent t5"
-                                  >30%</span
-                                >
-                              </div>
-                            </li>
-                            <li>
-                              <div
-                                class="billing-percentages-progress-bar__label"
-                              >
-                                <span
-                                  class="billing-percentages-progress-bar__profit t5"
-                                >
-                                  <strong class="format-currency "
-                                    >$18,000</strong
-                                  >
-                                </span>
-                                <span
-                                  class="billing-percentages-progress-bar__percent t5"
-                                  >30%</span
-                                >
-                              </div>
-                            </li>
-                            <li>
-                              <div
-                                class="billing-percentages-progress-bar__label"
-                              >
-                                <span
-                                  class="billing-percentages-progress-bar__profit t5"
-                                >
-                                  <strong class="format-currency "
-                                    >$40,000</strong
-                                  >
-                                </span>
-                                <span
-                                  class="billing-percentages-progress-bar__percent t5"
-                                  >30%</span
-                                >
-                              </div>
-                            </li>
-                            <li>
-                              <div
-                                class="billing-percentages-progress-bar__label"
-                              >
-                                <span
-                                  class="billing-percentages-progress-bar__profit t5"
-                                >
-                                  <strong class="format-currency "
-                                    >$75,000</strong
-                                  >
-                                </span>
-                                <span
-                                  class="billing-percentages-progress-bar__percent t5"
-                                  >30%</span
-                                >
-                              </div>
-                            </li>
-                            <li>
-                              <div
-                                class="billing-percentages-progress-bar__label"
-                              >
-                                <span
-                                  class="billing-percentages-progress-bar__profit t5"
-                                >
-                                  <strong class="format-currency "
-                                    >$100,000</strong
-                                  >
-                                </span>
-                                <span
-                                  class="billing-percentages-progress-bar__percent t5"
-                                  >30%</span
-                                >
-                              </div>
-                            </li>
-                          </ul>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="divider-1 mb-50"></div>
-
-                <button class="save_btn" type="submit">Save Changes</button>
+                
+                <div class="divider-1 mb-50"></div>  
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-   
+   </div>
 </template>
 <script>
 import general from "@/mixins/general";
@@ -1004,6 +568,7 @@ export default {
         id:null,
         uye_list_name:''
     },
+    layout: 'basic',
     listOptions: [
       { name: "Course", value: "Course" },
       { name: "Exam", value: "Exam" },
@@ -1483,5 +1048,13 @@ header.modal-header{
   margin-bottom: 5px;
 	line-height: 20px;
   padding-left: 10px;
+}
+.div-container{
+  background: #fff;
+  padding: 20px;
+  border-radius: 5px;
+}
+.ml-10{
+  margin-left: 10px;
 }
 </style>
