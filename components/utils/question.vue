@@ -62,7 +62,7 @@
           <div
             :key="setKeywordKey"
             style="margin: 10px 0 ; justify-content: flex-end;
-                                display: inline-flex;
+                                display: inline-flex
                                 flex-wrap: wrap;
                                 align-items: end;
                                 width: 100%;"
@@ -189,8 +189,8 @@
           
           v-if="question.q.exa_type == 'FillBlanks' && trueText.length"
         >
-
-      
+<!-- {{answerText}}==={{trueText}}
+       -->
           <div class="alphabet_item" @click="removeAnswer()">
             <i class="fa fa-trash"></i>
           </div>
@@ -232,13 +232,15 @@
           "
           >Reset</a
         >
-        <div class="success-result" v-if="isTrue">
-          {{ getRandomResultText() }}
-        </div>
-        <div class="fail-result" v-else-if="isTrue === false">
-          Lütfen cevabınızı kontrol ediniz.
-        </div>
+        <a class="success-result download_btn" v-if="isTrue">
+         <i class="fas fa-check-circle"></i>  {{ getRandomResultText() }}
+        </a>
+        <a class="download_btn fail-result" v-else-if="isTrue === false">
+          <i class="fas fa-exclamation-circle"></i> {{l('Lütfen cevabınızı kontrol ediniz.','g')}}
+        </a>
       </div>
+
+      
     </div>
   </div>
 </template>
@@ -275,6 +277,8 @@ export default {
       answer: "",
       counterStatus: "start",
       trueText: "",
+      alternativeText: [],
+
       alternativeChars: [],
       parsedQuestion:'',
       alphabets: [
@@ -513,8 +517,8 @@ export default {
         let after = before[1] ? before[1].split("++") : ["", ""];
     
         let answer = before[1] ? before[1].split("+") : [];
-        this.trueText = answer && answer[1] ? answer[1].trim() : "";
-         let answer_char = answer && answer[1] ? answer[0].trim() : "";
+        this.trueText = answer && answer[0] ? answer[0].trim() : "";
+         let answer_char = answer && answer[1] ? answer[1].trim() : "";
          this.alternativeChars = answer_char ? answer_char.trim().split("") : [];
       }else
       if(this.question.q.exa_type == 'ParagraphOrder'){
@@ -532,8 +536,18 @@ export default {
               .replaceAll(" ", "")
               .trim();
             });
-      
+          if(wp[1]){
+            var ws2 =  wp[1].trim().split(" ");
+             let w2 = ws2.map(k => {
+                return k
+                  .replaceAll(".", "")
+                  .replaceAll(" ", "")
+                  .trim();
+                });
+                  this.alternativeText = w2.join(" ").trim();
+          }
           this.trueText = w.join(" ").trim();
+        
           this.splitwords_answer = w.sort(() => Math.random() - 0.5);
           this.splitwords_answer.forEach(
             (k, i) => (this.splitwords_answer_ordered[i] = "")
@@ -603,7 +617,9 @@ export default {
     },
     backspaceAnswer(val) {
       this.answerText = this.answerText.slice(0, -1);
-      this.parseQuestion(val.rs_Question);
+      if(this.question.q && this.question.q.rs_Question){
+         this.parseQuestion(this.question.q.rs_Question);
+      }
 
     },
     spaceAnswer(val) {
@@ -650,7 +666,7 @@ export default {
         if (this.trueText) {
           this.$emit("answered", true);
 
-          this.isTrue = this.trueText === this.answerText ? true : false;
+          this.isTrue = this.trueText === this.answerText || this.alternativeText === this.answerText  ? true : false;
           if (this.trueText == this.answerText) {
             let divide = this.question.q.exa_timer
               ? parseInt(this.question.q.exa_timer) / this.updated
@@ -990,15 +1006,19 @@ export default {
 }
 .success-result {
   font-size: 16px;
-  color: rgb(134, 231, 78);
+  background: rgb(134, 231, 78);
   margin: 10px 0;
   font-weight: 600;
+      float: left;
+    margin-top: 15px;
 }
 .fail-result {
   font-size: 16px;
-  color: rgb(207, 27, 27);
+  background: rgb(207, 27, 27);
   margin: 10px 0;
-  font-weight: 600;
+  font-weight: 600; 
+    float: left;
+    margin-top: 15px;
 }
 
 .stopped {
