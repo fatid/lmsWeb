@@ -9,9 +9,9 @@ export default {
         });
         await this.$store.dispatch("core/getOptions", {
             slang: this.$store.state.locale,
-			group: 'co_level',
-			fields:'id,cou_level_name'
-		});
+            group: 'co_level',
+            fields:'id,cou_level_name'
+        });
     },
   data() {
     return {
@@ -100,7 +100,7 @@ export default {
         if (this.search.qtype && this.search.qtype[0]) {
           filters.exa_type = ["=", this.search.qtype];
         }
-        console.log("skills",this.search)
+        // console.log("skills",this.search)
         if (this.search.skills && this.search.skills[0]) {
           filters.exa_skills = []
           this.search.skills.forEach(h=>{

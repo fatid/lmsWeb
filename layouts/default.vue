@@ -67,8 +67,26 @@
               >{{ l("LOGIN", "g") }}</a
             >
           </li> 
-          <li> <a  @click="changeLanguage('ar')" ><div class="image-lang" :class="$store.state.locale=='ar' ? 'selected':''"  style="background-image: url('/img/ar.svg') " title="Arabic"  ></div> </a></li> 
-           <li><a  @click="changeLanguage('en')" ><div class="image-lang" :class="$store.state.locale=='en' ? 'selected':''"  style="background-image: url('/img/en.svg') " title="English" ></div> </a></li> 
+          <li>
+
+              <b-dropdown variant="link" toggle-class="text-decoration-none" no-caret>
+               <template #button-content>
+                          <a
+                          
+                            class="opts_account"
+                            title="Account"
+                          > 
+                          <div class="image-lang" :class="$store.state.locale=='ar' ? 'selected':''"  :style="{ backgroundImage: 'url(\'/img/'+$store.state.locale+'.svg\')' }" title="Arabic"  ></div> 
+                            
+                          </a>
+                  </template>
+                    <b-dropdown-item> <a  @click="changeLanguage('ar')" > <img   src="/img/ar.svg" style="width:20px" title="Arabic"  />  Arabic </a></b-dropdown-item> 
+                    <b-dropdown-item><a  @click="changeLanguage('en')" >  <img   src="/img/en.svg" style="width:20px"  title="English" /> English</a></b-dropdown-item> 
+               
+                </b-dropdown>  
+
+            </li>
+        
 
             <li class="ui dropdown" v-show="auth && auth.token">  
 
