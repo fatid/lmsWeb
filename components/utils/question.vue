@@ -2,14 +2,8 @@
   <div v-if="question && question.q && question.q.exa_type">
     <div class="row">
       <div class="col-12">
-        <div class="degree-class" v-if="question.q.exa_degree">
-          {{
-            question.q.exa_degree
-              ? levels.find(k => k.id == question.q.exa_degree)
-                ? levels.find(k => k.id == question.q.exa_degree).cou_level_name
-                : ""
-              : ""
-          }}
+        <div class="degree-class" v-if="question.q.exa_degree" :style="{background:level.color}">
+          {{level.name}} 
         </div>
         <div
           class="question"
@@ -341,7 +335,15 @@ export default {
         this.$store.state.course.activeCourse = val;
       }
     },
-
+    level(){
+  
+          let q =   this.question.q.exa_degree
+              ? this.levels.find(k => k.id == this.question.q.exa_degree)
+                ? this.levels.find(k => k.id == this.question.q.exa_degree)
+                : {}
+              : {}
+          return {color:q.cou_level_color ,name:q.cou_level_name}
+    },
     randomAlphabets() {
       let alp = this.trueText.trim();
       let start = alp.split("");

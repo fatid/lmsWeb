@@ -10,7 +10,7 @@ export default {
         await this.$store.dispatch("core/getOptions", {
             slang: this.$store.state.locale,
             group: 'co_level',
-            fields:'id,cou_level_name'
+            fields:'id,cou_level_name,cou_level_color'
         });
     },
   data() {
@@ -104,12 +104,12 @@ export default {
         if (this.search.skills && this.search.skills[0]) {
           filters.exa_skills = []
           this.search.skills.forEach(h=>{
-            filters.exa_skills.push({exa_skills:["LIKE", h]});
+            filters.exa_skills.push({exa_skills:["=", h]});
           }) 
           
         }
         if (this.search.category && this.search.category[0]) {
-          filters.exa_categories = ["=", this.search.category];
+          filters.exa_categories = ["in", this.search.category];
         } 
         if (this.search.media && this.search.media[0]) {
         

@@ -6,6 +6,7 @@
         v-for="(list, i) in my_lists"
         :key="'l' + i"
         class="d-flex justify-content-between align-items-center"
+        v-if="list"
       >
         <span v-show="list.view == 'read'">
           {{ list.uye_list_name }} - {{ list.uye_list_cat }}

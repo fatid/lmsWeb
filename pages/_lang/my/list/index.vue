@@ -2,8 +2,8 @@
   <div>  
     
     <div v-if="listId && viewType && getListData(listId,'data')">
-        <h4 style="margin-bottom: 5px;"> {{selectedList.uye_list_name}}   </h4>
-     <p> <a @click="goPath('my/list')">{{l('All Lists','g')}}</a> / {{selectedList.uye_list_cat}} </p>  
+        <h4 style="margin-bottom: 5px;" v-if="selectedList"> {{selectedList.uye_list_name}}   </h4>
+     <p> <a @click="goPath('my/list')" v-if="selectedList">{{l('All Lists','g')}}</a> / {{selectedList.uye_list_cat}} </p>  
         <list-details
           :listItems="getListData(listId,'data')"
           :listId="listId"
@@ -11,7 +11,7 @@
     </div>
     <div v-else-if="listId ">
       
-     <h4 style="margin-bottom: 5px;"> {{selectedList.uye_list_name}}   </h4>
+     <h4 style="margin-bottom: 5px;" v-if="selectedList"> {{selectedList.uye_list_name}}   </h4>
      <p> <a @click="goPath('my/list')">{{l('All Lists','g')}}</a> / {{selectedList.uye_list_cat}} </p>  
         <b-list-group> 
       <b-list-group-item  v-for="dt in getListData(listId,'data')"  class="d-flex justify-content-between align-items-center"  style="cursor: pointer;"

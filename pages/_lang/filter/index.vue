@@ -119,7 +119,7 @@
                              
                             <b-dropdown   size="sm" variant="outline-success"   class="m-md-2">
                                     <template #button-content>
-                         <a> {{'Order by:'+orderByList[orderBy].label}} <i class="fas fa-chevron-down"></i>
+                         <a> {{'Order by:'+orderByList[orderBy].label}} <i class="fas fa-chevron-down"></i> 
                           </a>
                   </template>
                   <b-dropdown-item @click="orderBy=i" v-for="(order,i) in orderByList">{{order.label}} </b-dropdown-item> 
@@ -127,13 +127,13 @@
                     </div> 
                             <div class="col-3 " >
                                   <template v-if="search.module=='Exam' && selection.selectionE && selection.selectionE.length>0">
-                                     <a class="addListLink">Add to list {{selection.selectionE.length+' '+l('selected','g')  }}</a>
+                                     <a @click="addSelectionAll('selectionE','Exam')" class="addListLink">Add to list {{selection.selectionE.length+' '+l('selected','g')  }}</a>
                             </template>
                                   <template v-if="search.module=='Course' && selection.selectionC && selection.selectionC.length>0">
-                                     <a class="addListLink">Add to list {{selection.selectionC.length+' '+l('selected','g')  }}</a>
+                                     <a  @click="addSelectionAll('selectionC','Course')" class="addListLink">Add to list {{selection.selectionC.length+' '+l('selected','g')  }}</a>
                             </template>
                             <template v-if="search.module=='Word' && selection.selectionW && selection.selectionW.length>0">
-                                     <a class="addListLink">Add to list {{selection.selectionW.length+' '+l('selected','g')  }}</a>
+                                     <a  @click="addSelectionAll('selectionW','Word')" class="addListLink">Add to list {{selection.selectionW.length+' '+l('selected','g')  }}</a>
                             </template>
                             </div>
                             <div class="col-3 " >
@@ -160,27 +160,30 @@
                             <div class="button-side"  :lang="$store.state.locale">
                                 <!-- <a @click="goPathBlank('word/'+dt.dict_word)">Detail</a> -->
                                 <br />
+                                <div  v-if="!isLiked(dt.id)">
                                     <a    
                                         href="javascript:;"  
                                         class="like-button"
-                                        v-if="!isLiked(dt.id)"
+                                       
                                         @click="openLikeModal(dt,null,'Word')"
                                     >  <span class="text-black">
-                                        <svg id="bold" enable-background="new 0 0 24 24" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path d="m14.25 0h-11.5c-1.52 0-2.75 1.23-2.75 2.75v15.5c0 1.52 1.23 2.75 2.75 2.75h6.59c-.54-1.14-.84-2.41-.84-3.75 0-1.15.22-2.25.63-3.26-.04.01-.08.01-.13.01h-5c-.55 0-1-.45-1-1s.45-1 1-1h5c.38 0 .72.22.88.54.65-1.01 1.49-1.87 2.48-2.54h-8.36c-.55 0-1-.45-1-1s.45-1 1-1h9c.55 0 1 .45 1 1 0 .05 0 .09-.01.13.93-.38 1.95-.6 3.01-.62v-5.76c0-1.52-1.23-2.75-2.75-2.75zm-6.25 6h-4c-.55 0-1-.45-1-1s.45-1 1-1h4c.55 0 1 .45 1 1s-.45 1-1 1z"/><path d="m17.25 10.5c-3.722 0-6.75 3.028-6.75 6.75s3.028 6.75 6.75 6.75 6.75-3.028 6.75-6.75-3.028-6.75-6.75-6.75zm2.75 7.75h-1.75v1.75c0 .552-.448 1-1 1s-1-.448-1-1v-1.75h-1.75c-.552 0-1-.448-1-1s.448-1 1-1h1.75v-1.75c0-.552.448-1 1-1s1 .448 1 1v1.75h1.75c.552 0 1 .448 1 1s-.448 1-1 1z"/></svg>
+                                        <svg id="bold"  fill="CurrentColor" enable-background="new 0 0 24 24" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path d="m14.25 0h-11.5c-1.52 0-2.75 1.23-2.75 2.75v15.5c0 1.52 1.23 2.75 2.75 2.75h6.59c-.54-1.14-.84-2.41-.84-3.75 0-1.15.22-2.25.63-3.26-.04.01-.08.01-.13.01h-5c-.55 0-1-.45-1-1s.45-1 1-1h5c.38 0 .72.22.88.54.65-1.01 1.49-1.87 2.48-2.54h-8.36c-.55 0-1-.45-1-1s.45-1 1-1h9c.55 0 1 .45 1 1 0 .05 0 .09-.01.13.93-.38 1.95-.6 3.01-.62v-5.76c0-1.52-1.23-2.75-2.75-2.75zm-6.25 6h-4c-.55 0-1-.45-1-1s.45-1 1-1h4c.55 0 1 .45 1 1s-.45 1-1 1z"/><path d="m17.25 10.5c-3.722 0-6.75 3.028-6.75 6.75s3.028 6.75 6.75 6.75 6.75-3.028 6.75-6.75-3.028-6.75-6.75-6.75zm2.75 7.75h-1.75v1.75c0 .552-.448 1-1 1s-1-.448-1-1v-1.75h-1.75c-.552 0-1-.448-1-1s.448-1 1-1h1.75v-1.75c0-.552.448-1 1-1s1 .448 1 1v1.75h1.75c.552 0 1 .448 1 1s-.448 1-1 1z"/></svg>
                                          </span> 
                                     </a>
+                                     <input type="checkbox" class="check-centered"  
+                                      :checked="selection.selectionW.includes(dt.id) ? 'checked' : false " 
+                                      @click="addSelection('selectionW',dt.id)"/>
+                            </div>
                                     <a    
                                         href="javascript:;" 
                                         class="like-button"
                                         v-else
                                         @click="removeLikeModal(dt,null,'Word')"
                                     >  <span class="text-red"> 
-                                        <svg id="bold" enable-background="new 0 0 24 24" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path d="m14.25 0h-11.5c-1.52 0-2.75 1.23-2.75 2.75v15.5c0 1.52 1.23 2.75 2.75 2.75h6.59c-.54-1.14-.84-2.41-.84-3.75 0-1.15.22-2.25.63-3.26-.04.01-.08.01-.13.01h-5c-.55 0-1-.45-1-1s.45-1 1-1h5c.38 0 .72.22.88.54.65-1.01 1.49-1.87 2.48-2.54h-8.36c-.55 0-1-.45-1-1s.45-1 1-1h9c.55 0 1 .45 1 1 0 .05 0 .09-.01.13.93-.38 1.95-.6 3.01-.62v-5.76c0-1.52-1.23-2.75-2.75-2.75zm-6.25 6h-4c-.55 0-1-.45-1-1s.45-1 1-1h4c.55 0 1 .45 1 1s-.45 1-1 1z"/><path d="m17.25 10.5c-3.722 0-6.75 3.028-6.75 6.75s3.028 6.75 6.75 6.75 6.75-3.028 6.75-6.75-3.028-6.75-6.75-6.75zm2.75 7.75h-1.75v1.75c0 .552-.448 1-1 1s-1-.448-1-1v-1.75h-1.75c-.552 0-1-.448-1-1s.448-1 1-1h1.75v-1.75c0-.552.448-1 1-1s1 .448 1 1v1.75h1.75c.552 0 1 .448 1 1s-.448 1-1 1z"/></svg>
-                                         </span> 
+                                                <svg id="Layer_1" enable-background="new 0 0 512 512"  fill="CurrentColor" height="18" viewBox="0 0 512 512" width="18" xmlns="http://www.w3.org/2000/svg"><g><path  fill="CurrentColor" d="m274.371 408.109c0-8.444.795-16.705 2.298-24.719h-197.402c-8.284 0-15-6.716-15-15s6.716-15 15-15h206.812c5.807-12.908 13.601-24.736 22.992-35.091-1.529.526-3.163.824-4.87.824h-224.934c-19.801-.7-19.939-29.242 0-30h224.933c10.102-.193 17.633 10.415 14.176 19.871 17.952-16.282 40.331-27.762 65.091-32.406v-165.265c0-26.634-21.694-47.133-47.134-47.133h-42.012c-1.983 34.594-30.745 62.133-65.827 62.133h-73.521c-35.082 0-63.844-27.539-65.827-62.133h-42.012c-25.441 0-47.134 20.501-47.134 47.133v353.467c0 26.577 21.65 47.133 47.134 47.133h276.72c-30.172-24.556-49.483-61.97-49.483-103.814zm-195.104-247.519h224.934c8.284 0 15 6.716 15 15s-6.716 15-15 15h-224.934c-19.812-.705-19.93-29.245 0-30zm0 64.267h224.934c8.284 0 15 6.716 15 15s-6.716 15-15 15h-224.934c-19.812-.705-19.93-29.246 0-30zm80.333 222.8h-80.333c-19.854-.725-19.89-29.26 0-30h80.333c8.284 0 15 6.716 15 15s-6.716 15-15 15z"/><path d="m154.973 96.323h73.521c49.35-2.211 46.734-73.109-2.679-71.893-11.043-32.481-57.133-32.461-68.163 0-49.214-1.306-52.202 69.559-2.679 71.893z"/><path d="m408.185 304.294c-57.244 0-103.815 46.571-103.815 103.814 5.219 137.536 202.431 137.498 207.63-.001 0-57.242-46.571-103.813-103.815-103.813zm41.752 93.655s-41.524 41.524-41.524 41.524c-5.857 5.858-15.353 5.858-21.211.002 0 0-20.766-20.758-20.766-20.758-13.533-14.561 6.629-34.752 21.209-21.217 0 0 10.16 10.155 10.16 10.155l30.92-30.919c14.57-13.535 34.746 6.644 21.212 21.213z"/></g></svg>
+                                        </span> 
                                     </a>  <br />
-                                    <input type="checkbox" class="check-centered"  
-                                      :checked="selection.selectionW.includes(dt.id) ? 'checked' : false " 
-                                      @click="addSelection('selectionW',dt.id)"/>
+                                   
                             </div>
                             </div>
                     </div>
@@ -189,6 +192,7 @@
                     <div v-for="dt in data" class="list_item"  :class="customClass.textDir+' '+customClass.dir"> 
                         <div class="questition-container">
                                    <div class="content-side"    >
+                                
                                     <question
                                         :question="{q:dt,a:[]}"
                                         :order="1"
@@ -201,25 +205,31 @@
                                          <div class="button-side"  :lang="$store.state.locale">
                                 <!-- <a @click="goPathBlank('questionView/'+dt.id)">Detail</a><br /> -->
                                   <br />
+                                    <div  v-if="!isLiked(dt.id)">
                                     <a    
+                                        :title="dt.id"
                                         href="javascript:;"  
-                                        class="like_button"
-                                        v-if="!isLiked(dt.id)"
-                                        @click="openLikeModal(dt,{id:dt.lesson_unite},'Course')"
-                                    >  <span class="text-black"> <svg id="bold" enable-background="new 0 0 24 24" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path d="m14.25 0h-11.5c-1.52 0-2.75 1.23-2.75 2.75v15.5c0 1.52 1.23 2.75 2.75 2.75h6.59c-.54-1.14-.84-2.41-.84-3.75 0-1.15.22-2.25.63-3.26-.04.01-.08.01-.13.01h-5c-.55 0-1-.45-1-1s.45-1 1-1h5c.38 0 .72.22.88.54.65-1.01 1.49-1.87 2.48-2.54h-8.36c-.55 0-1-.45-1-1s.45-1 1-1h9c.55 0 1 .45 1 1 0 .05 0 .09-.01.13.93-.38 1.95-.6 3.01-.62v-5.76c0-1.52-1.23-2.75-2.75-2.75zm-6.25 6h-4c-.55 0-1-.45-1-1s.45-1 1-1h4c.55 0 1 .45 1 1s-.45 1-1 1z"/><path d="m17.25 10.5c-3.722 0-6.75 3.028-6.75 6.75s3.028 6.75 6.75 6.75 6.75-3.028 6.75-6.75-3.028-6.75-6.75-6.75zm2.75 7.75h-1.75v1.75c0 .552-.448 1-1 1s-1-.448-1-1v-1.75h-1.75c-.552 0-1-.448-1-1s.448-1 1-1h1.75v-1.75c0-.552.448-1 1-1s1 .448 1 1v1.75h1.75c.552 0 1 .448 1 1s-.448 1-1 1z"/></svg> </span> 
+                                        class="like_button" 
+                                        @click="openLikeModal(dt,{id:dt.lesson_unite},'Exam')"
+                                    >  <span class="text-black"> 
+                                        <svg id="bold" enable-background="new 0 0 24 24" height="18"  fill="CurrentColor" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path fill="CurrentColor" d="m14.25 0h-11.5c-1.52 0-2.75 1.23-2.75 2.75v15.5c0 1.52 1.23 2.75 2.75 2.75h6.59c-.54-1.14-.84-2.41-.84-3.75 0-1.15.22-2.25.63-3.26-.04.01-.08.01-.13.01h-5c-.55 0-1-.45-1-1s.45-1 1-1h5c.38 0 .72.22.88.54.65-1.01 1.49-1.87 2.48-2.54h-8.36c-.55 0-1-.45-1-1s.45-1 1-1h9c.55 0 1 .45 1 1 0 .05 0 .09-.01.13.93-.38 1.95-.6 3.01-.62v-5.76c0-1.52-1.23-2.75-2.75-2.75zm-6.25 6h-4c-.55 0-1-.45-1-1s.45-1 1-1h4c.55 0 1 .45 1 1s-.45 1-1 1z"/><path d="m17.25 10.5c-3.722 0-6.75 3.028-6.75 6.75s3.028 6.75 6.75 6.75 6.75-3.028 6.75-6.75-3.028-6.75-6.75-6.75zm2.75 7.75h-1.75v1.75c0 .552-.448 1-1 1s-1-.448-1-1v-1.75h-1.75c-.552 0-1-.448-1-1s.448-1 1-1h1.75v-1.75c0-.552.448-1 1-1s1 .448 1 1v1.75h1.75c.552 0 1 .448 1 1s-.448 1-1 1z"/></svg> </span> 
                                     </a>
+                                    <input type="checkbox"  class="check-centered"
+                                     :checked="selection.selectionE.includes(dt.id) ? 'checked' : false " 
+                                      @click="addSelection('selectionE',dt.id)"
+                                    />
+                                    </div>
                                     <a    
                                         href="javascript:;" 
                                         class="like_button"
                                         v-else
-                                        @click="removeLikeModal(dt,{id:dt.lesson_unite},'Course')"
-                                    >  <span class="text-red"> <svg id="bold" enable-background="new 0 0 24 24" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path d="m14.25 0h-11.5c-1.52 0-2.75 1.23-2.75 2.75v15.5c0 1.52 1.23 2.75 2.75 2.75h6.59c-.54-1.14-.84-2.41-.84-3.75 0-1.15.22-2.25.63-3.26-.04.01-.08.01-.13.01h-5c-.55 0-1-.45-1-1s.45-1 1-1h5c.38 0 .72.22.88.54.65-1.01 1.49-1.87 2.48-2.54h-8.36c-.55 0-1-.45-1-1s.45-1 1-1h9c.55 0 1 .45 1 1 0 .05 0 .09-.01.13.93-.38 1.95-.6 3.01-.62v-5.76c0-1.52-1.23-2.75-2.75-2.75zm-6.25 6h-4c-.55 0-1-.45-1-1s.45-1 1-1h4c.55 0 1 .45 1 1s-.45 1-1 1z"/><path d="m17.25 10.5c-3.722 0-6.75 3.028-6.75 6.75s3.028 6.75 6.75 6.75 6.75-3.028 6.75-6.75-3.028-6.75-6.75-6.75zm2.75 7.75h-1.75v1.75c0 .552-.448 1-1 1s-1-.448-1-1v-1.75h-1.75c-.552 0-1-.448-1-1s.448-1 1-1h1.75v-1.75c0-.552.448-1 1-1s1 .448 1 1v1.75h1.75c.552 0 1 .448 1 1s-.448 1-1 1z"/></svg> </span> 
+                                        @click="removeLikeModal(dt,{id:dt.lesson_unite},'Exam')"
+                                    >  <span class="text-red"> 
+                                                   <svg id="Layer_1" enable-background="new 0 0 512 512" fill="CurrentColor" height="18" viewBox="0 0 512 512" width="18" xmlns="http://www.w3.org/2000/svg"><g><path fill="CurrentColor" d="m274.371 408.109c0-8.444.795-16.705 2.298-24.719h-197.402c-8.284 0-15-6.716-15-15s6.716-15 15-15h206.812c5.807-12.908 13.601-24.736 22.992-35.091-1.529.526-3.163.824-4.87.824h-224.934c-19.801-.7-19.939-29.242 0-30h224.933c10.102-.193 17.633 10.415 14.176 19.871 17.952-16.282 40.331-27.762 65.091-32.406v-165.265c0-26.634-21.694-47.133-47.134-47.133h-42.012c-1.983 34.594-30.745 62.133-65.827 62.133h-73.521c-35.082 0-63.844-27.539-65.827-62.133h-42.012c-25.441 0-47.134 20.501-47.134 47.133v353.467c0 26.577 21.65 47.133 47.134 47.133h276.72c-30.172-24.556-49.483-61.97-49.483-103.814zm-195.104-247.519h224.934c8.284 0 15 6.716 15 15s-6.716 15-15 15h-224.934c-19.812-.705-19.93-29.245 0-30zm0 64.267h224.934c8.284 0 15 6.716 15 15s-6.716 15-15 15h-224.934c-19.812-.705-19.93-29.246 0-30zm80.333 222.8h-80.333c-19.854-.725-19.89-29.26 0-30h80.333c8.284 0 15 6.716 15 15s-6.716 15-15 15z"/><path d="m154.973 96.323h73.521c49.35-2.211 46.734-73.109-2.679-71.893-11.043-32.481-57.133-32.461-68.163 0-49.214-1.306-52.202 69.559-2.679 71.893z"/><path d="m408.185 304.294c-57.244 0-103.815 46.571-103.815 103.814 5.219 137.536 202.431 137.498 207.63-.001 0-57.242-46.571-103.813-103.815-103.813zm41.752 93.655s-41.524 41.524-41.524 41.524c-5.857 5.858-15.353 5.858-21.211.002 0 0-20.766-20.758-20.766-20.758-13.533-14.561 6.629-34.752 21.209-21.217 0 0 10.16 10.155 10.16 10.155l30.92-30.919c14.57-13.535 34.746 6.644 21.212 21.213z"/></g></svg>
+                                        </span> 
                                     </a>
                                     <br />
-                                    <input type="checkbox"  class="check-centered"
-                                     :checked="selection.selectionC.includes(dt.id) ? 'checked' : false " 
-                                      @click="addSelection('selectionE',dt.id)"
-                                    />
+                                    
 
                                     </div>
                             </div>
@@ -364,6 +374,18 @@ export default {
         } 
         // console.log("this.search",this.search,field,key)
         this.getResults()
+    },
+    addSelectionAll(field,type){
+        let all = this.data.filter(a=> this.selection[field].includes(a.id) )
+        this.openLikeModalAll(all,{id:'multi'},type)
+        // this.selection.selectionE.forEach(k=>{
+        //         if(this.selection[field].includes(key)){
+        //              this.selection[field] = this.selection[field].filter(k=> k!=key)
+        //         }else{
+        //             this.selection[field].push(k)
+        //         }  
+        // });
+       
     },
     addSelection(field,key){
         if(this.selection[field].includes(key)){
@@ -593,15 +615,20 @@ export default {
  
 </style>
 <style>
+.text-black:hover{ 
+    color: #60ac3a;
+    }
 .text-black{
   color: #a0a0a0;
-  width: 25px;
-
+  width: 25px; 
 }
 .text-red{
-  color: #e71146;
+  color: #60ac3a;
   width: 25px;
-}
+} 
+.text-red:hover{ 
+    color: #e42821;
+    }
 body{
     overflow: auto;
 }

@@ -91,65 +91,93 @@ export const actions = {
     },
 
     async setLikes({commit,state,rootState},itemx){
-        
-        let item = itemx.item;
+        console.log(itemx.item)
+        let itemAll =  itemx.item ? itemx.item.all? itemx.item.all : [itemx.item] : [];
         let list = itemx.list;
 
         let options = rootState.core.options ? rootState.core.options['uye_Lists'] : [];
-        let uye_fav_type = options.find(k=> k.id==list);
-        console.log("uye_fav_type",uye_fav_type)
-        if(item && item.id && state.likes.find(k=>k.id==item.id)){
-        }else{
+        let uye_fav_type = options.find(k=> k.fav_list==list);
+ 
+        let newList=[];
+        if(state.likes.find(k=>k.list==list)){
+            newList= state.likes.filter(k=>k.list==list)
+        }
+            itemAll.forEach(item=>{ 
 
-          
-            commit("pushLike",{...item,list:list})  
-            let t = JSON.stringify(state.likes); 
-            if(rootState.user.auth && rootState.user.auth.id){
-                if(!uye_fav_type){
-                        await axios({
-                        url: process.env.baseURL+"Favorites",
-                        method: "post",
-                        data: { 
-                            fav_content:t,
-                            fav_list:list,
-                            status:1,
-                            uye_fav_type: uye_fav_type ? uye_fav_type.uye_fav_type : '',
-                            created_by: rootState.user.auth.id,
-                            fav_owner_user: rootState.user.auth.id
-                        }
-                        }).then(response => {  
-                        });
+                if(item && item.id && state.likes.find(k=>k.id==item.id)){
+                    console.log("nopushLike",item)
                 }else{
-                       await axios({
-                    url: process.env.baseURL+"Favorites",
-                    method: "get",
-                    params: {
-                    limit: 1,
-                    lang: 'NONE',
-                    filter: { fav_owner_user: ["=",rootState.user.auth.id],fav_list:["=",list] },
-                    fields: "id,fav_content,fav_owner_user,fav_list,uye_fav_type,pdb_user",
-                    sort: ["created_on,DESC"]
-                    } 
-                }).then(async response=>{ 
-                    let fav_id = response.data && response.data.formattedData && response.data.formattedData[0] ? response.data.formattedData[0].id : null
+                    newList.push(item)
+                    console.log("pushLike",newList)
+                    commit("pushLike",{...item,list:list})  
+                }       
+            })
+           if(newList){
+              
+            let t = JSON.stringify(newList); 
+            if(rootState.user.auth && rootState.user.auth.id){
+              
                     await axios({
-                        url: process.env.baseURL+"Favorites/"+fav_id,
-                        method: "put",
-                        data: { 
-                            fav_content:t,
-                            fav_list:list,
-                            status:1,
-                            uye_fav_type: uye_fav_type ? uye_fav_type.uye_fav_type : '',
-                            created_by: rootState.user.auth.id,
-                            fav_owner_user: rootState.user.auth.id
+                            url: process.env.baseURL+"Favorites",
+                            method: "get",
+                            params: {
+                            limit: 1,
+                            lang: 'NONE',
+                            filter: { fav_owner_user: ["=",rootState.user.auth.id],fav_list:["=",list] },
+                            fields: "id,fav_content,fav_owner_user,fav_list,uye_fav_type,pdb_user",
+                            sort: ["created_on,DESC"]
+                            } 
+                    }).then(async response=>{ 
+                        let fav_id = response.data && response.data.formattedData && response.data.formattedData[0] ? response.data.formattedData[0].id : null
+                        
+                        if(!fav_id){
+                        await axios({
+                            url: process.env.baseURL+"Favorites",
+                            method: "post",
+                            data: { 
+                                fav_content:t,
+                                fav_list:list,
+                                status:1,
+                                uye_fav_type: uye_fav_type ? uye_fav_type.uye_fav_type : '',
+                                created_by: rootState.user.auth.id,
+                                fav_owner_user: rootState.user.auth.id
+                            }
+                            }).then(response => {  
+                                 rootState.search.selection = {
+                                    selectionC:[],
+                                    selectionW:[],
+                                    selectionE:[],
+                                 }
+                            });
+                        }else{
+                                await axios({
+                                        url: process.env.baseURL+"Favorites/"+fav_id,
+                                        method: "put",
+                                        data: { 
+                                            fav_content:t,
+                                            fav_list:list,
+                                            status:1,
+                                            uye_fav_type: uye_fav_type ? uye_fav_type.uye_fav_type : '',
+                                            created_by: rootState.user.auth.id,
+                                            fav_owner_user: rootState.user.auth.id
+                                        }
+                                }).then(response => {
+                                
+                                    rootState.search.selection = {
+                                        selectionC:[],
+                                        selectionW:[],
+                                        selectionE:[],
+                                     }
+                                
+                                });
                         }
-                        }).then(response => {  
-                        });
-                        });
-                }
+                    });
+                
+              
           }else{
             window.localStorage.setItem("likes", t);
           } 
+
         }
     }, 
     async removeLikes({commit,state,rootState},itemx){
@@ -229,7 +257,7 @@ export const actions = {
                     url: process.env.baseURL+"Favorites",
                     method: "get",
                     params: {
-                    limit: 1,
+                    limit: 10,
                     lang: 'NONE',
                     filter: { fav_owner_user: ["=",rootState.user.auth.id] },
                     fields: "id,fav_content,fav_owner_user,fav_list,uye_fav_type,pdb_user",
@@ -238,7 +266,7 @@ export const actions = {
                 }).then(response=>{
                     let a = response.data.formattedData
                     let likes=[]
-                    console.log("a",a)
+                    // console.log("a",a)
                     a.forEach(k=>{
                         console.log("k")
                         let fav_content= JSON.parse(k.fav_content)

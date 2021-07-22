@@ -735,7 +735,7 @@ export default {
     await this.$store.dispatch("core/getOptions", {
       slang: this.$store.state.locale,
       group: "co_level",
-      fields: "id,cou_level_name"
+      fields: "id,cou_level_name,cou_level_color"
     }); 
     await this.$store.dispatch("core/getOptions", {
       slang: this.$store.state.locale,

@@ -166,7 +166,7 @@ export default {
     await this.$store.dispatch("core/getOptions", {
       slang: this.$store.state.locale,
       group: "co_level",
-      fields: "id,cou_level_name"
+      fields: "id,cou_level_name,cou_level_color"
     });
     await this.$store.dispatch("core/getOptions", {
       slang: this.$store.state.locale,
@@ -299,7 +299,7 @@ export default {
           fields,
           lang: this.$store.state.locale,
           sort: ["sort,ASC"],
-          filter: { id: ["=", idList] }
+          filter: { id: ["in", idList] }
         }
       })
         .then(response => {
@@ -405,7 +405,7 @@ export default {
     async getLesson() {
       let fields = this.fields;
       let id = this.$route.params.id;
-      let filters = { status: ["=", 1], id: ["=", id] };
+      let filters = { status: ["=", 1], id: ["in", id] };
 
       return new Promise((resolve, reject) => {
         axios({
