@@ -65,6 +65,18 @@ export default {
       this.likeModal.show = true;  
       
     },
+    openLikeModalAll(selected,topModuleData,type){
+      
+      let datax={
+        all:selected, 
+        type,
+        topModuleData:topModuleData
+      }
+      this.likeModal.data = datax;
+      this.likeModal.type = type;
+      this.likeModal.show = true;  
+      
+    },
     showPhone(phone){
       let l = phone ? phone.length : 0 ;
       if(l && l==12){
@@ -344,7 +356,7 @@ export default {
       return this.$store.getters.getLikes
     },
     isLiked(id){ 
-      // console.log("this.likes",this.likes,id,this.likes.find(k=> k.id == id))
+       console.log("this.likes",this.likes,id,this.likes.find(k=> k.id == id))
       if(this.likes.find(k=> k.id == id)){
         return true
       }

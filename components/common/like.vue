@@ -10,9 +10,11 @@
     {{
       likeModal.topModuleData ? likeModal.topModuleData.unit_name + " > " : ""
     }}
+   
     <p v-if="likeModal.data && likeModal.data.lesson_name">
       {{ likeModal.data.lesson_name }}
     </p>
+ 
     <b-row class="mb-1 text-center" v-if="!addNew">
       <b-col cols="2">{{ l("List", "g") }}</b-col>
 
@@ -29,21 +31,23 @@
       ></b-col>
     </b-row>
     <b-row>
-      <b-col v-if="!addNew">
-        <a class="" @click="addNew = true">+ Add New List</a>
+      <b-col v-if="!addNew" >
+        <div class="addnewlist">
+          <a class="" @click="addNew = true">+ Add New List</a>
+        </div>
       </b-col>
       <b-col v-if="addNew">
        
         <p>
           <strong>{{l('New List Name','g')}}</strong>
-          <b-form-input type="text" v-model="newAdd.uye_list_name"></b-form-input>
+          <b-form-input type="text" class="pa-10" v-model="newAdd.uye_list_name"></b-form-input>
         </p>
         <p>
           <b-button size="sm" @click="saveNewList()" variant="primary"
             ><i class="fa fa-save"></i> {{ l("Save", "g") }}</b-button
           >
           <b-button size="sm" @click="addNew = false" variant="danger">{{
-              l("Close", "g")
+              l("Cancel", "g")
           }}</b-button>
         </p>
         <hr />
@@ -160,10 +164,13 @@ export default {
     },
     setLikesFav() {
       console.log("this.likeModal.data,this.inputList", this.inputList);
-      this.$store.dispatch("setLikes", {
-        item: this.likeModal.data,
-        list: this.inputList
-      });
+      
+
+          this.$store.dispatch("setLikes", {
+            item: this.likeModal.data,
+            list: this.inputList
+          });
+      
     },
     removeLikes(selected) {
       let f = this.likes.filter((k, i) => k.id != selected);
@@ -200,4 +207,20 @@ export default {
   height: 190px !important;
   overflow: auto;
 }
+.modal-dialog{
+    /* left: 0; */
+    right: 50%;
+    position: absolute;
+    width: 100%;
+    margin-right: -150px;
+    }
+    .custom-select{
+      padding: 6px;
+      border-radius: 4px;
+      font-size: 12px;
+      width: 100%;
+    }
+    .addnewlist{
+      padding: 10px 0px;  
+    }
 </style>
