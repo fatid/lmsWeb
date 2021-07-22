@@ -4,7 +4,7 @@
         <div class="col-12">
 
      
-  <div class="view-filter">  
+  <div class="view-filter" >  
       <div class="drawer" @click="closeDrawer()" :class="selectedItem.show ? 'visible': 'hidden'">
           <div class="content" @click.stop="" >
                     <h3>{{selectedItem.data.dict_word}}</h3>
@@ -14,22 +14,22 @@
                     <img :src="show_image(selectedItem.data.dict_image, '100', '100', true)" /></span> 
             </div>
       </div>
-        <div class="side-bar"   data-simplebar :class="customClass.textDir+' '+customClass.dir"> 
+        <div class="side-bar"   data-simplebar :class="customClass.textDir+' '+customClass.dir" :lang="$store.state.locale"> 
                 <div class="serach-item">
                             <!-- <div class="search-title">
                                 {{l('Type','g')}} 
                             </div>  -->
-                            <div class="search-box"  @click="search.module='Course'">
+                            <div class="search-box"  :lang="$store.state.locale" @click="search.module='Course'">
 								<input type="radio" tabindex="0" :checked="search.module=='Course' ? 'checked' : '' " value="Course"   />
-								<label> {{(l('Lessons','g'))}}  </label>
+								<label :lang="$store.state.locale"> {{(l('Lessons','g'))}}  </label>
 							</div>
-                              <div class="search-box" @click="search.module='Word'">
+                              <div class="search-box" :lang="$store.state.locale"  @click="search.module='Word'">
 								<input type="radio" tabindex="1"  :checked="search.module=='Word' ? 'checked' : '' " value="Word"   />
-								<label> {{(l('Words','g'))}}  </label>
+								<label :lang="$store.state.locale"> {{(l('Words','g'))}}  </label>
 							</div>
-                              <div class="search-box"   @click="search.module='Exam'">
+                              <div class="search-box" :lang="$store.state.locale"  @click="search.module='Exam'">
 								<input type="radio" tabindex="2" value="Exam"  :checked="search.module=='Exam' ? 'checked' : '' "   />
-								<label> {{(l('Question','g'))}}  </label>
+								<label :lang="$store.state.locale"> {{(l('Question','g'))}}  </label>
 							</div>
                 </div>
                 
@@ -38,10 +38,10 @@
                             <div class="search-title">
                                 {{l('Level','g')}} 
                             </div> 
-                            <div class="search-box inline"  v-for="(opt,key) in op_co_level"    
+                            <div class="search-box inline" :lang="$store.state.locale" v-for="(opt,key) in op_co_level"    
                               @click="addSearch('level',opt.id)" >
 								<input type="checkbox"      :checked="search.level.includes(opt.id) ? 'checked' : false " />
-                                <label> {{opt.cou_level_name}} 
+                                <label :lang="$store.state.locale"> {{opt.cou_level_name}} 
                                         {{counts['degree'][opt.id] ? '('+counts['degree'][opt.id]+')':''}}  
                                 </label>
 							</div>
@@ -62,10 +62,10 @@
                                 {{l('Questition Skills','g')}}  
                             </div> 
                              <div class="search-checkbox">
-                                <div class="search-box"  v-for="(opt,key) in l('cat.QuestionSkills.list','g')"    
+                                <div class="search-box" :lang="$store.state.locale"  v-for="(opt,key) in l('cat.QuestionSkills.list','g')"    
                                 @click="addSearch('skills',key)" >
                                     <input type="checkbox"      :checked="search.skills.includes(key) ? 'checked' : false "  />
-                                    <label> {{opt.name}} {{counts['skills'] && counts['skills'][key] ? '('+counts['skills'][key]+')' : ''}} </label>
+                                    <label :lang="$store.state.locale"> {{opt.name}} {{counts['skills'] && counts['skills'][key] ? '('+counts['skills'][key]+')' : ''}} </label>
                                 </div>
 							</div>
 				</div>
@@ -88,10 +88,10 @@
                                 {{l('Categories','g')}} 
                             </div> 
                             <div class="search-checkbox">
-                                <div class="search-box"  v-for="(opt,key) in options['co_labels']"  v-show="counts['categories'][opt.id]"  
+                                <div class="search-box"  :lang="$store.state.locale" v-for="(opt,key) in options['co_labels']"  v-show="counts['categories'][opt.id]"  
                                 @click="addSearch('category',opt.id)" >
                                     <input type="checkbox"      :checked="search.category.includes(opt.id) ? 'checked' : false " />
-                                    <label> {{opt.cou_label_name}} {{counts['categories'][opt.id] ? '('+counts['categories'][opt.id]+')':''}} </label>
+                                    <label :lang="$store.state.locale"> {{opt.cou_label_name}} {{counts['categories'][opt.id] ? '('+counts['categories'][opt.id]+')':''}} </label>
                                 </div>
 							</div>
 				</div>
@@ -101,15 +101,15 @@
                                 {{l('Questition Type','g')}}  
                             </div> 
                              <div class="search-checkbox">
-                                <div class="search-box"  v-for="(opt,key) in l('cat.QuestionTypes.list','g')"    
+                                <div class="search-box"  :lang="$store.state.locale" v-for="(opt,key) in l('cat.QuestionTypes.list','g')"    
                                 @click="addSearch('qtype',key)" >
                                     <input type="checkbox"      :checked="search.qtype.includes(key) ? 'checked' : false "  />
-                                    <label> {{opt.name}} ({{counts['exa_type'][key]}}) </label>
+                                    <label > {{opt.name}} ({{counts['exa_type'][key]}}) </label>
                                 </div>
 							</div>
 				</div>
             
-         </div>
+         </div> 
         <div class="content" v-show="loading"> Loading </div>
         <div class="content" v-show="!loading">   
              <div class="row">
@@ -117,8 +117,12 @@
                          {{l('Total results','g')}} {{pagination.total}} 
                            
                              
-                            <b-dropdown   size="sm" variant="outline-success" :text="'Order by:'+orderByList[orderBy].label" class="m-md-2">
-                                <b-dropdown-item @click="orderBy=i" v-for="(order,i) in orderByList">{{order.label}} </b-dropdown-item> 
+                            <b-dropdown   size="sm" variant="outline-success"   class="m-md-2">
+                                    <template #button-content>
+                         <a> {{'Order by:'+orderByList[orderBy].label}} <i class="fas fa-chevron-down"></i>
+                          </a>
+                  </template>
+                  <b-dropdown-item @click="orderBy=i" v-for="(order,i) in orderByList">{{order.label}} </b-dropdown-item> 
                             </b-dropdown>   
                     </div> 
                             <div class="col-3 " >
@@ -141,7 +145,7 @@
 				     
                     </div>
 
-            <div class="content-table">
+            <div class="content-table" >
                 <div v-if="search.module=='Word'">
                     <div v-for="dt in data" class="list_item"  :class="customClass.textDir+' '+customClass.dir">
                             <div class="word-container">
@@ -153,7 +157,7 @@
                                 <span class="pull-right" v-if="dt.dict_image"><img :src="show_image(dt.dict_image, '100', '100', true)" /></span>
                                 </div>
                             </div>
-                            <div class="button-side">
+                            <div class="button-side"  :lang="$store.state.locale">
                                 <!-- <a @click="goPathBlank('word/'+dt.dict_word)">Detail</a> -->
                                 <br />
                                     <a    
@@ -162,7 +166,7 @@
                                         v-if="!isLiked(dt.id)"
                                         @click="openLikeModal(dt,null,'Word')"
                                     >  <span class="text-black">
-                                        <svg id="bold" enable-background="new 0 0 24 24" height="512" viewBox="0 0 24 24" width="512" xmlns="http://www.w3.org/2000/svg"><path d="m14.25 0h-11.5c-1.52 0-2.75 1.23-2.75 2.75v15.5c0 1.52 1.23 2.75 2.75 2.75h6.59c-.54-1.14-.84-2.41-.84-3.75 0-1.15.22-2.25.63-3.26-.04.01-.08.01-.13.01h-5c-.55 0-1-.45-1-1s.45-1 1-1h5c.38 0 .72.22.88.54.65-1.01 1.49-1.87 2.48-2.54h-8.36c-.55 0-1-.45-1-1s.45-1 1-1h9c.55 0 1 .45 1 1 0 .05 0 .09-.01.13.93-.38 1.95-.6 3.01-.62v-5.76c0-1.52-1.23-2.75-2.75-2.75zm-6.25 6h-4c-.55 0-1-.45-1-1s.45-1 1-1h4c.55 0 1 .45 1 1s-.45 1-1 1z"/><path d="m17.25 10.5c-3.722 0-6.75 3.028-6.75 6.75s3.028 6.75 6.75 6.75 6.75-3.028 6.75-6.75-3.028-6.75-6.75-6.75zm2.75 7.75h-1.75v1.75c0 .552-.448 1-1 1s-1-.448-1-1v-1.75h-1.75c-.552 0-1-.448-1-1s.448-1 1-1h1.75v-1.75c0-.552.448-1 1-1s1 .448 1 1v1.75h1.75c.552 0 1 .448 1 1s-.448 1-1 1z"/></svg>
+                                        <svg id="bold" enable-background="new 0 0 24 24" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path d="m14.25 0h-11.5c-1.52 0-2.75 1.23-2.75 2.75v15.5c0 1.52 1.23 2.75 2.75 2.75h6.59c-.54-1.14-.84-2.41-.84-3.75 0-1.15.22-2.25.63-3.26-.04.01-.08.01-.13.01h-5c-.55 0-1-.45-1-1s.45-1 1-1h5c.38 0 .72.22.88.54.65-1.01 1.49-1.87 2.48-2.54h-8.36c-.55 0-1-.45-1-1s.45-1 1-1h9c.55 0 1 .45 1 1 0 .05 0 .09-.01.13.93-.38 1.95-.6 3.01-.62v-5.76c0-1.52-1.23-2.75-2.75-2.75zm-6.25 6h-4c-.55 0-1-.45-1-1s.45-1 1-1h4c.55 0 1 .45 1 1s-.45 1-1 1z"/><path d="m17.25 10.5c-3.722 0-6.75 3.028-6.75 6.75s3.028 6.75 6.75 6.75 6.75-3.028 6.75-6.75-3.028-6.75-6.75-6.75zm2.75 7.75h-1.75v1.75c0 .552-.448 1-1 1s-1-.448-1-1v-1.75h-1.75c-.552 0-1-.448-1-1s.448-1 1-1h1.75v-1.75c0-.552.448-1 1-1s1 .448 1 1v1.75h1.75c.552 0 1 .448 1 1s-.448 1-1 1z"/></svg>
                                          </span> 
                                     </a>
                                     <a    
@@ -171,7 +175,7 @@
                                         v-else
                                         @click="removeLikeModal(dt,null,'Word')"
                                     >  <span class="text-red"> 
-                                        <svg id="bold" enable-background="new 0 0 24 24" height="512" viewBox="0 0 24 24" width="512" xmlns="http://www.w3.org/2000/svg"><path d="m14.25 0h-11.5c-1.52 0-2.75 1.23-2.75 2.75v15.5c0 1.52 1.23 2.75 2.75 2.75h6.59c-.54-1.14-.84-2.41-.84-3.75 0-1.15.22-2.25.63-3.26-.04.01-.08.01-.13.01h-5c-.55 0-1-.45-1-1s.45-1 1-1h5c.38 0 .72.22.88.54.65-1.01 1.49-1.87 2.48-2.54h-8.36c-.55 0-1-.45-1-1s.45-1 1-1h9c.55 0 1 .45 1 1 0 .05 0 .09-.01.13.93-.38 1.95-.6 3.01-.62v-5.76c0-1.52-1.23-2.75-2.75-2.75zm-6.25 6h-4c-.55 0-1-.45-1-1s.45-1 1-1h4c.55 0 1 .45 1 1s-.45 1-1 1z"/><path d="m17.25 10.5c-3.722 0-6.75 3.028-6.75 6.75s3.028 6.75 6.75 6.75 6.75-3.028 6.75-6.75-3.028-6.75-6.75-6.75zm2.75 7.75h-1.75v1.75c0 .552-.448 1-1 1s-1-.448-1-1v-1.75h-1.75c-.552 0-1-.448-1-1s.448-1 1-1h1.75v-1.75c0-.552.448-1 1-1s1 .448 1 1v1.75h1.75c.552 0 1 .448 1 1s-.448 1-1 1z"/></svg>
+                                        <svg id="bold" enable-background="new 0 0 24 24" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path d="m14.25 0h-11.5c-1.52 0-2.75 1.23-2.75 2.75v15.5c0 1.52 1.23 2.75 2.75 2.75h6.59c-.54-1.14-.84-2.41-.84-3.75 0-1.15.22-2.25.63-3.26-.04.01-.08.01-.13.01h-5c-.55 0-1-.45-1-1s.45-1 1-1h5c.38 0 .72.22.88.54.65-1.01 1.49-1.87 2.48-2.54h-8.36c-.55 0-1-.45-1-1s.45-1 1-1h9c.55 0 1 .45 1 1 0 .05 0 .09-.01.13.93-.38 1.95-.6 3.01-.62v-5.76c0-1.52-1.23-2.75-2.75-2.75zm-6.25 6h-4c-.55 0-1-.45-1-1s.45-1 1-1h4c.55 0 1 .45 1 1s-.45 1-1 1z"/><path d="m17.25 10.5c-3.722 0-6.75 3.028-6.75 6.75s3.028 6.75 6.75 6.75 6.75-3.028 6.75-6.75-3.028-6.75-6.75-6.75zm2.75 7.75h-1.75v1.75c0 .552-.448 1-1 1s-1-.448-1-1v-1.75h-1.75c-.552 0-1-.448-1-1s.448-1 1-1h1.75v-1.75c0-.552.448-1 1-1s1 .448 1 1v1.75h1.75c.552 0 1 .448 1 1s-.448 1-1 1z"/></svg>
                                          </span> 
                                     </a>  <br />
                                     <input type="checkbox" class="check-centered"  
@@ -194,7 +198,7 @@
                                     ></question>
                                  
                                         </div>
-                                         <div class="button-side">
+                                         <div class="button-side"  :lang="$store.state.locale">
                                 <!-- <a @click="goPathBlank('questionView/'+dt.id)">Detail</a><br /> -->
                                   <br />
                                     <a    
@@ -432,6 +436,14 @@ export default {
             max-height: 109px;
             overflow: auto;
         }
+         .search-box:lang(ar){
+            width: 100%;
+            display: inline-flex; 
+            label { 
+                margin-left: 0px;
+                margin-right: 5px; 
+            }
+        }
         .search-box{
             width: 100%;
             display: inline-flex; 
@@ -538,6 +550,13 @@ export default {
             border-left: 1px solid #efefef;
             min-width: 30px;
             padding-left: 10px; 
+        }
+         .button-side:lang(ar){
+            border-right: 1px solid #efefef;
+            border-left: 0;
+            min-width: 30px;
+            padding-left: 0px; 
+            padding-right: 10px; 
         }
 }
 
