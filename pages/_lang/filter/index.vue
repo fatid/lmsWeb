@@ -38,7 +38,7 @@
                             <div class="search-title">
                                 {{l('Level','g')}} 
                             </div> 
-                            <div class="search-box inline"  v-for="(opt,key) in options['co_level']"    
+                            <div class="search-box inline"  v-for="(opt,key) in op_co_level"    
                               @click="addSearch('level',opt.id)" >
 								<input type="checkbox"      :checked="search.level.includes(opt.id) ? 'checked' : false " />
                                 <label> {{opt.cou_level_name}} 
@@ -114,12 +114,11 @@
         <div class="content" v-show="!loading">   
              <div class="row">
                     <div class="col-6 " :class="customClass.textDir+' '+customClass.dir">
-                         {{l('Total results','g')}} {{pagination.total}}   
+                         {{l('Total results','g')}} {{pagination.total}} 
                            
-                            
-                            <b-dropdown id="dropdown-1" size="sm"  :text="'Order by:'+orderByList[orderBy].label" class="m-md-2">
-                                <b-dropdown-item @click="orderBy=i" v-for="(order,i) in orderByList">{{order.label}}</b-dropdown-item>
-                               
+                             
+                            <b-dropdown   size="sm" variant="outline-success" :text="'Order by:'+orderByList[orderBy].label" class="m-md-2">
+                                <b-dropdown-item @click="orderBy=i" v-for="(order,i) in orderByList">{{order.label}} </b-dropdown-item> 
                             </b-dropdown>   
                     </div> 
                             <div class="col-3 " >
@@ -162,14 +161,18 @@
                                         class="like-button"
                                         v-if="!isLiked(dt.id)"
                                         @click="openLikeModal(dt,null,'Word')"
-                                    >  <span class="text-black"><i class="far fa-heart "></i> </span> 
+                                    >  <span class="text-black">
+                                        <svg id="bold" enable-background="new 0 0 24 24" height="512" viewBox="0 0 24 24" width="512" xmlns="http://www.w3.org/2000/svg"><path d="m14.25 0h-11.5c-1.52 0-2.75 1.23-2.75 2.75v15.5c0 1.52 1.23 2.75 2.75 2.75h6.59c-.54-1.14-.84-2.41-.84-3.75 0-1.15.22-2.25.63-3.26-.04.01-.08.01-.13.01h-5c-.55 0-1-.45-1-1s.45-1 1-1h5c.38 0 .72.22.88.54.65-1.01 1.49-1.87 2.48-2.54h-8.36c-.55 0-1-.45-1-1s.45-1 1-1h9c.55 0 1 .45 1 1 0 .05 0 .09-.01.13.93-.38 1.95-.6 3.01-.62v-5.76c0-1.52-1.23-2.75-2.75-2.75zm-6.25 6h-4c-.55 0-1-.45-1-1s.45-1 1-1h4c.55 0 1 .45 1 1s-.45 1-1 1z"/><path d="m17.25 10.5c-3.722 0-6.75 3.028-6.75 6.75s3.028 6.75 6.75 6.75 6.75-3.028 6.75-6.75-3.028-6.75-6.75-6.75zm2.75 7.75h-1.75v1.75c0 .552-.448 1-1 1s-1-.448-1-1v-1.75h-1.75c-.552 0-1-.448-1-1s.448-1 1-1h1.75v-1.75c0-.552.448-1 1-1s1 .448 1 1v1.75h1.75c.552 0 1 .448 1 1s-.448 1-1 1z"/></svg>
+                                         </span> 
                                     </a>
                                     <a    
                                         href="javascript:;" 
                                         class="like-button"
                                         v-else
                                         @click="removeLikeModal(dt,null,'Word')"
-                                    >  <span class="text-red"> <i class="far fa-heart "></i> </span> 
+                                    >  <span class="text-red"> 
+                                        <svg id="bold" enable-background="new 0 0 24 24" height="512" viewBox="0 0 24 24" width="512" xmlns="http://www.w3.org/2000/svg"><path d="m14.25 0h-11.5c-1.52 0-2.75 1.23-2.75 2.75v15.5c0 1.52 1.23 2.75 2.75 2.75h6.59c-.54-1.14-.84-2.41-.84-3.75 0-1.15.22-2.25.63-3.26-.04.01-.08.01-.13.01h-5c-.55 0-1-.45-1-1s.45-1 1-1h5c.38 0 .72.22.88.54.65-1.01 1.49-1.87 2.48-2.54h-8.36c-.55 0-1-.45-1-1s.45-1 1-1h9c.55 0 1 .45 1 1 0 .05 0 .09-.01.13.93-.38 1.95-.6 3.01-.62v-5.76c0-1.52-1.23-2.75-2.75-2.75zm-6.25 6h-4c-.55 0-1-.45-1-1s.45-1 1-1h4c.55 0 1 .45 1 1s-.45 1-1 1z"/><path d="m17.25 10.5c-3.722 0-6.75 3.028-6.75 6.75s3.028 6.75 6.75 6.75 6.75-3.028 6.75-6.75-3.028-6.75-6.75-6.75zm2.75 7.75h-1.75v1.75c0 .552-.448 1-1 1s-1-.448-1-1v-1.75h-1.75c-.552 0-1-.448-1-1s.448-1 1-1h1.75v-1.75c0-.552.448-1 1-1s1 .448 1 1v1.75h1.75c.552 0 1 .448 1 1s-.448 1-1 1z"/></svg>
+                                         </span> 
                                     </a>  <br />
                                     <input type="checkbox" class="check-centered"  
                                       :checked="selection.selectionW.includes(dt.id) ? 'checked' : false " 
@@ -181,14 +184,15 @@
                 <div v-else-if="search.module=='Exam'">
                     <div v-for="dt in data" class="list_item"  :class="customClass.textDir+' '+customClass.dir"> 
                         <div class="questition-container">
-                                   <div class="content-side">
+                                   <div class="content-side"    >
                                     <question
                                         :question="{q:dt,a:[]}"
                                         :order="1"
                                         :levels="options['co_level']"
                                         :isAnswered="false" 
+                                     
                                     ></question>
-                                    <!-- {{dt.id}} -->
+                                 
                                         </div>
                                          <div class="button-side">
                                 <!-- <a @click="goPathBlank('questionView/'+dt.id)">Detail</a><br /> -->
@@ -198,14 +202,14 @@
                                         class="like_button"
                                         v-if="!isLiked(dt.id)"
                                         @click="openLikeModal(dt,{id:dt.lesson_unite},'Course')"
-                                    >  <span class="text-black"><i class="far fa-heart "></i> </span> 
+                                    >  <span class="text-black"> <svg id="bold" enable-background="new 0 0 24 24" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path d="m14.25 0h-11.5c-1.52 0-2.75 1.23-2.75 2.75v15.5c0 1.52 1.23 2.75 2.75 2.75h6.59c-.54-1.14-.84-2.41-.84-3.75 0-1.15.22-2.25.63-3.26-.04.01-.08.01-.13.01h-5c-.55 0-1-.45-1-1s.45-1 1-1h5c.38 0 .72.22.88.54.65-1.01 1.49-1.87 2.48-2.54h-8.36c-.55 0-1-.45-1-1s.45-1 1-1h9c.55 0 1 .45 1 1 0 .05 0 .09-.01.13.93-.38 1.95-.6 3.01-.62v-5.76c0-1.52-1.23-2.75-2.75-2.75zm-6.25 6h-4c-.55 0-1-.45-1-1s.45-1 1-1h4c.55 0 1 .45 1 1s-.45 1-1 1z"/><path d="m17.25 10.5c-3.722 0-6.75 3.028-6.75 6.75s3.028 6.75 6.75 6.75 6.75-3.028 6.75-6.75-3.028-6.75-6.75-6.75zm2.75 7.75h-1.75v1.75c0 .552-.448 1-1 1s-1-.448-1-1v-1.75h-1.75c-.552 0-1-.448-1-1s.448-1 1-1h1.75v-1.75c0-.552.448-1 1-1s1 .448 1 1v1.75h1.75c.552 0 1 .448 1 1s-.448 1-1 1z"/></svg> </span> 
                                     </a>
                                     <a    
                                         href="javascript:;" 
                                         class="like_button"
                                         v-else
                                         @click="removeLikeModal(dt,{id:dt.lesson_unite},'Course')"
-                                    >  <span class="text-red"> <i class="far fa-heart "></i> </span> 
+                                    >  <span class="text-red"> <svg id="bold" enable-background="new 0 0 24 24" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path d="m14.25 0h-11.5c-1.52 0-2.75 1.23-2.75 2.75v15.5c0 1.52 1.23 2.75 2.75 2.75h6.59c-.54-1.14-.84-2.41-.84-3.75 0-1.15.22-2.25.63-3.26-.04.01-.08.01-.13.01h-5c-.55 0-1-.45-1-1s.45-1 1-1h5c.38 0 .72.22.88.54.65-1.01 1.49-1.87 2.48-2.54h-8.36c-.55 0-1-.45-1-1s.45-1 1-1h9c.55 0 1 .45 1 1 0 .05 0 .09-.01.13.93-.38 1.95-.6 3.01-.62v-5.76c0-1.52-1.23-2.75-2.75-2.75zm-6.25 6h-4c-.55 0-1-.45-1-1s.45-1 1-1h4c.55 0 1 .45 1 1s-.45 1-1 1z"/><path d="m17.25 10.5c-3.722 0-6.75 3.028-6.75 6.75s3.028 6.75 6.75 6.75 6.75-3.028 6.75-6.75-3.028-6.75-6.75-6.75zm2.75 7.75h-1.75v1.75c0 .552-.448 1-1 1s-1-.448-1-1v-1.75h-1.75c-.552 0-1-.448-1-1s.448-1 1-1h1.75v-1.75c0-.552.448-1 1-1s1 .448 1 1v1.75h1.75c.552 0 1 .448 1 1s-.448 1-1 1z"/></svg> </span> 
                                     </a>
                                     <br />
                                     <input type="checkbox"  class="check-centered"
@@ -292,7 +296,11 @@ export default {
     },
     selection() {
       return this.$store.state.search.selection; 
-    }  
+    },
+    op_co_level(){
+        
+       return this.options['co_level'].sort((a,b) => (a.cou_level_name > b.cou_level_name) ? 1 : ((b.cou_level_name > a.cou_level_name) ? -1 : 0))
+    }
   },
   data() {
     return {
@@ -350,7 +358,7 @@ export default {
         }else{
             this.search[field].push(key)
         } 
-        console.log("this.search",this.search,field,key)
+        // console.log("this.search",this.search,field,key)
         this.getResults()
     },
     addSelection(field,key){

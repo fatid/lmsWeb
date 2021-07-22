@@ -16,6 +16,8 @@
           v-if="question.q && question.q.exa_type == 'ParagraphOrder'"
         >
           {{ l("Make the text correct", "g") }}
+
+             <!-- {{splitparagraph_answer}} {{counterStatus}} -->
           <div class="myParagraph" v-if="question.q.rs_Question">
             <!-- {{answerText == trueText ? "Yes true." : "Try Again"}}   {{answerText}}==={{trueText}} -->
            
@@ -27,8 +29,9 @@
             </div>
           </div>
           
-          <div class="words" v-show="counterStatus != 'stopped'">
-            <div style="width: 100%;float: right;">
+          <div class="words">
+            <div style="width: 100%;float: right;" v-if="!isTrue">
+           
               <draggable
                 v-model="splitparagraph_answer"
                 @end="splitparagraph_setanswer()"
@@ -45,11 +48,16 @@
                   </div>
                 </transition-group>
               </draggable>
+
+                <p :class="customClass.float">
+                      <i>Please set answer drag and drop words.</i>
+                </p>
+            </div>
+            <div v-else>
+                {{splitparagraph_answer.join(" ")}}
             </div>
           </div>
-          <p :class="customClass.float">
-            <i>Please set answer drag and drop words.</i>
-          </p>
+      
         </div>
 
         <div
@@ -133,7 +141,7 @@
         <div v-if="question.q.exa_image">
           <img :src="question.q.exa_image" />
         </div>
-
+      
         <div
           class="ui form"
           v-if="
@@ -144,7 +152,7 @@
         >
 
          <div  style=" text-align: right; direction:rtl;  font-size: 22px;"   > 
-         <span v-html="question.q.rs_Question"></span>  
+          <span v-html="question.q.rs_Question"></span>   
         </div>
           <div class="grouped fields">
             <div class="field fltr-radio" v-for="(a, i) in question.a">
@@ -166,6 +174,7 @@
         <div class="ui form" v-else-if="question.q.exa_type == 'MultipleChoice'">
              <div  style=" text-align: right; direction:rtl;  font-size: 22px;"   > 
          <span v-html="question.q.rs_Question"></span>  
+          <!-- header_right -->
         </div>
           <div class="grouped fields" v-if="answers && answers[0]">
             <div class="field fltr-radio" v-for="(a, i) in answers">
@@ -233,7 +242,7 @@
           >Reset</a
         >
         <a class="success-result download_btn" v-if="isTrue">
-         <i class="fas fa-check-circle"></i>  {{ getRandomResultText() }}
+         <i class="fas fa-check-circle"></i> {{ getRandomResultText() }}
         </a>
         <a class="download_btn fail-result" v-else-if="isTrue === false">
           <i class="fas fa-exclamation-circle"></i> {{l('Lütfen cevabınızı kontrol ediniz.','g')}}
@@ -353,28 +362,15 @@ export default {
       return start.sort(() => Math.random() - 0.5);
     }
   },
-  created() {
-    console.log("created",this.question)
-    this.chooseActive();
-
-    if (
-      this.question &&
-      this.question.q &&
-      this.question.q.exa_type == "MultipleChoice" &&
-      !this.question.a[0]
-    ) {
-     
-      console.log("inside ");
-      this.getAnswers1();
-    } 
+  async created() { 
+      this.starter()  
   },
   watch: {
     "activeCourse.last"(val) {
       this.chooseActive();
     },
-    "question.q"(val) {
-      this.splitwords();
-      this.parseQuestion(val.rs_Question);
+     "question.q.id"(val){  
+           this.starter() 
     },
     "updated.value"(val) {
       let unitId = this.$route.params.unit;
@@ -392,6 +388,25 @@ export default {
     }
   },
   methods: {
+    starter(){
+            this.chooseActive();
+
+            this.splitwords();
+            if(this.question && this.question.q){
+              this.parseQuestion(this.question.q.rs_Question);
+            }
+            if (
+                this.question &&
+                this.question.q &&
+                this.question.q.exa_type == "MultipleChoice" &&
+                (!this.question.a || !this.question.a[0])
+              ) {
+                console.log("try answers", this.question.q, this.question.q.exa_type)
+                  this.getAnswers1();
+              } 
+
+            this.removeAnswer();
+    },
     resetSetwords() {
       this.splitwords_answer = this.splitwords_answer_original;
       if(this.splitwords_answer_original){ 
@@ -422,7 +437,7 @@ export default {
         ev.target.id
       ) {
         ev.preventDefault();
-        console.log("id", data, ev.target);
+        // console.log("id", data, ev.target);
         //  document.getElementById(data).parentNode.replaceChild('',document.getElementById(data));
         document.getElementById(
           ev.target.id
@@ -430,7 +445,7 @@ export default {
         document.getElementById(data).className = "item-hidden";
         let total = this.splitwords_answer.length;
         let answer = "";
-        console.log("total", total);
+        // console.log("total", total);
         if (total) {
           for (let i = 0; i < total; i++) {
             this.splitwords_answer_ordered[i] = document.getElementById(
@@ -448,7 +463,7 @@ export default {
       // })
     },
     async getAnswers1() {
-      console.log("Answers");
+      // console.log("Answers");
       // this.question.a = null;
       let fields =
         "id,sort,status,exa_q_answer,exa_q_image,exa_q_sound,exa_q_true";
@@ -479,7 +494,7 @@ export default {
         });
     },
     splitwords_setanswer(event) {
-      console.log("event");
+      // console.log("event");
       // this.splitwords_answer_ordered =   this.splitwords_answer;
       let total = this.splitwords_answer_ordered.length;
       console.log(
@@ -658,6 +673,7 @@ export default {
       this.$emit("answered", true);
     },
     setanswer() {
+      console.log("answered",this.question.q,this.trueText,this.answerText)
       if (!this.isTrue) {
         let unitId = this.$route.params.unit;
         let lessonId = this.$route.params.id;
