@@ -1,6 +1,7 @@
 <template>
-  <div>  
-    
+  <div class="container">  
+    <div class="mt-5">
+      <h3>{{l('My Lists','g')}}</h3>
     <div v-if="listId && viewType && getListData(listId,'data')">
         <h4 style="margin-bottom: 5px;" v-if="selectedList"> {{selectedList.uye_list_name}}   </h4>
      <p> <a @click="goPath('my/list')" v-if="selectedList">{{l('All Lists','g')}}</a> / {{selectedList.uye_list_cat}} </p>  
@@ -24,6 +25,7 @@
 
     </div>
     <div v-else>  
+      <div class="colsRow"> 
     <b-list-group> 
       <b-list-group-item
         v-for="(list, i) in my_lists"
@@ -58,14 +60,13 @@
             </select>
             </div>
             <div class="d-block mr-5">
-
+            <p style="margin-top: 30px;" ></p>
             <b-button variant="success" class="pa-10" @click="saveUyeList(list)">
-              <i class="fa fa-save"></i> Save</b-button
-            >
+              <i class="fa fa-save"></i> Save</b-button>
           </div> 
           </div> 
         </span>
-        <span>
+        <span >
           <b-button
             v-if="list.view == 'read'"
             variant="primary"
@@ -99,10 +100,12 @@
         </span>
       </b-list-group-item>
     </b-list-group> 
+    </div>
     <div class="col-lg-12 mt-2 text-center align-center">
       <b-button variant="success" @click="addNewList()"
         >+ {{ l("Add New List", "g") }}</b-button
       >
+    </div>
     </div>
     </div>
   </div>
@@ -170,7 +173,9 @@ export default {
     };
   },
   methods: {
-
+    removeList(id){
+    
+    },
     copyText(text) {
  
         const body = document.querySelector('body'); 
@@ -310,4 +315,8 @@ export default {
 .mr-5{
     margin-right: 6px;
 }
+.colsRow{
+    overflow: auto;
+    height: calc(100vh - 200px);
+  }
 </style>
