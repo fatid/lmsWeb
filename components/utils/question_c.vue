@@ -829,7 +829,7 @@ export default {
 .question {
   font-size: 15px;
   font-weight: bold;
-  font-family: "Cairo";
+  font-family: "Scheherazade";
 }
 .download_btn {
   color: #fff !important;
@@ -845,7 +845,7 @@ export default {
   font-weight: 500;
   font-size: 14px;
   margin-right: 20px;
-  font-family: "Cairo", sans-serif;
+  font-family: "Scheherazade", sans-serif;
   text-align: center;
   color: #ee682d !important;
   border-radius: 20px;
