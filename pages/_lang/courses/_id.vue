@@ -3,7 +3,7 @@
     
 
         <div class="fcrse_1" v-for="d in data"> 
-										<a @click="goPath('course/'+d.cou_link)" class="hf_img">
+										<a @click="goPath('course/'+d.cou_link)" @click.middle="goPathBlank('course/'+d.cou_link)"  class="hf_img">
 											<img v-if="d.cou_image" :src="show_image(d.cou_image,'150','150','','90')" alt="">
 											<img v-else-if="options['cou_settings']" :src="show_image(options['cou_settings'][0].cou_setting_image,'150','150','c','')" alt="">
 											<div class="course-overlay">
@@ -29,7 +29,7 @@
 												<span class="vdt14">{{d.cou_total_view}} {{l('views','g')}}</span>
 												<!-- <span class="vdt14">15 days ago</span> -->
 												<!-- </div> -->
-											<a @click="goPath('course/'+d.cou_link)" class="crse14s title900">{{d.cou_name}}</a>
+											<a @click="goPath('course/'+d.cou_link)" @click.middle="goPathBlank('course/'+d.cou_link)" class="crse14s title900">{{d.cou_name}}</a>
 											<a href="#" class="crse-cate">{{d.cou_short}}</a>
 											<div class="crse-cate mt-1">
 												<a href="javascript:;"  >{{getOptName(d.cou_category,'co_labels','cou_label_name')}} </a> 
