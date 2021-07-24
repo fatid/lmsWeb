@@ -371,7 +371,12 @@ export default {
       for (let i = 0; i < 4 - total_given_alphabets; i++) {
         start.push(this.getRandomItem(this.alphabets, start));
       }
-      return start.sort(() => Math.random() - 0.5);
+
+      let startArr = start.filter(function(item, pos) {
+          return start.indexOf(item) == pos;
+      })
+      startArr= startArr.filter(k=> k!=" ")
+      return startArr.sort(() => Math.random() - 0.5);
     }
   },
   async created() { 
@@ -561,6 +566,13 @@ export default {
       if(this.question && this.question.q && this.question.q.rs_Question){
       let words = this.question.q.rs_Question.trim();
       let wp = words.split("\n");
+
+        let txt = this.question.q.rs_Question 
+        txt = txt.replaceAll("&lt;", "<");
+        txt = txt.replaceAll("&gt;", ">");
+        this.question.q.rs_Question = txt
+
+
       if(this.question.q.exa_type == 'FillBlanks'){
         let val =  this.question.q.rs_Question;
        
@@ -599,6 +611,7 @@ export default {
      } else
       if(this.question.q.exa_type == 'MultipleChoice'){
          this.trueText = ''; 
+            
       }else{
         if(wp){
            var ws = wp[0].trim().split(" ");
@@ -619,7 +632,7 @@ export default {
                   this.alternativeText = w2.join(" ").trim();
           }
           this.trueText = w.join(" ").trim();
-        
+
           this.splitwords_answer = w.sort(() => Math.random() - 0.5);
           this.splitwords_answer.forEach(
             (k, i) => (this.splitwords_answer_ordered[i] = "")
