@@ -7,7 +7,7 @@
                                     >
                                         <h4>{{b.cbanner_title}}</h4>
                                         <p>{{b.cbanner_subtitle}}</p>
-                                        <button class="Get_btn" @click="goPath(b.cbanner_buttonurl)">{{b.cbanner_buttontext}}</button>
+                                        <button class="Get_btn" @click.middle="goPathBlank(b.cbanner_buttonurl)" @click="goPath(b.cbanner_buttonurl)">{{b.cbanner_buttontext}}</button>
                                     </div>
                                     
                                     <div class="strttech120 box-standart" 
@@ -16,7 +16,7 @@
                                     v-else-if="b.cbanner_style=='Centered1'">
                                         <h4>{{b.cbanner_title}}</h4>
                                         <p>{{b.cbanner_subtitle}}</p>
-                                        <button class="Get_btn" @click="goPath(b.cbanner_buttonurl)">{{b.cbanner_buttontext}}</button>
+                                        <button class="Get_btn"  @click.middle="goPathBlank(b.cbanner_buttonurl)" @click="goPath(b.cbanner_buttonurl)">{{b.cbanner_buttontext}}</button>
 							        </div>
                               </div>
                             </template>

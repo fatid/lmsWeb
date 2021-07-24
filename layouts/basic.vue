@@ -10,10 +10,10 @@
         <span class="collapse_menu--label"></span>
       </button>
       <div class="main_logo" id="logo">
-        <a @click="goPath('home')"
+         <a @click="goPath('home')"  @click.middle="goPathBlank('home')" 
           ><img :src="'http://lms.fatihd.com/yonetim/images/resimler/normal/logo.png'" alt="logo"
         /></a>
-        <a @click="goPath('home')"
+        <a @click="goPath('home')"  @click.middle="goPathBlank('home')" 
           ><img class="logo-inverse" :src="'http://lms.fatihd.com/yonetim/images/resimler/normal/logo.png'" alt="logo"
         /></a>
       </div>  
@@ -35,9 +35,9 @@
        <div class="menu-select">
         
 
-            <b-button pill variant="outline-danger"  @click="goPath('filter')">{{ l("Filter", "g") }}</b-button>
-            <b-button pill variant="outline-danger"  @click="goPath('courses/all_courses')">{{ l("Courses", "g") }}</b-button>
-            <b-button pill variant="outline-primary"   @click="goPath('words/all_words')" >{{ l("Words", "g") }}</b-button> 
+            <a  @click.middle="goPathBlank('filter')"                @click="goPath('filter')"><b-button pill variant="outline-danger"  >{{ l("Filter", "g") }}</b-button></a>
+            <a  @click.middle="goPathBlank('courses/all_courses')"   @click="goPath('courses/all_courses')"><b-button pill variant="outline-danger"  >{{ l("Courses", "g") }}</b-button></a>
+            <a  @click.middle="goPathBlank('words/all_words')"       @click="goPath('words/all_words')" > <b-button pill variant="outline-primary"  >{{ l("Words", "g") }}</b-button> </a>
      
       </div>  
       <div class="header_right">
@@ -47,9 +47,7 @@
           <!-- <li>
 					<a href="shopping_cart.html" class="option_links" title="cart"><i class='uil uil-shopping-cart-alt'></i><span class="noti_count">2</span></a>
 				</li> -->
-            <li> <a  @click="changeLanguage('ar')" ><div class="image-lang" :class="$store.state.locale=='ar' ? 'selected':''"  style="background-image: url('/img/ar.svg') " title="Arabic"  ></div> </a></li> 
-           <li><a  @click="changeLanguage('en')" ><div class="image-lang" :class="$store.state.locale=='en' ? 'selected':''"  style="background-image: url('/img/en.svg') " title="English" ></div> </a></li> 
-
+     
           <li class="ui dropdown" v-show="auth && auth!=null && auth.token">
             <a href="#" class="option_links" title="Messages">
               <i class="far fa-envelope"></i>
@@ -70,6 +68,25 @@
               >{{ l("LOGIN", "g") }}</a
             >
           </li> 
+             <li>
+
+              <b-dropdown variant="link" toggle-class="text-decoration-none" no-caret>
+               <template #button-content>
+                          <a
+                          
+                            class="opts_account"
+                            title="Account"
+                          > 
+                          <div class="image-lang" :class="$store.state.locale=='ar' ? 'selected':''"  :style="{ backgroundImage: 'url(\'/img/'+$store.state.locale+'.svg\')' }" title="Arabic"  ></div> 
+                            
+                          </a>
+                  </template>
+                    <b-dropdown-item> <a  @click="changeLanguage('ar')" > <img   src="/img/ar.svg" style="width:20px" title="Arabic"  />  Arabic </a></b-dropdown-item> 
+                    <b-dropdown-item><a  @click="changeLanguage('en')" >  <img   src="/img/en.svg" style="width:20px"  title="English" /> English</a></b-dropdown-item> 
+               
+                </b-dropdown>  
+
+            </li>
             <li class="ui dropdown" v-show="auth && auth.token">  
 
   <b-dropdown variant="link" toggle-class="text-decoration-none" no-caret>
@@ -82,9 +99,9 @@
                             <img :src="auth.U_Photo ? auth.U_Photo : '/images/hd_dp.jpg'" alt="" />
                           </a>
                   </template>
-                  <b-dropdown-item  @click="goPath('my/profile')" >  Profile</b-dropdown-item>
-                  <b-dropdown-item  @click="goPath('courses/all_courses')" >  {{l('My Courses','g')}}</b-dropdown-item>
-                  <b-dropdown-item  @click="goPath('my/list')" >   {{l('My List','g')}}</b-dropdown-item>
+                    <b-dropdown-item  @click.middle="goPathBlank('my/profile')"          @click="goPath('my/profile')"           >  {{l('Profile','g')}}</b-dropdown-item>
+                  <b-dropdown-item  @click.middle="goPathBlank('courses/all_courses')" @click="goPath('courses/all_courses')" >  {{l('My Courses','g')}}</b-dropdown-item>
+                  <b-dropdown-item  @click.middle="goPathBlank('my/list')"             @click="goPath('my/list')"             >   {{l('My List','g')}}</b-dropdown-item>
               
                   <b-dropdown-item  @click="goPath('form/login?logout=true')" >  Sign Out</b-dropdown-item> 
                 </b-dropdown>  

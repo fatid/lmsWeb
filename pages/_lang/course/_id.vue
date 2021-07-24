@@ -188,7 +188,9 @@
                     <div class="left-content-number">
                       {{ num + 1 }}
                     </div>
-                    <div class="left-content" @click="goPath('course/' + les.id + '/' + les.id)">
+                    <div class="left-content" @click="goPath('course/' + les.id + '/' + les.id)"
+                      @click.middle="goPathBlank('course/' + les.id + '/' + les.id)"
+                    >
                       <div class="top">
                         <div class="title">{{ les.section_name }}</div>
                       </div>

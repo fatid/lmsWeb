@@ -198,6 +198,9 @@ export default {
       this.$router.push({path:'/'+this.LOCALE+'/'+path,query})
       this.collapse = false;
     },
+    hrefPath(path,query={}){ 
+      return '/'+this.LOCALE+'/'+path
+    },
     goPathBlank(path,query={}){ 
       let href = this.$router.resolve({path:'/'+this.LOCALE+'/'+path,query})
       this.collapse = false;

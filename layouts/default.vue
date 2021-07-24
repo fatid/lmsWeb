@@ -10,10 +10,10 @@
         <span class="collapse_menu--label"></span>
       </button>
       <div class="main_logo" id="logo">
-        <a @click="goPath('home')"
+        <a @click="goPath('home')"  @click.middle="goPathBlank('home')" 
           ><img :src="'http://lms.fatihd.com/yonetim/images/resimler/normal/logo.png'" alt="logo"
         /></a>
-        <a @click="goPath('home')"
+        <a @click="goPath('home')"  @click.middle="goPathBlank('home')" 
           ><img class="logo-inverse" :src="'http://lms.fatihd.com/yonetim/images/resimler/normal/logo.png'" alt="logo"
         /></a>
       </div>  
@@ -35,9 +35,9 @@
        <div class="menu-select">
         
 
-            <b-button pill variant="outline-danger"  @click="goPath('filter')">{{ l("Filter", "g") }}</b-button>
-            <b-button pill variant="outline-danger"  @click="goPath('courses/all_courses')">{{ l("Courses", "g") }}</b-button>
-            <b-button pill variant="outline-primary"   @click="goPath('words/all_words')" >{{ l("Words", "g") }}</b-button> 
+             <a  @click.middle="goPathBlank('filter')"                @click="goPath('filter')"><b-button pill variant="outline-danger"  >{{ l("Filter", "g") }}</b-button></a>
+            <a  @click.middle="goPathBlank('courses/all_courses')"   @click="goPath('courses/all_courses')"><b-button pill variant="outline-danger"  >{{ l("Courses", "g") }}</b-button></a>
+            <a  @click.middle="goPathBlank('words/all_words')"       @click="goPath('words/all_words')" > <b-button pill variant="outline-primary"  >{{ l("Words", "g") }}</b-button> </a>
      
       </div>  
       <div class="header_right">
@@ -100,16 +100,16 @@
                             <img :src="auth.U_Photo ? auth.U_Photo : '/images/hd_dp.jpg'" alt="" />
                           </a>
                   </template>
-                  <b-dropdown-item  @click="goPath('my/profile')" >  Profile</b-dropdown-item>
-                  <b-dropdown-item  @click="goPath('courses/all_courses')" >  {{l('My Courses','g')}}</b-dropdown-item>
-                  <b-dropdown-item  @click="goPath('my/list')" >   {{l('My List','g')}}</b-dropdown-item>
+                  <b-dropdown-item  @click.middle="goPathBlank('my/profile')"          @click="goPath('my/profile')"           >  {{l('Profile','g')}}</b-dropdown-item>
+                  <b-dropdown-item  @click.middle="goPathBlank('courses/all_courses')" @click="goPath('courses/all_courses')" >  {{l('My Courses','g')}}</b-dropdown-item>
+                  <b-dropdown-item  @click.middle="goPathBlank('my/list')"             @click="goPath('my/list')"             >   {{l('My List','g')}}</b-dropdown-item>
                   <!-- <b-dropdown-text    >  
                     
                               <a  @click="changeLanguage('ar')" ><img class="image-lang" :src="'/img/ar.png'" title="Arabic"   /> </a>
                               <a  @click="changeLanguage('en')" ><img class="image-lang" :src="'/img/en.png'" title="English"  /> </a>
 
                   </b-dropdown-text>  -->
-                  <b-dropdown-item  @click="goPath('form/login?logout=true')" >  Sign Out</b-dropdown-item> 
+                  <b-dropdown-item  @click="goPath('form/login?logout=true')" > {{l('Sign Out','g')}}</b-dropdown-item> 
                 </b-dropdown>  
            </li> 
         </ul>

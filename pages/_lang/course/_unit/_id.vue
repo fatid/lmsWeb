@@ -5,7 +5,7 @@
         <nav aria-label="breadcrumb">
           <ol class="breadcrumb">
             <li class="breadcrumb-item">
-              <a @click="goPath('courses')">{{ l("Course", "g") }}</a>
+              <a @click="goPath('courses')"  @click.middle="goPathBlank('courses')" >{{ l("Course", "g") }}</a>
             </li>
 
             <li
@@ -15,6 +15,7 @@
                   'course/'+data.from_prev.cou_link
                 )
               "
+               @click.middle="goPathBlank('course/'+data.from_prev.cou_link)"
               aria-current="page"
             >
               {{data.from_prev.cou_name}}
@@ -26,6 +27,7 @@
                   'course/'+data.from_prev.cou_link
                 )
               "
+                @click.middle="goPathBlank('course/'+data.from_prev.cou_link)"
               aria-current="page"
             >
               {{data.from_lesson_subject.section_name}}
@@ -37,6 +39,7 @@
             @click="
               goPath('course/'+data.from_prev.cou_link)
             "
+              @click.middle="goPathBlank('course/'+data.from_prev.cou_link)"
             >{{l('Back to Course','g')}}</a
           >
         </nav>
@@ -144,6 +147,9 @@
           @click="
             goPath('course/the_only_course_you_need_to_learn_web_development')
           "
+          @click.middle="
+            goPathBlank('course/the_only_course_you_need_to_learn_web_development')
+          "
           >Turn Back Course Page</a
         >
       </div>
@@ -153,12 +159,20 @@
         class="prev"
         v-if="prev && prev.id"
         @click="goPath('course/' + unit + '/' + prev.id)"
+       
+          @click.middle="
+            goPathBlank('course/' + unit + '/' + prev.id)
+          "
         ><i class="fa fa-chevron-left" /> {{ l("Prev", "g") }}</a
       >
       <a
         class="next"
         v-if="next && next.id"
         @click="goPath('course/' + unit + '/' + next.id)"
+        
+          @click.middle="
+            goPathBlank('course/' + unit + '/' + next.id)
+          "
         ><i class="fa fa-chevron-right" /> {{ l("Next", "g") }}</a
       >
       <b-button

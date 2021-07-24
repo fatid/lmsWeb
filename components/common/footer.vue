@@ -5,16 +5,16 @@
 				<div class="row">
 					<div class="col-lg-3 col-md-3 col-sm-6">
 						<div class="item_f1">
-							<a href="javascript:;" @click="goPath('page/about-us')">About</a>
-							<a href="javascript:;" @click="goPath('page/help')">F.A.Q</a>
+							<a href="javascript:;" @click.middle="goPathBlank('page/about-us')"   @click="goPath('page/about-us')">About</a>
+							<a href="javascript:;" @click.middle="goPathBlank('page/help')"  @click="goPath('page/help')">F.A.Q</a>
 						 
 						</div>
 					</div>
 					<div class="col-lg-3 col-md-3 col-sm-6">
 						<div class="item_f1">
-							<a href="javascript:;" @click="goPath('filter')">Filter</a> 
-							<a href="javascript:;" @click="goPath('courses/all_courses')">Courses</a>
-							<a href="javascript:;" @click="goPath('words/all_words')">Words</a>
+							<a href="javascript:;"  @click.middle="goPathBlank('filter')"              @click="goPath('filter')"              >Filter</a> 
+							<a href="javascript:;"  @click.middle="goPathBlank('courses/all_courses')" @click="goPath('courses/all_courses')" >Courses</a>
+							<a href="javascript:;"  @click.middle="goPathBlank('words/all_words')"     @click="goPath('words/all_words')"     >Words</a>
 						</div>
 					</div>
 					<div class="col-lg-3 col-md-3 col-sm-6">
