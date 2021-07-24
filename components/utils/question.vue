@@ -53,7 +53,14 @@
           </div>
       
         </div>
+        <div
+          class="question"
+          v-else-if="question.q.exa_type == 'ReadyQuestion'  "
+        > 
+        
 
+        
+        </div>
         <div
           class="question"
           v-else-if="question.q.exa_type == 'SentenceCorrect'"
@@ -111,7 +118,7 @@
           <br />
         </div>
         <div
-        v-if="parsedQuestion &&  question.q.exa_type != 'MultipleChoice' &&  question.q.exa_type != 'ParagraphOrder' &&  question.q.exa_type != 'SentenceCorrect'"
+        v-if="parsedQuestion &&  question.q.exa_type != 'MultipleChoice'   &&  question.q.exa_type != 'ReadyQuestion'   &&  question.q.exa_type != 'ParagraphOrder' &&  question.q.exa_type != 'SentenceCorrect'"
           style=" text-align: right; direction:rtl;  font-size: 22px; line-height: 2;"
         >
           <!-- <span v-html="parseQuestion(question.q.rs_Question)"></span> -->
@@ -147,15 +154,17 @@
 
          <div  style=" text-align: right; direction:rtl;  font-size: 22px;"   > 
           <span v-html="question.q.rs_Question"></span>   
+       
         </div>
           <div class="grouped fields">
+             
             <div class="field fltr-radio" v-for="(a, i) in question.a">
               <div class="ui radio checkbox toRight">
-                 <label @click="answer = a.id">{{ a.exa_q_answer }} </label>
+                 <label @click="answerText = a.id">{{ a.exa_q_answer }} </label>
                 <input
                   type="radio"
                   name="example"
-                  v-model="answer"
+                  v-model="answerText"
                   :value="a.id"
                   class="hidden"
                   :disable="isTrue"
@@ -167,7 +176,7 @@
         </div>
         <div class="ui form" v-else-if="question.q.exa_type == 'MultipleChoice'">
              <div  style=" text-align: right; direction:rtl;  font-size: 22px;"   > 
-         <span v-html="question.q.rs_Question"></span>  
+         <span v-html="question.q.rs_Question"></span>    
           <!-- header_right -->
         </div>
           <div class="grouped fields" v-if="answers && answers[0]">
@@ -176,12 +185,12 @@
                 <input
                   type="radio"
                   name="example"
-                  v-model="answer"
+                  v-model="answerText"
                   :value="a.id"
                   class="hidden"
                   :disable="isTrue"
                 />
-                <label @click="answer = a.id">{{ a.exa_q_answer }} </label>
+                <label @click="answerText = a.id">{{ a.exa_q_answer }} </label>
               </div>
             </div>
           </div>
@@ -229,6 +238,7 @@
         >
         <a
           class="download_reset"
+          v-show="answerText"
           @click="
             resetSetwords();
             removeAnswer();
@@ -489,6 +499,11 @@ export default {
             response.data.formattedData[0]
           ) {
             this.answers = response.data.formattedData;
+            this.answers.forEach(k=>{
+                    if(k.exa_q_true=="on"){
+                        this.trueText = k.id;
+                    } 
+              });
           }
         })
         .catch(e => {
@@ -544,6 +559,9 @@ export default {
           this.splitwords_answer_original = wp.sort(() => Math.random() - 0.5);
 
           return [...this.splitwords_answer];
+     } else
+      if(this.question.q.exa_type == 'MultipleChoice'){
+         this.trueText = ''; 
       }else{
         if(wp){
            var ws = wp[0].trim().split(" ");
@@ -626,6 +644,7 @@ export default {
     },
     removeAnswer(val) {
       this.answerText = "";
+      this.answer = '';
       this.isTrue = null;
       if(this.question.q && this.question.q.rs_Question){
         this.parseQuestion(this.question.q.rs_Question);
@@ -684,7 +703,7 @@ export default {
         if (this.trueText) {
           this.$emit("answered", true);
 
-          this.isTrue = this.trueText === this.answerText || this.alternativeText === this.answerText  ? true : false;
+          this.isTrue = this.trueText === this.answerText || this.alternativeText === this.trueText   ? true : false;
           if (this.trueText == this.answerText) {
             let divide = this.question.q.exa_timer
               ? parseInt(this.question.q.exa_timer) / this.updated

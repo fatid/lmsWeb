@@ -98,7 +98,7 @@ export default {
           filters.rs_Question = ["LIKE", this.search.keyword];
         }
         if (this.search.qtype && this.search.qtype[0]) {
-          filters.exa_type = ["=", this.search.qtype];
+          filters.exa_type = ["in", this.search.qtype];
         }
         // console.log("skills",this.search)
         if (this.search.skills && this.search.skills[0]) {
@@ -137,7 +137,7 @@ export default {
         }
         filters.exa_timer = {exa_image:["!=", ''],rs_Question:["!=", ''],exa_sound:["!=", ''],exa_video:["!=", '']};
         this.$store.commit("search/setSearch",filters);
-        let fields = "id,sort,status,exa_type,exa_degree,exa_categories,rs_Question,exa_image,exa_sound,exa_video,exa_timer,exa_skills";
+        let fields = "id,sort,status,exa_type,exa_degree,exa_categories,rs_Question,exa_image,exa_sound,exa_video,exa_ready,exa_timer,exa_skills";
         // this.getAnswers();
         axios({
             url: process.env.baseURL + "exam_q",
