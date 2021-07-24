@@ -70,7 +70,7 @@ export default {
     },
          async getQuestion() {
       let fields =
-        "id,sort,status,exa_type,rs_Question,exa_image,exa_sound,exa_video,exa_timer";
+        "id,sort,status,exa_type,rs_Question,exa_image,exa_sound,exa_video,exa_timer,exa_ready";
       this.getAnswers();
       axios({
         url: process.env.baseURL + "exam_q",
