@@ -163,7 +163,7 @@
                  <label @click="answerText = a.id">{{ a.exa_q_answer }} </label>
                 <input
                   type="radio"
-                  name="example"
+                   :name="'question-'+question.q.id"
                   v-model="answerText"
                   :value="a.id"
                   class="hidden"
@@ -184,7 +184,7 @@
               <div class="ui radio checkbox">
                 <input
                   type="radio"
-                  name="example"
+                  :name="'question-'+question.q.id"
                   v-model="answerText"
                   :value="a.id"
                   class="hidden"
@@ -371,7 +371,12 @@ export default {
       for (let i = 0; i < 4 - total_given_alphabets; i++) {
         start.push(this.getRandomItem(this.alphabets, start));
       }
-      return start.sort(() => Math.random() - 0.5);
+
+      let startArr = start.filter(function(item, pos) {
+          return start.indexOf(item) == pos;
+      })
+      startArr= startArr.filter(k=> k!=" ")
+      return startArr.sort(() => Math.random() - 0.5);
     }
   },
   async created() { 
@@ -413,7 +418,7 @@ export default {
                 this.question.q.exa_type == "MultipleChoice" &&
                 (!this.question.a || !this.question.a[0])
               ) {
-                console.log("try answers", this.question.q, this.question.q.exa_type)
+                // console.log("try answers", this.question.q, this.question.q.exa_type)
                   this.getAnswers1();
               } 
 
@@ -498,7 +503,7 @@ export default {
             response.data.formattedData &&
             response.data.formattedData[0]
           ) {
-            this.answers = response.data.formattedData;
+            this.answers = response.data.formattedData.sort(() => Math.random() - 0.5);
             this.answers.forEach(k=>{
                     if(k.exa_q_true=="on"){
                         this.trueText = k.id;
@@ -537,16 +542,60 @@ export default {
     splitparagraph_setanswer() {
       this.answerText = this.splitparagraph_answer.join(" ");
     },
+    decodeHTMLEntities (str) {
+       var element = document.createElement('div');
+        if(str && typeof str === 'string') {
+          // strip script/html tags
+          str = str.replace(/<script[^>]*>([\S\s]*?)<\/script>/gmi, '');
+          str = str.replace(/<\/?\w(?:[^"'>]|"[^"]*"|'[^']*')*>/gmi, '');
+          element.innerHTML = str;
+          str = element.textContent;
+          element.textContent = '';
+        }
+
+        return str;
+    },
+    checkRTL(t){           
+        
+       var txt = document.createElement("textarea");
+        txt.innerHTML = t;
+        return txt.value;   
+    },
+
     splitwords() {
       if(this.question && this.question.q && this.question.q.rs_Question){
       let words = this.question.q.rs_Question.trim();
       let wp = words.split("\n");
+
+        let txt = this.question.q.rs_Question 
+        txt = txt.replaceAll("&lt;", "<");
+        txt = txt.replaceAll("&gt;", ">");
+        this.question.q.rs_Question = txt
+
+
       if(this.question.q.exa_type == 'FillBlanks'){
-        let val = this.question.q.rs_Question;
-        val = val.replaceAll("&lt;", "<");
-        val = val.replaceAll("&gt;", ">");
-        let before = val.split("++");
-        let after = before[1] ? before[1].split("++") : ["", ""];
+        let val =  this.question.q.rs_Question;
+       
+       let isRtl = this.decodeHTMLEntities(val)
+      //  let isRtl = this.decodeHTMLEntities("بلبل 123++ ? شبسبسي ++ ")
+        isRtl = isRtl.replaceAll("&lt;", "<");
+        isRtl = isRtl.replaceAll("&gt;", ">");
+        let before = isRtl.split("++");
+        
+        console.log("Splitted",isRtl);
+        console.log(val,"val")
+        console.log(before,"before")
+        console.log(isRtl,"isRtl")
+//         console.log("Typed left to right:");
+// console.log("2132-سسس".split('-'));
+// console.log("8635-بحد".split('-'));
+
+// console.log("---------------");
+
+// console.log("Typed right to left as Arabians follow:");
+// console.log("سسس-2132".split('-'));
+// console.log("بحد-8635".split('-'));
+        let after = before[1]!="undefined" ? before[1].split("++") : ["", ""];
     
         let answer = before[1] ? before[1].split("+") : [];
         this.trueText = answer && answer[0] ? answer[0].trim() : "";
@@ -562,6 +611,7 @@ export default {
      } else
       if(this.question.q.exa_type == 'MultipleChoice'){
          this.trueText = ''; 
+            
       }else{
         if(wp){
            var ws = wp[0].trim().split(" ");
@@ -582,7 +632,7 @@ export default {
                   this.alternativeText = w2.join(" ").trim();
           }
           this.trueText = w.join(" ").trim();
-        
+
           this.splitwords_answer = w.sort(() => Math.random() - 0.5);
           this.splitwords_answer.forEach(
             (k, i) => (this.splitwords_answer_ordered[i] = "")
@@ -646,9 +696,14 @@ export default {
       this.answerText = "";
       this.answer = '';
       this.isTrue = null;
+
       if(this.question.q && this.question.q.rs_Question){
         this.parseQuestion(this.question.q.rs_Question);
       }
+      if(this.answers && this.answers[0]){
+          this.answers.sort(() => Math.random() - 0.5);
+      }
+      this.splitwords();
       this.chance = 1;
     },
     backspaceAnswer(val) {
@@ -916,7 +971,7 @@ export default {
 .question {
   font-size: 15px;
   font-weight: bold;
-  font-family: "Cairo";
+  font-family: "Scheherazade";
 }
 .download_btn {
   color: #fff !important;
@@ -932,7 +987,7 @@ export default {
   font-weight: 500;
   font-size: 14px;
   margin-right: 20px;
-  font-family: "Cairo", sans-serif;
+  font-family: "Scheherazade", sans-serif;
   text-align: center;
   color: #ee682d !important;
   border-radius: 20px;

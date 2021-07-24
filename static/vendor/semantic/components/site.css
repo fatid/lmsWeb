@@ -13,12 +13,12 @@
              Page
 *******************************/
 
-@import url('https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic&subset=latin');
+@import url('https://fonts.googleapis.com/css2?family=Scheherazade:wght@400;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap');
 html,
 body {
   height: 100%;
-  font-family: Cairo;
+  font-family: Scheherazade;
 }
 html {
   font-size: 14px;
@@ -29,7 +29,7 @@ body {
   overflow-x: hidden;
   min-width: 320px;
   background: #FFFFFF;
-  font-family: 'Cairo','Lato', 'Helvetica Neue', Arial, Helvetica, sans-serif;
+  font-family: 'Scheherazade','Lato', 'Helvetica Neue', Arial, Helvetica, sans-serif;
   font-size: 14px;
   line-height: 1.4285em;
   color: rgba(0, 0, 0, 0.87);
@@ -46,7 +46,7 @@ h2,
 h3,
 h4,
 h5 {
-  font-family: 'Cairo', 'Helvetica Neue', Arial, Helvetica, sans-serif;
+  font-family: 'Scheherazade', 'Helvetica Neue', Arial, Helvetica, sans-serif;
   line-height: 1.28571429em;
   margin: calc(2rem -  0.14285714em ) 0em 1rem;
   font-weight: bold;

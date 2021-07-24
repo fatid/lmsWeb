@@ -356,7 +356,7 @@ export default {
       return this.$store.getters.getLikes
     },
     isLiked(id){ 
-       console.log("this.likes",this.likes,id,this.likes.find(k=> k.id == id))
+      //  console.log("this.likes",this.likes,id,this.likes.find(k=> k.id == id))
       if(this.likes.find(k=> k.id == id)){
         return true
       }
