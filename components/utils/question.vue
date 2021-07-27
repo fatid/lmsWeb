@@ -121,7 +121,7 @@
         v-if="parsedQuestion &&  question.q.exa_type != 'MultipleChoice'   &&  question.q.exa_type != 'ReadyQuestion'   &&  question.q.exa_type != 'ParagraphOrder' &&  question.q.exa_type != 'SentenceCorrect'"
           style=" text-align: right; direction:rtl;  font-size: 22px; line-height: 2;"
         >
-          <!-- <span v-html="parseQuestion(question.q.rs_Question)"></span> -->
+      
           <span v-html="parsedQuestion"></span>
         </div>
         <div v-if="question.q.exa_video">
@@ -176,7 +176,7 @@
         </div>
         <div class="ui form" v-else-if="question.q.exa_type == 'MultipleChoice'">
              <div  style=" text-align: right; direction:rtl;  font-size: 22px;"   > 
-         <span v-html="question.q.rs_Question"></span>    
+         <span v-html="parsedQuestion"></span>    
           <!-- header_right -->
         </div>
           <div class="grouped fields" v-if="answers && answers[0]">
@@ -758,7 +758,7 @@ export default {
         if (this.trueText) {
           this.$emit("answered", true);
 
-          this.isTrue = this.trueText === this.answerText || this.alternativeText === this.trueText   ? true : false;
+          this.isTrue = this.trueText === this.answerText || this.alternativeText === this.answerText   ? true : false;
           if (this.trueText == this.answerText) {
             let divide = this.question.q.exa_timer
               ? parseInt(this.question.q.exa_timer) / this.updated

@@ -3,9 +3,20 @@
 
 
  <b-modal 
-      :title="l('Send Feedback','g')"
+      :title="l('Report Error','g')"
       v-model="isVisible" 
     > 
+        
+    <div v-if="isSuccess" class="form-group col-12 ">
+        <b-alert
+            :show="isSuccess"
+            dismissible
+            variant="success"
+          
+          >
+            Succesfully saved. 
+          </b-alert>
+    </div>
     <div class="form-group col-12 ">
                  <p v-if="errors.length" class="errors">
                 <b>{{l('Please correct the following error(s):','g')}}</b>
@@ -18,13 +29,14 @@
       okTitle='Save'
       >
        <!-- @submit.stop.prevent="handleSubmit" -->
+        <div v-if="auth && auth!=null && auth.token"></div><div v-else>
         <b-form-group
           label="Name"
           label-for="name-input"
           invalid-feedback="Name is required"
        
         >
-      
+       
            <b-form-input
                       type="text" 
                       @blur="checkForm()"
@@ -34,6 +46,7 @@
                       :class="customClass.textDir"
                       required
                       v-model="form.name"
+                   
                 ></b-form-input>
            <b-form-input
                       type="text"  
@@ -44,6 +57,7 @@
                       required  
                       id="mail"
                       name="mail" 
+                      :disabled="auth && auth!=null && auth.token"
 
                       :placeholder="l('E-mail', 'g')" 
                       
@@ -51,6 +65,18 @@
                       data-validation="email"
                       v-model="form.mail"
                 ></b-form-input>
+                   </b-form-group>
+        </div>
+              
+        <b-form-checkbox-group
+          v-model="form.department"
+          id="checkboxes-4"
+          :aria-describedby="'Error Reason'"
+        >
+          <b-form-checkbox :value="key" v-for="(item,key) in l('cat.ReportTypes.list','g')">{{item.name}}</b-form-checkbox>
+       
+        </b-form-checkbox-group>
+     
  <textarea
                       data-validation="required"
                       id="message"
@@ -61,16 +87,16 @@
                       class="form-control"
                       v-model="form.message"
                     ></textarea>
-        </b-form-group>
+     
       </form>
        <template #modal-footer="{ ok, cancel, hide }">
              <div>
-                    <b-button size="md" variant="success"
+                    <b-button  class="btn btn-primary" 
                       @click="submit()"
                       >
                       {{ l("Submit", "g") }}
                     </b-button >
-       <a class="btn btn-primary" size="md" 
+       <a size="md"  variant="success"
         @click="isVisible=false"
        >{{l('Close','g')}}</a>  
        </div>
@@ -233,13 +259,20 @@ export default {
         mail: "",
         name: "",
         department: ""
-      }, 
+      },
+      isSuccess:false,
       validation:[
         {name:'name',label: ()=> this.l('Name','g'),check:['required']},
-        {name:'message',label: ()=>this.l('Message','g'),check:['required']},
+        {name:'department',label: ()=>this.l('Reason','g'),check:['required']},
         {name:'mail',label: ()=> this.l('E-mail','g'),check:['required','email']},
       ]
     };
+  },
+  created(){
+    if(this.auth && this.auth!=null  && this.auth.fullName ){
+       this.form.name = this.auth.fullName
+       this.form.mail = this.auth.U_mail
+    }
   },
   methods: {
     submit() {
@@ -256,6 +289,7 @@ export default {
             name: "",
             department: ""
           };
+          this.isSuccess=true;
       }
     },
   },
@@ -265,6 +299,9 @@ export default {
     },
     LOCALE() {
       return this.$store.state.locale;
+    },
+    auth() {
+      return this.$store.state.user.auth;
     },
     LANG_PACK() {
       return this.$store.state.langFile;
@@ -299,6 +336,12 @@ export default {
     overflow-x: hidden;
     overflow-y: auto;
     z-index: 99999999999!important;
+}
+.modal-open .modal  .modal-body { 
+    height: auto!important; 
+}
+ .modal  label{ 
+    margin-left: 10px;
 }
 </style>
 

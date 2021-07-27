@@ -10,6 +10,7 @@
     "build": "nuxt build",
     "start": "cross-env HOST=144.91.120.37 PORT=4208 NODE_ENV=production nuxt start",
     "dev2": "cross-env HOST=144.91.120.37 PORT=4208 NODE_ENV=production nuxt",
+    "dev3": "nuxt PORT=4208 NODE_ENV=development ",
     "startWeb": "nuxt start",
     "generate": "nuxt generate",
     "test": "jest"
