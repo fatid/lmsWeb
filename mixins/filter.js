@@ -174,6 +174,11 @@ export default {
             }else {
                 this.data = [];
                 this.pagination.total = 0;
+                setTimeout(() => {
+                    
+                  this.data = [];
+                  this.pagination.total = 0;
+                }, 1000);
             }
             this.loading=false;    
             })

@@ -3,10 +3,13 @@
     hide-footer
     id="modal-sm"
     size="sm"
+    class="modal-like "
     v-model="likeModalShow"
     :title="l('Add to List', 'g')"
     v-if="options && options['uye_Lists']"
   >
+
+  <div v-if="auth && auth!=null && auth.token">
     {{
       likeModal.topModuleData ? likeModal.topModuleData.unit_name + " > " : ""
     }}
@@ -69,6 +72,9 @@
         l("Close", "g")
       }}</b-button>
     </div>
+  </div><div v-else>
+    <b-alert show variant="warning"><a href="#" class="alert-link">Sign in to access this feature.</a></b-alert>
+  </div>
   </b-modal>
 </template>
 <script>
@@ -202,7 +208,7 @@ export default {
 };
 </script>
 <style>
-.modal-body {
+.modal-like .modal-body {
   padding: 10px 16px;
   height: 190px !important;
   overflow: auto;
