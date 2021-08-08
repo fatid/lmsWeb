@@ -1,34 +1,30 @@
 <template>
   <div class="container">
+  <div class="container">
     
-
+<div class="row">
+      <div class="col-12 ">
+        <div class="search-header">
+            <div class="title-field">Courses</div>
+            <div class="search-field">
+        			<input type="text" class="input-std" 
+                                        @change="getCourse()"
+                                        v-model="search.keyword" :placeholder="l('Search keyword','g')"  /> 
+             </div>
+             </div>
+      </div>
+      <div class="col-9 col-md-9 col-sm-12">
         <div class="fcrse_1" v-for="d in data"> 
-										<a @click="goPath('course/'+d.cou_link)" @click.middle="goPathBlank('course/'+d.cou_link)"  class="hf_img">
+										<div><a @click="goPath('course/'+d.cou_link)" @click.middle="goPathBlank('course/'+d.cou_link)"  class="hf_img">
 											<img v-if="d.cou_image" :src="show_image(d.cou_image,'150','150','','90')" alt="">
 											<img v-else-if="options['cou_settings']" :src="show_image(options['cou_settings'][0].cou_setting_image,'150','150','c','')" alt="">
 											<div class="course-overlay">
-												<div class="badge_seller">{{getOptName(d.cou_level,'co_level','cou_level_name')}}</div>
-												<div class="crse_reviews">
-													<i class="uil uil-star"></i> No
-												</div>
-												<span class="play_btn1"><i class="uil uil-play"></i></span>
-										 
+												<div class="badge_seller">{{getOptName(d.cou_level,'co_level','cou_level_name')}}</div> 
 											</div>
 										</a>
-										<div class="hs_content">
-											<div class="eps_dots eps_dots10 more_dropdown">
-												<a href="javascript:;" ><i class="uil uil-ellipsis-v"></i></a>
-												<div class="dropdown-content">
-													<span><i class="uil uil-share-alt"></i>Share</span>
-													<span><i class="far fa-heart"></i>Save</span>
-													<span><i class="uil uil-ban"></i>Not Interested</span>
-													<span><i class="uil uil-windsock"></i>Report</span>
-												</div>																											
 											</div>
-											<!-- <div class="vdtodt">
-												<span class="vdt14">{{d.cou_total_view}} {{l('views','g')}}</span>
-												<!-- <span class="vdt14">15 days ago</span> -->
-												<!-- </div> -->
+										<div class="hs_content">
+										 
 											<a @click="goPath('course/'+d.cou_link)" @click.middle="goPathBlank('course/'+d.cou_link)" class="crse14s title900">{{d.cou_name}}</a>
 											<a href="#" class="crse-cate">{{d.cou_short}}</a>
 											<div class="crse-cate mt-1">
@@ -39,20 +35,32 @@
 									 
 										</div>
 									</div>
+									</div>
+                  
 
-
+      <div class="col-3 col-md-3 col-sm-12">
+         <banners  area="Courses"    ></banners>
+        </div>
+        </div>
+        </div>
   </div>
 </template>
 <script>
 import general from "@/mixins/general";
 import axios from "axios";
+import banners from "@/components/common/banner.vue"; 
 
 export default {
   mixins: [general],
-
+  components:{
+    banners
+  },
   data: () => ({
     data: [],
-    settings:[]
+    settings:[],
+    search:{
+      keyword:''
+    }
   }),
   async created() {
 	  	await this.$store.dispatch("core/getOptions", {
@@ -81,7 +89,9 @@ export default {
       let fields = `cou_name,cou_level,cou_category,cou_link,cou_tags,cou_total_time,cou_image,cou_short,cou_description,cou_total_view,id,status,created_on,created_by,id,status`;
 
       let filters = { status: ["=", 1] };
-
+      if(this.search.keyword){
+        filters.cou_name = ["LIKE",this.search.keyword]
+      }
       return new Promise((resolve, reject) => {
         axios({
           url: process.env.baseURL + "courses",
@@ -140,4 +150,31 @@ export default {
 .fcrse_1{
   margin-bottom: 10px;
 }
+</style>
+<style lang="scss">
+
+.search-header{
+  display:inline-flex;
+  width:100%;
+  padding: 10px 0px;
+  justify-content: space-between;
+  border-bottom: 1px solid #d0d0d0;
+  margin-bottom: 10px;
+  .title-field{
+
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 1.6;
+  }
+  .search-field{
+    .input-std{
+      border: 1px solid #d0d0d0;
+      border-radius: 10px;
+      padding: 7px 10px;
+    }
+  }
+
+}
+
+
 </style>

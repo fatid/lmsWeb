@@ -1,7 +1,22 @@
 <template>
   <div class="container">  
-    <div class="mt-5">
-      <h3>{{l('My Lists','g')}}</h3>
+    <div class="row">
+      <div class="col-12 ">
+        <div class="search-header">
+            <div class="title-field">{{l('My Lists','g')}}</div>
+            <div class="search-field">
+            
+              <b-button variant="success" @click="addNewList()"
+        >+ {{ l("Add New List", "g") }}</b-button
+      >
+        			<input type="text" class="input-std" 
+                                        @change="getCourse()"
+                                        v-model="search.keyword" :placeholder="l('Search keyword','g')"  /> 
+             </div>
+             </div>
+      </div>
+ <div class="col-9 ">
+ 
     <div v-if="listId && viewType && getListData(listId,'data')">
         <h4 style="margin-bottom: 5px;" v-if="selectedList"> {{selectedList.uye_list_name}}   </h4>
      <p> <a @click="goPath('my/list')" v-if="selectedList">{{l('All Lists','g')}}</a> / {{selectedList.uye_list_cat}} </p>  
@@ -12,16 +27,16 @@
     </div>
     <div v-else-if="listId ">
       
-     <h4 style="margin-bottom: 5px;" v-if="selectedList"> {{selectedList.uye_list_name}}   </h4>
-     <p> <a @click="goPath('my/list')">{{l('All Lists','g')}}</a> / {{selectedList.uye_list_cat}} </p>  
-        <b-list-group> 
-      <b-list-group-item  v-for="dt in getListData(listId,'data')"  class="d-flex justify-content-between align-items-center"  style="cursor: pointer;"
-        @click="goPath('course/'+dt.topModuleData.id+'/'+dt.id)"
-      >
-                {{dt.lesson_name}}
-               <p>Unite: {{dt.topModuleData.unit_name}}</p>
-      </b-list-group-item>
-        </b-list-group>
+          <h4 style="margin-bottom: 5px;" v-if="selectedList"> {{selectedList.uye_list_name}}   </h4>
+          <p> <a @click="goPath('my/list')">{{l('All Lists','g')}}</a> / {{selectedList.uye_list_cat}} </p>  
+          <b-list-group> 
+                <b-list-group-item  v-for="dt in getListData(listId,'data')"  class="d-flex justify-content-between align-items-center"  style="cursor: pointer;"
+                  @click="goPath('course/'+dt.topModuleData.id+'/'+dt.id)"
+                >
+                          {{dt.lesson_name}}
+                        <p>Unite: {{dt.topModuleData.unit_name}}</p>
+                </b-list-group-item>
+          </b-list-group>
 
     </div>
     <div v-else>  
@@ -32,40 +47,10 @@
         :key="'l' + i"
         class="d-flex justify-content-between align-items-center"
       >
-        <span v-show="list.view == 'read'" @click="goPath('my/list?id='+list.id+'&view=1')" style="cursor: pointer;">
+        <span   @click="goPath('my/list?id='+list.id+'&view=1')" style="cursor: pointer;">
           {{ list.uye_list_name }} - {{ list.uye_list_cat }} (  {{getListData(list.id,'total')}} )
         </span>
-        <span v-show="list.view && list.view == 'edit'">
-          <div class="d-flex j align-items-start">
-                 <div class="d-block mr-5">
-                     <p>{{l('List Name','g')}}</p>
-            <input
-              type="text"
-              name="listname"
-              class="prompt srch_explore pa-10 mr-5 w-100"
-              v-model="list.uye_list_name"
-            />
-          </div>
-          <div class="d-block mr-5">
-                <p>{{l('List Category','g')}}</p>
-            <select
-              type="text"
-              name="listname"
-              class="prompt srch_explore pa-10 mr-5  w-100"
-              v-model="list.uye_list_cat"
-            >
-              <option v-for="opt in listOptions" :value="opt.value">{{
-                opt.name
-              }}</option>
-            </select>
-            </div>
-            <div class="d-block mr-5">
-            <p style="margin-top: 30px;" ></p>
-            <b-button variant="success" class="pa-10" @click="saveUyeList(list)">
-              <i class="fa fa-save"></i> Save</b-button>
-          </div> 
-          </div> 
-        </span>
+       
         <span >
           <b-button
             v-if="list.view == 'read'"
@@ -78,7 +63,7 @@
           <b-button
             v-if="list.view == 'read'"
             variant="danger"
-            @click="list.view = 'edit'"
+            @click="editList(list)"
             pill
             ><i class="fa fa-pen"></i> </b-button
           >
@@ -101,13 +86,118 @@
       </b-list-group-item>
     </b-list-group> 
     </div>
-    <div class="col-lg-12 mt-2 text-center align-center">
-      <b-button variant="success" @click="addNewList()"
-        >+ {{ l("Add New List", "g") }}</b-button
+ 
+    </div>
+    </div> <div class="col-3 ">
+
+
+
+        <div class="fcrse_3 frc123 pa-10">
+
+
+               <div class="search-box"  :lang="$store.state.locale" @click="search.module='Course'">
+								<input type="radio" tabindex="0" :checked="search.module=='Course' ? 'checked' : '' " value="Course"   />
+								<label :lang="$store.state.locale"> {{(l('Course','g'))}}  </label>
+							</div>
+                              <div class="search-box" :lang="$store.state.locale"  @click="search.module='Word'">
+								<input type="radio" tabindex="1"  :checked="search.module=='Word' ? 'checked' : '' " value="Word"   />
+								<label :lang="$store.state.locale"> {{(l('Words','g'))}}  </label>
+							</div>
+                              <div class="search-box" :lang="$store.state.locale"  @click="search.module='Exam'">
+								<input type="radio" tabindex="2" value="Exam"  :checked="search.module=='Exam' ? 'checked' : '' "   />
+								<label :lang="$store.state.locale"> {{(l('Question','g'))}}  </label>
+							</div>
+							</div>
+        <div class="fcrse_3 frc123">
+
+
+    <ul class="ttrm15">
+      <li  >
+        <a 
+          class="tt_item active"
+          @click.prevent="
+            goPath('my/profile')
+          " 
+        > {{l('My Profile','g')}}</a
+        >
+      </li>
+       <li  >
+        <a 
+          class="tt_item active"
+          @click.prevent="
+            goPath('courses/all_courses')
+          " 
+        > {{l('Courses','g')}}</a
+        >
+      </li>
+    </ul>
+  </div>
+      </div>
+    </div>
+
+
+
+    
+ <b-modal 
+      :title="l('List','g')"
+      v-model="isVisible" 
+    > 
+        
+    <div v-if="isSuccess" class="form-group col-12 ">
+        <b-alert
+            :show="isSuccess"
+            dismissible
+            variant="success"
+          
+          >
+            Succesfully saved. 
+          </b-alert>
+    </div>
+    
+      <form ref="form"
+      okTitle='Save'
       >
-    </div>
-    </div>
-    </div>
+       <div class="d-block">
+                 <div class="d-block mr-5">
+                     <p>{{l('List Name','g')}}</p>
+            <input
+              type="text"
+              name="listname"
+              class="prompt srch_explore pa-10 mr-5 w-100"
+              v-model="selectedList.uye_list_name"
+            />
+          </div>
+          <div class="d-block mr-5" v-if="!selectedList.id">
+                <p>{{l('List Category','g')}}</p>
+            <select
+              type="text"
+              name="listname"
+              class="prompt srch_explore pa-10 mr-5  w-100"
+              v-model="selectedList.uye_list_cat"
+            >
+              <option v-for="opt in listOptions" :value="opt.value">{{
+                opt.name
+              }}</option>
+            </select>
+            </div>
+        
+          </div> 
+     
+      </form>
+       <template #modal-footer="{ ok, cancel, hide }">
+             <div>
+                    <b-button  class="btn btn-primary" 
+                         @click="saveUyeList(selectedList)"
+                      >
+                      {{ l("Save", "g") }}
+                    </b-button >
+       <a size="md"  variant="success"
+        @click="isVisible=false"
+       >{{l('Close','g')}}</a>  
+       </div>
+           </template>
+ 
+    </b-modal>
   </div>
 </template>
 <script>
@@ -120,6 +210,8 @@ export default {
     listDetails
   },
  async created() {
+
+   this.search.module = this.listId ?  this.listId : 'Word';
    await this.getUyeLists();
    await this.getLikes();
     
@@ -128,6 +220,9 @@ export default {
   watch:{
     listId(val){
       this.getList(val)
+    },
+    'search.module'(){
+      this.getUyeLists()
     }
   },
   computed: {
@@ -161,10 +256,16 @@ export default {
     return {
       my_lists: [],
       selectedList: {},
+      isVisible:false,
+      isSuccess:false,
       uyeListItem: {
         id: null,
         uye_list_name: ""
       },
+      search:{
+        keyword:'',
+        module:'Word',
+        },
       listOptions: [
         { name: "Course", value: "Course" },
         { name: "Exam", value: "Exam" },
@@ -193,20 +294,27 @@ export default {
         this.selectedList = this.my_lists.find(k=> k.id==id);  
       }
     },
+    editList(list){
+    
+        this.selectedList = list;  
+        this.isVisible = true; 
+      
+    },
     getListData(id,type="data"){
-      let items  = this.likes.filter(k=> k.list==id);
+      let items  = this.likes.filter(k=> k.list==id );
       if(type=="data"){
         return items
       }else{
         return items.length
       }
     },
-    addNewList() {
-      this.my_lists.push({
+    addNewList() { 
+      this.selectedList = {
         id: null,
         uye_list_name: "",
         view:'edit'
-      });
+      };
+      this.isVisible = true;
     },
  async saveUyeList(mp) { 
       let method = "post";
@@ -231,17 +339,11 @@ export default {
       }).then(response => {
         this.saveStatus = { show: true, stataus: "success" };
               this.getUyeLists();
-        setTimeout(() => {
-          window.scrollTo({
-            top: 0,
-            left: 0,
-            behavior: "smooth"
-          });
-        }, 500);
+     
       });
     },
     getUyeLists() {
-      let filters = { prev_id: ["=", this.auth.id] };
+      let filters = { prev_id: ["=", this.auth.id],  uye_list_cat: ['=',this.search.module] };
       // uye_languages
       return new Promise((resolve, reject) => {
         axios({
@@ -264,7 +366,7 @@ export default {
             this.my_lists = response.data.formattedData.map(k => {
               return { ...k, view: "read" };
             });
-
+            this.isVisible = false;
             this.getList(this.listId)
           }
         });
@@ -317,6 +419,34 @@ export default {
 }
 .colsRow{
     overflow: auto;
-    height: calc(100vh - 200px);
+    height: calc(100vh - 160px);
+    padding-right: 10px;
   }
+</style>
+<style lang="scss">
+
+.search-header{
+  display:inline-flex;
+  width:100%;
+  padding: 10px 0px;
+  justify-content: space-between;
+  border-bottom: 1px solid #d0d0d0;
+  margin-bottom: 10px;
+  .title-field{
+
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 1.6;
+  }
+  .search-field{
+    .input-std{
+      border: 1px solid #d0d0d0;
+      border-radius: 10px;
+      padding: 7px 10px;
+    }
+  }
+
+}
+
+
 </style>
