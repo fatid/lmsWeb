@@ -236,7 +236,7 @@ select.srch_explore{
     height: 40px !important;
     font-size: 14px;
     font-weight: 400;
-    font-family: 'Scheherazade', sans-serif;
+    font-family: 'Cairo', sans-serif;
 }
 .srch_explore{
   margin-left: 5px;

@@ -104,7 +104,7 @@ export const actions = {
         }
             itemAll.forEach(item=>{ 
 
-                if(item && item.id && state.likes.find(k=>k.id==item.id)){
+                if(item && item.id && state.likes.find(k=>k.id==item.id && k.list==list)){
                     console.log("nopushLike",item)
                 }else{
                     newList.push(item)

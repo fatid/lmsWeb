@@ -679,7 +679,7 @@ export default {
   height: 40px;
   margin-right: 10px;
   width: 40px;
-  font-family: Scheherazade;
+  font-family: Cairo;
 }
 .toolbar-cart {
   position: absolute;

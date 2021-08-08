@@ -597,7 +597,7 @@ console.log("list",list)
   font-weight: 400;
   color: rgb(43, 42, 42);
   text-align: right;
-  font-family: Scheherazade;
+  font-family: Cairo;
 }
 
 a.download_btn2 {

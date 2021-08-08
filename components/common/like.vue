@@ -12,8 +12,7 @@
   <div v-if="auth && auth!=null && auth.token">
     {{
       likeModal.topModuleData ? likeModal.topModuleData.unit_name + " > " : ""
-    }}
-   
+    }} 
     <p v-if="likeModal.data && likeModal.data.lesson_name">
       {{ likeModal.data.lesson_name }}
     </p>
@@ -38,6 +37,7 @@
         <div class="addnewlist">
           <a class="" @click="addNew = true">+ Add New List</a>
         </div>
+          <!-- {{addedLists}} -->
       </b-col>
       <b-col v-if="addNew">
        
@@ -91,7 +91,8 @@ export default {
     inputList: "",
     newAdd: {
       uye_list_name: ""
-    }
+    },
+    addedLists:[]
   }),
   
   async created() {
@@ -105,6 +106,7 @@ export default {
     }
   },
   computed: {
+   
     auth() {
       return this.$store.state.user.auth;
     },
@@ -128,9 +130,21 @@ export default {
   watch: {
     likeModalShow() {
       this.inputList = "";
+      this.getAddedLists();
     }
   },
   methods: {
+     getAddedLists() {
+      console.log("this.likes",this.likes,this.likeModal.data.id);
+      let a=this.likes.filter(k => k.id == this.likeModal.data.id);
+      console.log("a",a)
+      if (a) {
+          this.addedLists =  a.map(k=>{
+              return k.list
+          })
+      }
+   
+    },
     async saveNewList(mp) {
       let method = "post";
       let url = process.env.baseURL + "uye_Lists";
@@ -165,7 +179,7 @@ export default {
     },
     getSelect() {
       return this.options["uye_Lists"].filter(
-        k => k.uye_list_cat == this.likeModal.type
+        k => k.uye_list_cat == this.likeModal.type && !this.addedLists.includes(k.id)
       );
     },
     setLikesFav() {
@@ -192,6 +206,8 @@ export default {
       }
       return false;
     },
+
+   
     getOptName(id, group, field) {
       let options = this.$store.state.core.options;
 

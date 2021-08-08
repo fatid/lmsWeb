@@ -148,6 +148,9 @@ export default {
         id: null,
         uye_list_name: ""
       },
+       search:{
+        keyword:''
+        },
       listOptions: [
         { name: "Course", value: "Course" },
         { name: "Exam", value: "Exam" },

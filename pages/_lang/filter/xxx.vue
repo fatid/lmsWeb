@@ -419,7 +419,7 @@ export default {
 .view-filter{
     margin-bottom: 0px;
     margin-top: 10px;
-        font-family: Scheherazade;
+        font-family: Cairo;
         text-align: right;
     flex: 190px auto;
     display: inline-flex;
@@ -453,7 +453,7 @@ export default {
             padding-bottom: 5px;
             margin-bottom: 5px;
             margin-top: 7px;
-            font-family: Scheherazade; 
+            font-family: Cairo; 
         }   
         .search-checkbox{
             width: 100%;
@@ -500,7 +500,7 @@ export default {
     }
     .content{
         width: 100%;
-            font-family: Scheherazade;
+            font-family: Cairo;
         // background: red;
         height: calc(100vh - 100px);
         padding : 0px 10px;
@@ -559,7 +559,7 @@ export default {
         h3{
             font-weight: 600;
             font-size: 18px;
-            font-family: Scheherazade;
+            font-family: Cairo;
             margin: 3px 0;
             cursor: pointer;
         }
