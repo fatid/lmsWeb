@@ -91,7 +91,7 @@ export const actions = {
     },
 
     async setLikes({commit,state,rootState},itemx){
-        console.log(itemx.item)
+        console.log("itemx.item",itemx.item)
         let itemAll =  itemx.item ? itemx.item.all? itemx.item.all : [itemx.item] : [];
         let list = itemx.list;
 

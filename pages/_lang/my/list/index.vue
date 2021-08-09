@@ -4,10 +4,10 @@
       <div class="col-12 ">
         <div class="search-header">
             <div class="title-field">{{l('My Lists','g')}}</div>
-            <div class="search-field">
+            <div class="search-field" v-if="!listId">
             
               <b-button variant="success" @click="addNewList()"
-        >+ {{ l("Add New List", "g") }}</b-button
+        >+ {{ l("Add New List", "g") }}  </b-button
       >
         			<input type="text" class="input-std" 
                                         @change="getCourse()"
@@ -18,17 +18,18 @@
  <div class="col-9 ">
  
     <div v-if="listId && viewType && getListData(listId,'data')">
-        <h4 style="margin-bottom: 5px;" v-if="selectedList"> {{selectedList.uye_list_name}}   </h4>
-     <p> <a @click="goPath('my/list')" v-if="selectedList">{{l('All Lists','g')}}</a> / {{selectedList.uye_list_cat}} </p>  
+        <h4 style="margin-bottom: 5px;" v-if="selectedList">  </h4>
+     <p> <a @click="goPath('my/list')" v-if="selectedList">{{l('All Lists','g')}}</a> /  <a v-if="selectedList.uye_list_cat" @click="goPath('my/list',{type:selectedList.uye_list_cat})"> {{selectedList.uye_list_cat}} / </a>   {{selectedList.uye_list_name}}  </p>  
         <list-details
           :listItems="getListData(listId,'data')"
           :listId="listId"
+          :selectedList="selectedList"
         ></list-details>
     </div>
     <div v-else-if="listId ">
       
-          <h4 style="margin-bottom: 5px;" v-if="selectedList"> {{selectedList.uye_list_name}}   </h4>
-          <p> <a @click="goPath('my/list')">{{l('All Lists','g')}}</a> / {{selectedList.uye_list_cat}} </p>  
+          <h4 style="margin-bottom: 5px;" v-if="selectedList">    </h4>
+          <p> <a @click="goPath('my/list')">{{l('All Lists','g')}}</a> / {{selectedList.uye_list_cat ?  selectedList.uye_list_cat+'/' : '' }}  {{selectedList.uye_list_name}} </p>  
           <b-list-group> 
                 <b-list-group-item  v-for="dt in getListData(listId,'data')"  class="d-flex justify-content-between align-items-center"  style="cursor: pointer;"
                   @click="goPath('course/'+dt.topModuleData.id+'/'+dt.id)"
@@ -47,7 +48,7 @@
         :key="'l' + i"
         class="d-flex justify-content-between align-items-center"
       >
-        <span   @click="goPath('my/list?id='+list.id+'&view=1')" style="cursor: pointer;">
+        <span   @click="goUrl(list);" style="cursor: pointer;">
           {{ list.uye_list_name }} - {{ list.uye_list_cat }} (  {{getListData(list.id,'total')}} )
         </span>
        
@@ -211,15 +212,18 @@ export default {
   },
  async created() {
 
-   this.search.module = this.listId ?  this.listId : 'Word';
+   this.search.module = this.listType ?  this.listType : '';
    await this.getUyeLists();
-   await this.getLikes();
+  //  await this.getLikes();
     
 
   },
   watch:{
-    listId(val){
-      this.getList(val)
+    '$route.query.id'(val){
+      this.getList()
+    },
+    '$route.query.type'(val){
+     this.search.module = val ?  val : '';
     },
     'search.module'(){
       this.getUyeLists()
@@ -231,6 +235,9 @@ export default {
     },
     listId() {
       return this.$route.query.id;
+    },
+    listType() {
+      return this.$route.query.type;
     },
     viewType() {
       return this.$route.query.view;
@@ -274,6 +281,17 @@ export default {
     };
   },
   methods: {
+
+    goUrl(list){
+ 
+      if(list.uye_list_cat=="xxCourse"){
+        
+          let href = this.$router.resolve({path:'/'+this.LOCALE+'/course/'+list.id})
+         window.open(href.href, '_blank');
+      }else{
+        this.goPath('my/list?id='+list.id+'&view=1')
+      }
+    },
     removeList(id){
     
     },
@@ -289,7 +307,8 @@ export default {
 
         body.removeChild(area);
      },
-    getList(id){
+    getList(){
+        let id = this.$route.query.id;
       if(id){
         this.selectedList = this.my_lists.find(k=> k.id==id);  
       }
@@ -343,8 +362,13 @@ export default {
       });
     },
     getUyeLists() {
-      let filters = { prev_id: ["=", this.auth.id],  uye_list_cat: ['=',this.search.module] };
-      // uye_languages
+      let filters = { prev_id: ["=", this.auth.id] } 
+      if(this.search.module){
+        filters.uye_list_cat= ['=',this.search.module] ;
+      }else if(this.listId){
+        filters.id= ['=',this.listId];
+      }
+ 
       return new Promise((resolve, reject) => {
         axios({
           url: process.env.baseURL + "uye_Lists",
@@ -358,55 +382,43 @@ export default {
             filter: filters
           }
         }).then(response => {
+          console.log(" response.data.formattedData", response.data.formattedData)
           if (
             response.data &&
             response.data.formattedData &&
             response.data.formattedData[0]
           ) {
+ 
+
             this.my_lists = response.data.formattedData.map(k => {
               return { ...k, view: "read" };
             });
+            console.log("this.my_lists",this.my_lists,this.listId)
+            if(this.my_lists && this.listId){
+              let sl = this.my_lists.find(k=> k.id==this.listId);
+              if(sl){
+                this.selectedList = sl;  
+              }
+            }
+         
+
             this.isVisible = false;
-            this.getList(this.listId)
+            
           }
-        });
+        }).catch(err=> console.log("err",err));
       });
     },
-    async getLikes({ state, dispatch, rootState }, payload) {
-      if (rootState.user.auth && rootState.user.auth.id) {
-        try {
-          await axios({
-            url: process.env.baseURL + "Favorites",
-            method: "get",
-            params: {
-              limit: 1,
-              lang: "NONE",
-              filter: { fav_owner_user: ["=", rootState.user.auth.id] },
-              fields:
-                "fav_content,fav_owner_user,fav_list,uye_fav_type,pdb_user",
-              sort: ["created_on,DESC"]
-            }
-          }).then(response => {
-            let a = response.data.formattedData;
-            let likes = a.fav_content;
-          });
-        } catch (err) {
-          console.log("Err", err);
-        }
-      } else {
-        let likes = window.localStorage.getItem("likes");
-        if (likes) {
-          dispatch("setLikesFirst", likes);
-        }
-      }
-    }
+     
   }
 };
 </script>
 <style scoped>
 .list-group-item{
     margin-bottom: 15px;
-}
+ }
+ .list-group-item:hover { 
+    border: 0em solid #000; 
+} 
 .swdh19 textarea{ 
   padding: 5px;
     height: 100px; 
