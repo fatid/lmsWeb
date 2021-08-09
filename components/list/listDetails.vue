@@ -1,110 +1,68 @@
 <template>
   <div class="container">
-    
-<div class="card-header" v-if="1==1">
  
-      <div
-        v-for="(st, i) in getPages()"
-        @click="selectStep(st)"
+<div class="card-header" v-if="listItems && listItems[0] && listItems[0].type=='Exam'">
+ 
+ <div
+        v-for="(st, i) in listItems.length"
+        @click="selectStepQ(i)"
         class="head-tab"
-        :class="st== order ? 'selected-tab' : ''"
-      >
-        
-        {{ st== steps.length ? "Results" : st }}
-      </div>
-      </div>
-    <div class="card-header" v-else>
-      <div
-        v-for="(st, i) in steps.length"
-        @click="selectStep(i + 1)"
-        class="head-tab"
-        :class="i + 1 == order ? 'selected-tab' : ''"
+        :class="i == order ? 'selected-tab' : ''"
       >    
-        {{ i + 1 == steps.length ? "Results" : i + 1 }}
+        {{ i  == listItems.length ? "Results" : i+1 }}
       </div>
-     
-      <!-- <vue-step
-        :now-step="order"
-        :step-list="steps"
-        
-      ></vue-step> -->
-    </div> 
-    <!-- {{activeCourse}} -->
-    <div class="card" v-if="data.lesson_question">
-      <question
-        :question="question"
-        :order="data.sort"
+      </div>
+
+    <div class="card" style="padding:20px;position:relative;"  v-if="listItems && listItems[0] && listItems[0].type=='Exam'">
+    <question
+        :question="{q:listItems[order],a:null}"
+        :order="order"
+        :levels="options['co_level']"
         :isAnswered="isAnswered"
         @answered="isAnswered = $event"
+        class="top-padding-30"
       ></question>
-    </div>
-    <div class="card" v-else-if="data.lesson_name && data.id != 'finish'">
-      <div class="row" style="margin-top: 30px;">
-        <!-- <div class="col-md-12">{{ data.sort }} / {{ total }}</div> -->
 
-        <div class="col-auto">
-          <div class="title484">
-            <h2>{{ data.sort }} - {{ data.lesson_name }}</h2>
+</div>
+<div class="card-header" style="width: 100%;" v-else-if="listItems && listItems[0] && listItems[0].type=='Word'">
+ 
+     
 
-            <img class="line-title" src="/images/line.svg" alt="" />
-            <div class="row">
-              <div class="col-2">
-                <img
-                  :src="show_image(data.lesson_photo, '150', '150', '', '90')"
-                />
-              </div>
-              <div class="col">
-                <p v-html="HtmlEncode(data.lesson_description)"></p>
-                {{ HtmlEncode(data.lesson_question) }}
+    <div class="row"  style="width: 100%;">
+      <div class="col-3  col-lg-3 col-md-4"  v-for="d in listItems">
+        <div class="fcrse_1 mt-30">
+          
+          <div class="fcrse_content"> 
+            <a @click="goPath('word/' + d.dict_word)" class="crse14s"
+              >{{ d.dict_word }}
+            </a>
+            <div class="tags">
+              <div
+                class="ui red horizontal label cursor-pointer" 
+                @click="goPath('words/all_words', { keyword: label })"
+                v-for="label in d.labels"
+              >
+                {{ label }}
               </div>
             </div>
-
-            <!-- @finish="finished"
-                @update="updated" -->
-          </div>
-        </div>
-        <div class="col-md-6">
-          <div v-if="data.lesson_video">
-            <video
-              width="100%"
-              style="max-width: 640px;"
-              height="480"
-              controls
-              autoplay
-            >
-              <source :src="getVideoPath(data.lesson_video)" type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>
-          </div>
-          <div v-if="data.lesson_video_url">
-            <iframe
-              width="560"
-              height="315"
-              :src="'https://www.youtube.com/embed/' + data.lesson_video_url"
-              title="YouTube video player"
-              frameborder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowfullscreen
-            ></iframe>
           </div>
         </div>
       </div>
+ </div>
+ </div>
+<div class="card-header" v-else-if="listItems && listItems[0] && listItems[0].type=='Course'">
+ 
+ 
+   <b-list-group class="w-100 width-100 "> 
+                <b-list-group-item  v-for="dt in listItems"  class="d-flex w-100 width-100 justify-content-between align-items-center"  style="cursor: pointer;"
+                  @click="goUrl('course/'+dt.id+'/'+dt.id)"
+                >
+                          {{dt.section_name}}<br />
+                        <p>Unite: {{dt.topModuleData.unit_name}}</p>
+                </b-list-group-item>
+          </b-list-group>
     </div>
-    <div class="card" v-show="data.id == 'finish'">
-      <div class="result_content">
-        <h2>Congratulation!</h2>
-        <p>You finished this course.</p>
-        <p>Your total score is: {{ activeCourse.point * 10 }}</p>
-        <a
-          class="download_btn"
-          download="w3logo"
-          @click="
-            goPath('course/the_only_course_you_need_to_learn_web_development')
-          "
-          >Turn Back Course Page</a
-        >
-      </div>
-    </div>
+    
     <div class="arrows " v-if="data.id != 'finish'">
       <a
         class="prev"
@@ -123,7 +81,8 @@
         @click="$store.state.isErrorReportVisible = true"
         class="pull-right float-right"
         >Report Error</b-button
-      >
+      > 
+    
     </div>
   </div>
 </template>
@@ -150,7 +109,7 @@ export default {
     },
     steps: [],
     total: 0,
-    order: 1,
+    order: 0,
     allLessons: [],
     fields: `lesson_question,sort,lesson_photo,lesson_counter,lesson_unite,lesson_type,lesson_description,lesson_name,id,status,created_on,created_by,lesson_video_url,lesson_video`,
     list: null,
@@ -159,6 +118,7 @@ export default {
   }),
   props:{
       listItems:[Object,Array],
+      selectedList:[Object,Array],
       listId:null
   },
   async created() {
@@ -175,16 +135,25 @@ export default {
     });
 
     this.getCourseLast(this.unit);
-    this.getLessons();
+ 
+    this.data = this.listItems[this.order];
+    // this.getLessons();
   },                         
   
   methods: {
+
+     goUrl(url){
+  
+          let href = this.$router.resolve({path:'/'+this.LOCALE+'/'+url});
+         window.open(href.href, '_blank');
+
+    },
     getPages(){
         let list = [];
         let steps = this.steps;
         let order = this.order;
         let top = steps.length<=7 ? steps.length : null;
-        console.log(steps,order,top)
+        console.log("getPages",steps,order,top,list)
         if(top==null){
            
            list.push(order-2);
@@ -203,6 +172,8 @@ export default {
                 list.push(i)
             }
         } 
+        console.log("list",list)
+
         return list
         // [1,2 ... 5 6 7 ... 10 11]
     },
@@ -289,6 +260,7 @@ export default {
       let fields = this.fields;
 
       let lesson_unite = this.$route.params.id;
+      console.log("listItems",this.listItems)
         let idList = this.listItems.map(k=>  k.id)
       axios({
         url: process.env.baseURL + "lesson",
@@ -397,8 +369,17 @@ export default {
       this.prev = this.allLessons[this.data.sort - 2];
       this.order = this.data.sort;
     },
+  
+    selectStepQ(step) {
+      let id = this.listItems[step].id;
+      this.data = this.listItems[step];
+      // this.goPath('my/list?id='+this.listId+"&view=1&item=" + id);
+       this.next = this.listItems[step-1];
+      this.prev = this.listItems[step+1];
+      this.order = step;
+    },
     selectStep(step) {
-      let id = this.allLessons[step - 1].id;
+      let id = this.listItems[step - 1].id;
       this.goPath('my/list?id='+this.listId+"&view=1&lesson=" + id);
       this.setSelect();
     },

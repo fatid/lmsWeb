@@ -968,6 +968,9 @@ export default {
 }
 </style>
 <style scoped>
+.top-padding-30 .question{
+  padding-top: 30px;
+}
 .question {
   font-size: 15px;
   font-weight: bold;
