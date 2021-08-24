@@ -35,9 +35,10 @@
        <div class="menu-select">
         
 
-            <a  @click.middle="goPathBlank('filter')"                @click="goPath('filter')"><b-button pill variant="outline-danger"  >{{ l("Filter", "g") }}</b-button></a>
-            <a  @click.middle="goPathBlank('courses/all_courses')"   @click="goPath('courses/all_courses')"><b-button pill variant="outline-danger"  >{{ l("Courses", "g") }}</b-button></a>
-            <a  @click.middle="goPathBlank('words/all_words')"       @click="goPath('words/all_words')" > <b-button pill variant="outline-primary"  >{{ l("Words", "g") }}</b-button> </a>
+         <a  @click.middle="goPathBlank('courses/all_courses')"    @click="goPath('courses/all_courses')"><b-button pill :variant="pagePath=='Exam ' ? 'outline-danger':'danger'"  >{{ l("Courses", "g") }}</b-button></a>
+            <a  @click.middle="goPathBlank('filter/Word')"            @click="goPath('filter/Word')" > <b-button pill  :variant="pagePath=='Word ' ? 'outline-danger':'danger'"       >{{ l("Words", "g") }}</b-button> </a>
+            <a  @click.middle="goPathBlank('filter/Exam')"           @click="goPath('filter/Exam')" > <b-button pill    :variant="pagePath=='Exam ' ? 'outline-primary':'primary'"   >{{ l("Questions", "g") }}</b-button> </a>
+            <a  @click.middle="goPathBlank('filter/Games')"           @click="goPath('filter/Game')" > <b-button pill  :variant="pagePath=='Game ' ? 'outline-primary':'primary'"   >{{ l("Games", "g") }}</b-button> </a>
      
       </div>  
       <div class="header_right">
@@ -150,7 +151,7 @@
             </li>
             <li class="menu--item">
               <a
-                @click="goPath('words/all_words')"
+                @click="goPath('filter/Word')"
                 class="menu--link"
                 :title="l('Words', 'g')"
               >
@@ -387,6 +388,9 @@ export default {
     },
     LANG_PACK() {
       return this.$store.state.langFile;
+    },
+     pagePath(){
+      return this.$route.params ? this.$route.params.id : '';
     },
     isErrorReportVisible: {
       get(){
@@ -737,6 +741,9 @@ header.modal-header{
 }
 .search120{
   margin-top: 20px;
+}
+.srch10{
+  width: 100px;
 }
 
 .menu-select{

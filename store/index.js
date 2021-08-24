@@ -29,6 +29,12 @@ export const state = () => ({
             type:'',
             label:''
         }
+    },
+    wordModal:{
+        show: false,
+        word:'',
+        detail:{ 
+        }
     }
 });
 

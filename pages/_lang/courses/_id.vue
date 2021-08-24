@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-  <div class="container">
+ 
     
 <div class="row">
       <div class="col-12 ">
@@ -41,8 +41,7 @@
       <div class="col-3 col-md-3 col-sm-12">
          <banners  area="Courses"    ></banners>
         </div>
-        </div>
-        </div>
+        </div> 
   </div>
 </template>
 <script>

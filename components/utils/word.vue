@@ -1,48 +1,7 @@
 <template>
-  <div class="container">
-    <div class="head-word" v-if="data[0]">
-       <span class="head-search">
-      <a    @click="getWord()">
-        <i class="fa fa-chevron-left"></i
-      ></a>
-     
-          		<input type="text" class="input-std" 
-                                     
-                                        v-model="keyword" 
-                                        :placeholder="l('Search keyword','g')"  /> 
-
-      </span>
-      <span class="head-title">{{ data[0] ? data[0].dict_word : "" }}</span>
-    </div>
-
-    <div class="row">
-
-      <div class="col-12 col-md-4 col-lg-3">
-              {{ l("Total meaning", "g") }} : {{ data.length }}<br />   
-              {{ l("Level", "g") }} :
-              <a v-for="d in data" class="meaning-box">{{ d.level ? d.level.name : "" }} </a>
-      
-              <hr />
-             <h4> {{ l("Words in Same Category", "g") }} :</h4>
-              <a v-for="d in visitedWords">{{ d.level ? d.level.name : "" }} </a> 
-                  <a   class="meaning-box"> example </a>
-                    <a   class="meaning-box"> example 2</a>
-                      <a   class="meaning-box"> example3</a>
-                      <a   class="meaning-box"> example </a>
-                    <a   class="meaning-box"> example1234</a>
-                      <a   class="meaning-box"> ex </a>
-              <hr />
-              <h4>{{ l("Last Visited Words", "g") }} :</h4>
-              <a v-for="d in visitedWords">{{ d.level ? d.level.name : "" }} </a>
-              <hr />
-              
-      </div>
-
-
-      <div class="col-12 col-md-8 col-lg-9">
-        <div class="item-word text-right align-right" v-for="dt in data">
+        <div class="item-word text-right align-right"  >
           <div class="side-panel">
-         
+           
             <div
               class="degree-show"
               v-if="dt.dict_degree"
@@ -57,7 +16,7 @@
             >
               <i class="fa fa-play"></i
             ></a>
-               <a
+             <a
               class="like"
               title=""
               :class="isLiked(dt.id) ? 'selected' : ''"
@@ -213,14 +172,8 @@
             </div>
           </div>
         </div>
-
-        <h4>{{ l("More Examples", "g") }} : </h4>
-              <a style="text-align:right; " v-for="d in bank"> {{d.sb_sentence}}  <br /></a>
-      </div>
- 
-    </div>
-  </div>
 </template>
+
 <script>
 import general from "@/mixins/general";
 import word from "@/mixins/word";
@@ -229,126 +182,13 @@ const play = require("audio-play");
 const load = require("audio-loader");
 
 export default {
-  mixins: [general, word], 
-  data: () => ({
-    data: [],
-    bank: [],
-    meanings: [],
-    id: "",
-    keyword: "",
-  }),
-  async created() {
-    this.id =
-      this.$route.params && this.$route.params.id ? this.$route.params.id : "";
-    this.getDictionary();
-    this.getSentenceBank();
-  },
-  computed: {},
-  methods: {
-
-    getWord(){
- 
-        this.goPath('/filter/Word',{word:this.keyword});
-
-    },
-
-    
-
-     async getSentenceBank() {
-      let fields = `sb_sentence,id,status,created_on,created_by,id,status`;
-      let filters = { sb_sentence: ["LIKE", this.id] };
-      return new Promise((resolve, reject) => {
-        axios({
-          url: process.env.baseURL + "SentenceBank",
-          method: "get",
-          params: {
-            limit: 20,
-            offset: 0,
-            fields,
-            lang: this.$store.state.locale,
-            sort: ["pdb_date,DESC"],
-            filter: filters
-          }
-        })
-          .then(response => {
-            if (
-              response.data &&
-              response.data.formattedData &&
-              response.data.formattedData[0]
-            ) {
-           
-              this.bank = response.data.formattedData;
-            }
-          })
-          .catch(e => {
-            this.d = {};
-            console.log(e);
-          });
-      });
-    },
-
-    
-    async getDictionary() {
-      let fields = `dict_sound,dict_degree,dict_mean,dict_goole_image_search,dict_usage_mix,dict_daily_usage,dict_verb_type,dict_pattern,dict_root,dict_same_root,dict_example,dict_type,dict_verb,dict_plural,dict_singular,dict_w_opposites,dict_word,dict_mean,dict_image,dict_link,dict_tag,dict_w_similar,dict_tag,id,status,created_on,created_by,id,status`;
-      let filters = { dict_word: ["=", this.id] };
-      return new Promise((resolve, reject) => {
-        axios({
-          url: process.env.baseURL + "dict_word",
-          method: "get",
-          params: {
-            limit: 20,
-            offset: 0,
-            fields,
-            lang: this.$store.state.locale,
-            sort: ["pdb_date,DESC"],
-            filter: filters
-          }
-        })
-          .then(response => {
-            if (
-              response.data &&
-              response.data.formattedData &&
-              response.data.formattedData[0]
-            ) {
-              let words = response.data.formattedData;
-              let data = words.map(d => {
-                if (d.dict_tag) {
-                  d.labels = d.dict_tag.split(",");
-                }
-                if (d.dict_w_opposites) {
-                  d.dict_w_opposites_arr = d.dict_w_opposites.split(",");
-                }
-
-                if (d.dict_same_root) {
-                  d.dict_same_root_arr = d.dict_same_root.split(",");
-                }
-                if (d.dict_w_similar) {
-                  d.dict_w_similar_arr = d.dict_w_similar.split(",");
-                }
-                if (d.dict_example) {
-                  d.dict_example_arr = d.dict_example.split("\r");
-                }
-                if (d.dict_usage_mix) {
-                  d.dict_usage_mix_arr = d.dict_usage_mix.split("\r");
-                }
-                d.level = this.getLevel(d.dict_degree);
-                d.show = false;
-                return d;
-              });
-              this.data = data;
-            }
-          })
-          .catch(e => {
-            this.d = {};
-            console.log(e);
-          });
-      });
+  mixins: [general, word],
+    props:{
+        dt:[Object,Array]
     }
-  }
-};
+}
 </script>
-<style lang="scss" href="./style.scss"></style>
-<style lang="scss"  >
+<style lang="scss">
 .fcrse_img {
     width img {
       max-width: 100%;
@@ -413,7 +253,8 @@ export default {
     display: inline-flex;
   }
   .head-title {
-    font-size: 42px; 
+    font-size: 42px;
+  
     font-weight: 500;
     line-height: 1.1;
   }
@@ -428,23 +269,13 @@ export default {
     margin-right: 20px;
   }
   
-  .input-std{
+      .input-std{
         border: 1px solid #eeeeee;
         border-radius: 20px;
         padding: 8px 10px;
         height: 40px;
   } 
-    .meaning-box{
-          border: 1px solid #efefef;
-          background: #fff;
-          border-radius: 4px;
-          padding: 5px;
-          text-align: center;
-          margin-right: 7px;  
-          margin-top: 4px;  
-              display: inline-block;
-
-    }
+   
   .item-word {
     padding: 10px 10px 10px 55px;
     margin-bottom: 5px;
@@ -539,7 +370,6 @@ export default {
       left: 0px;
       top: 10px;
     }
-
     a.like {
       display: block;
       text-align: center;
@@ -550,5 +380,3 @@ export default {
     }
   } 
 </style>
- 
-

@@ -15,10 +15,15 @@
             </div>
       </div>
         <div class="side-bar"   data-simplebar :class="customClass.textDir+' '+customClass.dir" :lang="$store.state.locale"> 
-                <div class="serach-item">
-                            <!-- <div class="search-title">
-                                {{l('Type','g')}} 
-                            </div>  -->
+
+  <div class="input-std-search" >
+                                <i class="fa fa-search input-icon"></i>
+								<input type="text"  
+                                        @change="getResults()"
+                                        v-model="search.keyword" :placeholder="l('Search keyword','g')"  /> 
+							</div>
+                <!-- <div class="serach-item">
+                           
                             <div class="search-box"  :lang="$store.state.locale" @click="search.module='Course'">
 								<input type="radio" tabindex="0" :checked="search.module=='Course' ? 'checked' : '' " value="Course"   />
 								<label :lang="$store.state.locale"> {{(l('Lessons','g'))}}  </label>
@@ -31,7 +36,7 @@
 								<input type="radio" tabindex="2" value="Exam"  :checked="search.module=='Exam' ? 'checked' : '' "   />
 								<label :lang="$store.state.locale"> {{(l('Question','g'))}}  </label>
 							</div>
-                </div>
+                </div> -->
                 
                 <div class="serach-item"> 
                 
@@ -136,12 +141,15 @@
                                      <a  @click="addSelectionAll('selectionW','Word')" class="addListLink">Add to list {{selection.selectionW.length+' '+l('selected','g')  }}</a>
                             </template>
                             </div>
-                            <div class="col-3 " >
-                                <i class="fa fa-search input-icon"></i>
-								<input type="text" class="input-std" 
-                                        @change="getResults()"
-                                        v-model="search.keyword" :placeholder="l('Search keyword','g')"  /> 
-							</div>
+                            
+                                    
+                            <b-dropdown v-if="search.module=='Word'"  size="sm" variant="outline-success"   class="m-md-2">
+                                    <template #button-content>
+                         <a> {{'View Type'}} :  {{viewType.label}} <i class="fas fa-chevron-down"></i> 
+                          </a>
+                  </template>
+                  <b-dropdown-item @click="viewType=order" v-for="(order,i) in viewTypes">{{order.label}} </b-dropdown-item> 
+                            </b-dropdown>  
 				     
                     </div>
 
@@ -150,14 +158,31 @@
                     <div v-for="dt in data" class="list_item"  :class="customClass.textDir+' '+customClass.dir">
                             <div class="word-container">
                             <div class="content-side">
-                                <h3 @click="openDrawer('word',dt)">{{dt.dict_word}}</h3>
+                                <h3 @click="openDrawer('word',dt)">{{dt.dict_word}}    </h3>
+                                {{dt.dict_type}}
+                                    <div
+                                        class="degree-show"
+                                        v-if="dt.dict_degree"
+                                        :style="{ background: dt.level.color }"
+                                        >
+                                        {{ dt.level.name }} 
+                                        </div>
+                                        <div class="detail-button-abs">
+ <a  v-if="viewType.value!='wide'"  @click="goPathBlank('word/'+dt.dict_word)">More Info</a> <br />
+ <a  v-if="viewType.value!='wide'"  @click="openDrawer('word',dt)"> Pop-up Info</a>
+ </div>
+
+  
                                 <!-- <h3 @click="goPathBlank('word/'+dt.dict_word)">{{dt.dict_word}}</h3> -->
-                                <div class="word-content">
+                                <div class="word-content" v-if="viewType.value=='wide'">
                                 <span v-html="HtmlEncode(dt.dict_mean)"></span>
+                               
                                 <span class="pull-right" v-if="dt.dict_image"><img :src="show_image(dt.dict_image, '100', '100', true)" /></span>
-                                </div>
+                               </div>
+                                <br />  <a  v-if="viewType.value=='wide'" @click="goPathBlank('word/'+dt.dict_word)">More Info</a>
                             </div>
                             <div class="button-side"  :lang="$store.state.locale">
+                                
                                 <!-- <a @click="goPathBlank('word/'+dt.dict_word)">Detail</a> -->
                                 <br />
                                 <div  v-if="!isLiked(dt.id)">
@@ -338,6 +363,9 @@ export default {
     //       selectionC:[],
     //       selectionW:[],
     //   },
+    viewType:{
+        label:'Line', value:'line'
+    },
     selectedItem:{
         show:false,
         type:'',
@@ -350,6 +378,10 @@ export default {
             {label:this.l('Recent','g'), value:'created_on' },
             {label:this.l('Popular','g'), value:'created_on'},
             {label:this.l('Best Rated','g'), value:'created_on'}
+      ],
+      viewTypes:[
+            {label:this.l('Line','g'), value:'line' },
+            {label:this.l('Wide','g'), value:'wide'}, 
       ],
       mediaTypes:[
             {name:this.l('Image','g'), value:'image' },
@@ -368,11 +400,20 @@ export default {
             }
       },
       openDrawer(type,data){
+        if(type=="word"){
+  
+                   this.$store.state.wordModal.word = data.dict_word;
+                   this.$store.state.wordModal.show = true; 
+
+        }else{
+
+          
             this.selectedItem={
                 show:true,
                 type,
                 data
             }
+        }
       },
     addSearch(field,key){
         this.loading=true;
@@ -430,6 +471,26 @@ export default {
     flex: 190px auto;
     display: inline-flex;
     width: 100%;
+    .degree-show {
+      padding: 5px;
+      border-radius: 10px;
+      background: red;
+      color: #fff;
+          display: inline;
+      position: absolute;
+      left: 10px;
+      top: 10px;
+      width: auto;
+      margin: 5px 0px;
+    }
+    .detail-button-abs {
+ 
+          display: inline;
+      position: absolute;
+      left: 110px;
+      top: 10px; 
+    }
+
     .right_side{
         background: none;
         width: 190px!important;
@@ -532,15 +593,19 @@ export default {
     }
     .input-icon{
         position: absolute;
-        left: 22px;
+        left: 7px;
         top: 7px;
     }
-    .input-std{
-        padding: 5px 5px 5px 26px;
-        border-radius: 4px;
-        border: .1em solid #f9f9f9;
-        width: 100%;
+    .input-std-search{
+        position: relative;
+        input{
+                padding: 5px 5px 5px 26px; 
+                border-radius: 4px;
+                border: .1em solid #f9f9f9;
+                width: 100%;
+            }
     }
+    
     .questition-container{
         padding: 10px;
         display: inline-flex;
@@ -575,6 +640,7 @@ export default {
         .content-side{
                 cursor: pointer;
                width: inherit;
+               position: relative;
             padding: 10px;
         }
         .button-side{
