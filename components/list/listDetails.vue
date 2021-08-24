@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="width-100">
  
 <div class="card-header" v-if="listItems && listItems[0] && listItems[0].type=='Exam'">
  
@@ -24,29 +24,13 @@
       ></question>
 
 </div>
-<div class="card-header" style="width: 100%;" v-else-if="listItems && listItems[0] && listItems[0].type=='Word'">
+<div   style="width: 100%;" v-else-if="listItems && listItems[0] && listItems[0].type=='Word'">
  
      
 
     <div class="row"  style="width: 100%;">
-      <div class="col-3  col-lg-3 col-md-4"  v-for="d in listItems">
-        <div class="fcrse_1 mt-30">
-          
-          <div class="fcrse_content"> 
-            <a @click="goPath('word/' + d.dict_word)" class="crse14s"
-              >{{ d.dict_word }}
-            </a>
-            <div class="tags">
-              <div
-                class="ui red horizontal label cursor-pointer" 
-                @click="goPath('words/all_words', { keyword: label })"
-                v-for="label in d.labels"
-              >
-                {{ label }}
-              </div>
-            </div>
-          </div>
-        </div>
+      <div class="col-12"  v-for="d in listItems">
+         <wordModel :dt="d"></wordModel>   
       </div>
  </div>
  </div>
@@ -85,6 +69,7 @@
     
     </div>
   </div>
+  </div>
 </template>
 <script>
 import general from "@/mixins/general";
@@ -92,6 +77,9 @@ import axios from "axios";
 // import vueStep from "vue-step";
 import counter from "@/components/utils/counter.vue";
 import question from "@/components/utils/question.vue"; 
+import wordModel from "@/components/utils/word_mini.vue"; 
+
+
 export default {
   mixins: [general],
 
@@ -423,7 +411,8 @@ export default {
   },
   components: { 
     counter,
-    question, 
+    question,
+    wordModel 
   },
   computed: {
     activeCourse: {

@@ -14,7 +14,7 @@
 						<div class="item_f1">
 							<a href="javascript:;"  @click.middle="goPathBlank('filter')"              @click="goPath('filter')"              >Filter</a> 
 							<a href="javascript:;"  @click.middle="goPathBlank('courses/all_courses')" @click="goPath('courses/all_courses')" >Courses</a>
-							<a href="javascript:;"  @click.middle="goPathBlank('words/all_words')"     @click="goPath('words/all_words')"     >Words</a>
+							<a href="javascript:;"  @click.middle="goPathBlank('filter/Word')"     @click="goPath('filter/Word')"     >Words</a>
 						</div>
 					</div>
 					<div class="col-lg-3 col-md-3 col-sm-6">

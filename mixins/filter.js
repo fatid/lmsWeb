@@ -28,15 +28,34 @@ export default {
     counts(){
         return this.$store.state.search.counts
     },      
+    levels() {
+      return this.options["co_level"];
+    },
   },
   methods:{
+
+    getLevel(q) {
+      if (this.levels && q && q) {
+        let a = q
+          ? this.levels.find(k => k.id == q)
+            ? this.levels.find(k => k.id == q)
+            : {}
+          : {};
+        return { color: a.cou_level_color, name: a.cou_level_name };
+      } else {
+        return { color: "#000", name: "-" };
+      }
+    },
+
+
     async getWords() {
-        let fields = `dict_degree,dict_category,dict_word,dict_mean,dict_image,dict_link,dict_tag,dict_w_similar,dict_tag,id,status,created_on,created_by,id,status`;
+        let fields = `dict_goole_image_search,dict_usage_mix,dict_daily_usage,dict_verb_type,dict_pattern,dict_root,dict_same_root,dict_example,dict_type,dict_verb,dict_plural,dict_singular,dict_w_opposites,dict_degree,dict_category,dict_word,dict_mean,dict_image,dict_link,dict_tag,dict_w_similar,dict_tag,id,status,created_on,created_by,id,status`;
          this.loading=true;   
         let filters = { status: ["=", 1] };
   
         if (this.search.keyword) {
-          filters.dict_word = ["LIKE", this.search.keyword];
+          filters.dict_word = [{ dict_word: ["LIKE", this.search.keyword]}, {dict_mean: ["LIKE", this.search.keyword] }] ;
+          // filters.dict_word = ["LIKE", this.search.keyword];
         }
         if (this.search.category && this.search.category[0]) {
             filters.dict_category = ["=", this.search.category];
@@ -65,12 +84,34 @@ export default {
                 response.data.formattedData[0]
               ) {
                 let d = response.data.formattedData;
-                d.map(element => {
+                d=d.map(element => {
                   let k = element;
                   if (k.dict_tag) {
                     k.labels = k.dict_tag.split(",");
-                  }
-                });
+                  } 
+                    if (k.dict_tag) {
+                      k.labels = k.dict_tag.split(",");
+                    }
+                    if (k.dict_w_opposites) {
+                      k.dict_w_opposites_arr = k.dict_w_opposites.split(",");
+                    }
+    
+                    if (k.dict_same_root) {
+                      k.dict_same_root_arr = k.dict_same_root.split(",");
+                    }
+                    if (k.dict_w_similar) {
+                      k.dict_w_similar_arr = k.dict_w_similar.split(",");
+                    }
+                    if (k.dict_example) {
+                      k.dict_example_arr = k.dict_example.split("\r");
+                    }
+                    if (k.dict_usage_mix) {
+                      k.dict_usage_mix_arr = k.dict_usage_mix.split("\r");
+                    }
+                    k.level = this.getLevel(k.dict_degree);
+                    k.show = false;
+                    return k;
+                  }); 
   
                 this.pagination.total = response.data.count;
                 this.data = d;

@@ -11,8 +11,7 @@
       >
         			<input type="text" class="input-std" 
                                         @change="getCourse()"
-                                        v-model="search.keyword" 
-                                        :placeholder="l('Search keyword','g')"  /> 
+                                        v-model="search.keyword" :placeholder="l('Search keyword','g')"  /> 
              </div>
              </div>
       </div>

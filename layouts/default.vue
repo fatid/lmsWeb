@@ -27,17 +27,19 @@
               @keydown.enter="goPath('search', { keyword: searchText })"
               :placeholder="l('Search for  Courses, Tests and more..', 'g')"
             />
-            <i class="uil uil-search-alt icon icon1"></i>
+            <i class="uil   icon fa fa-search"></i>
           </div>
         </div>
           
       </div>  
        <div class="menu-select">
-        
+            
 
-             <a  @click.middle="goPathBlank('filter')"                @click="goPath('filter')"><b-button pill variant="outline-danger"  >{{ l("Filter", "g") }}</b-button></a>
-            <a  @click.middle="goPathBlank('courses/all_courses')"   @click="goPath('courses/all_courses')"><b-button pill variant="outline-danger"  >{{ l("Courses", "g") }}</b-button></a>
-            <a  @click.middle="goPathBlank('words/all_words')"       @click="goPath('words/all_words')" > <b-button pill variant="outline-primary"  >{{ l("Words", "g") }}</b-button> </a>
+             <!-- <a  @click.middle="goPathBlank('filter')"                @click="goPath('filter')"><b-button pill variant="outline-danger"  >{{ l("Filter", "g") }}</b-button></a> -->
+            <a  @click.middle="goPathBlank('courses/all_courses')"    @click="goPath('courses/all_courses')"><b-button pill :variant="pagePath=='Course' ? 'danger':'outline-danger'"  >{{ l("Courses", "g") }}</b-button></a>
+            <a  @click.middle="goPathBlank('filter/Word')"            @click="goPath('filter/Word')" > <b-button pill  :variant="pagePath=='Word' ? 'danger':'outline-danger'"       >{{ l("Words", "g") }}</b-button> </a>
+            <a  @click.middle="goPathBlank('filter/Exam')"           @click="goPath('filter/Exam')" > <b-button pill    :variant="pagePath=='Exam' ? 'primary':'outline-primary'"   >{{ l("Questions", "g") }}</b-button> </a>
+            <a  @click.middle="goPathBlank('filter/Games')"           @click="goPath('filter/Game')" > <b-button pill  :variant="pagePath=='Game' ? 'primary':'outline-primary'"   >{{ l("Games", "g") }}</b-button> </a>
      
       </div>  
       <div class="header_right">
@@ -101,8 +103,9 @@
                           </a>
                   </template>
                   <b-dropdown-item  @click.middle="goPathBlank('my/profile')"          @click="goPath('my/profile')"           >  {{l('Profile','g')}}</b-dropdown-item>
-                  <b-dropdown-item  @click.middle="goPathBlank('courses/all_courses')" @click="goPath('courses/all_courses')" >  {{l('My Courses','g')}}</b-dropdown-item>
+                  <b-dropdown-item  @click.middle="goPathBlank('courses/my_courses')" @click="goPath('courses/my_courses')" >  {{l('My Courses','g')}}</b-dropdown-item>
                   <b-dropdown-item  @click.middle="goPathBlank('my/list')"             @click="goPath('my/list')"             >   {{l('My List','g')}}</b-dropdown-item>
+                  <b-dropdown-item  @click.middle="goPathBlank('my/quiz')"             @click="goPath('my/quiz')"             >   {{l('My Exams','g')}}</b-dropdown-item>
                   <!-- <b-dropdown-text    >  
                     
                               <a  @click="changeLanguage('ar')" ><img class="image-lang" :src="'/img/ar.png'" title="Arabic"   /> </a>
@@ -156,7 +159,7 @@
             </li>
             <li class="menu--item">
               <a
-                @click="goPath('words/all_words')"
+                @click="goPath('filter/Word')"
                 class="menu--link"
                 :title="l('Words', 'g')"
               >
@@ -265,6 +268,7 @@
      
         <errorReport></errorReport>
         <likeModal></likeModal>
+        <wordModal></wordModal>
 
     </div>
   </div>
@@ -278,13 +282,15 @@ import Multiselect from 'vue-multiselect';
 var Vue = require('vue');
 var VueScrollTo = require('vue-scrollto');
 import errorReport from "@/components/common/errorReport";
+import wordModal from "@/components/modal/word";
 import likeModal from "@/components/common/like";
 
 export default {
   mixins: [basicMixin, canoicalMixin, general],
   components:{
     errorReport,
-    likeModal
+    likeModal,
+    wordModal
   },
   watch: {
     async $route(to, from) {
@@ -382,6 +388,9 @@ export default {
     },
     LANG_PACK() {
       return this.$store.state.langFile;
+    },
+    pagePath(){
+      return this.$route.params ? this.$route.params.id : '';
     },
     isErrorReportVisible: {
       get(){
@@ -731,7 +740,7 @@ header.modal-header{
         height: auto;
 }
 .search120{
-  margin-top: 20px;
+  margin-top: 20px; 
 }
 
 .menu-select{

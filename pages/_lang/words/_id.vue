@@ -68,7 +68,7 @@
             <div class="tags">
               <div
                 class="ui red horizontal label cursor-pointer" 
-                @click="goPath('words/all_words', { keyword: label })"
+                @click="goPath('filter/Word', { keyword: label })"
                 v-for="label in d.labels"
               >
                 {{ label }}
@@ -97,7 +97,7 @@ export default {
   },
   methods: {
     async getDictionary() {
-      let fields = `dict_word,dict_mean,dict_image,dict_link,dict_tag,dict_w_similar,dict_tag,id,status,created_on,created_by,id,status`;
+      let fields = `dict_goole_image_search,dict_usage_mix,dict_daily_usage,dict_verb_type,dict_pattern,dict_root,dict_same_root,dict_example,dict_type,dict_verb,dict_plural,dict_singular,dict_w_opposites,dict_word,dict_mean,dict_image,dict_link,dict_tag,dict_w_similar,dict_tag,id,status,created_on,created_by,id,status`;
 
       let filters = { status: ["=", 1] };
 
@@ -129,6 +129,10 @@ export default {
                 if (k.dict_tag) {
                   k.labels = k.dict_tag.split(",");
                 }
+                if (k.dict_w_opposites) {   k.dict_w_opposites_arr = k.dict_w_opposites.split(",");      }
+                if (k.dict_example) {   k.dict_example_arr = k.dict_example.split(",");    }
+                if (k.dict_same_root) {   k.dict_same_root_arr = k.dict_same_root.split(",");    }
+                if (k.dict_w_similar) {   k.dict_w_similar_arr = k.dict_w_similar.split(",");    }
               });
 
               this.data = d;

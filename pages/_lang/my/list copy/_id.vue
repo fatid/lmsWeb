@@ -15,13 +15,13 @@
         <span v-show="list.view && list.view == 'edit'">
           <div class="d-flex j align-items-start">
                  <div class="d-block mr-5">
-                    <p>{{l('List Name','g')}}</p>
-                    <input
-                      type="text"
-                      name="listname"
-                      class="prompt srch_explore pa-10 mr-5 w-100"
-                      v-model="list.uye_list_name"
-                    />
+                     <p>{{l('List Name','g')}}</p>
+            <input
+              type="text"
+              name="listname"
+              class="prompt srch_explore pa-10 mr-5 w-100"
+              v-model="list.uye_list_name"
+            />
           </div>
           <div class="d-block mr-5">
                 <p>{{l('List Category','g')}}</p>
