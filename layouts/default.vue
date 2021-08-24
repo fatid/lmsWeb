@@ -97,7 +97,7 @@
                             class="opts_account"
                             title="Account"
                           >
-                            <img :src="auth.U_Photo ? auth.U_Photo : '/images/hd_dp.jpg'" alt="" />
+                            <img :src="auth && auth.U_Photo ? auth.U_Photo : '/images/hd_dp.jpg'" alt="" />
                           </a>
                   </template>
                   <b-dropdown-item  @click.middle="goPathBlank('my/profile')"          @click="goPath('my/profile')"           >  {{l('Profile','g')}}</b-dropdown-item>
