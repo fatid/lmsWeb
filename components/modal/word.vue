@@ -19,7 +19,7 @@
 
                     Loading...
 
-              </div>
+              </div> 
     </b-modal>
 </template>
 
