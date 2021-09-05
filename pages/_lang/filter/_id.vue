@@ -198,7 +198,7 @@
               </div>
             </div>
           </div>
-          <div class="content" v-show="loading">
+          <div class="content-loading" v-show="loading">
 
 <img class="not-found-image" src="/img/loading.gif" /> 
 
@@ -214,7 +214,8 @@
                 <div class="tootal_results">
                     {{ l("Total results", "g") }} {{ pagination.total }}
                 </div>
-                <b-dropdown size="sm" variant="outline-success"  >
+                <div class="filter_header_item">
+                <b-dropdown size="sm" variant="outline-success" v-if="!selected_list" >
                   <template #button-content>
                     <a>
                       {{ "Order by:" + orderByList[orderBy].label }}
@@ -227,6 +228,13 @@
                     >{{ order.label }}
                   </b-dropdown-item>
                 </b-dropdown>
+                </div>
+                <div class="filter_header_item">
+
+                        {{l('You have selected','g')}} :  <b> {{selected_list_data ? selected_list_data.uye_list_name : ''}}</b>
+
+                </div>
+                 
               </div>
               <div class="col-3 ">
                 <template
@@ -236,6 +244,7 @@
                       selection.selectionE.length > 0
                   "
                 >
+              
                   <a
                     @click="addSelectionAll('selectionE', 'Exam')"
                     class="addListLink"
@@ -278,7 +287,8 @@
                   >
                 </template>
               </div>
-
+              <div class="col-3 ">
+  <a class="btn btn-primary btn-small" v-if="search.module == 'Exam' && selected_list && data && data[0]">{{l('Start Exam','g')}}</a>
               <b-dropdown
                 v-if="search.module == 'Word'"
                 size="sm"
@@ -297,6 +307,7 @@
                 </b-dropdown-item>
               </b-dropdown>
             </div>
+              </div>
               </div>
 
             <div class="content-table">
@@ -680,6 +691,11 @@ export default {
     selected_list() {
       return this.$route.query.list;
     },
+    selected_list_data() {
+       return this.options["uye_Lists"].find(
+        k => k.id == this.$route.query.list 
+      );
+    },
     ulists() {
       return this.options["uye_Lists"].filter(
         k => k.uye_list_cat == this.search.module 
@@ -988,6 +1004,13 @@ export default {
       }
     }
   }
+  .content-loading {
+    width: 100%;
+    font-family: Cairo; 
+    height: calc(100vh - 100px);
+    padding: 20px 10px;
+    text-align:center;
+  }
   .content {
     width: 100%;
     font-family: Cairo; 
@@ -1001,11 +1024,16 @@ export default {
       padding: 0px 10px;
 
     }
+    .filter_header_item{
+          display: inline-flex;
+    }
     .tootal_results{
         margin-right: 5px;
         padding-right: 5px;
         border-right: 1px solid #efefef;
-        display: inline;
+        display: inline-flex;
+        padding-top: 5px;
+        height: 30px;
     }
     .content-table {
       height: calc(100vh - 195px);

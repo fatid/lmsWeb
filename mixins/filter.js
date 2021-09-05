@@ -243,24 +243,31 @@ export default {
                 this.$store.dispatch("search/groupFields", {module:'exam_q', group:'exa_type',lang: this.LOCALE});
                 this.$store.dispatch("search/groupFields", {module:'exam_q', group:'exa_categories',lang: this.LOCALE});   
                 this.$store.dispatch("search/groupFields", {module:'exam_q', group:'exa_skills',lang: this.LOCALE});
-
+ 
                 setTimeout(() => {
                     this.loading=false;    
                     
-                }, 3000);
+                }, 2000);
             }else {
                 this.data = [];
                 this.pagination.total = 0;
+ 
+
                 setTimeout(() => {
+                  this.loading=false;    
                     
                   this.data = [];
                   this.pagination.total = 0;
                 }, 1000);
             }
-            this.loading=false;    
+ 
+
+            // this.loading=false;    
             })
             .catch(e => {
                     this.question.q = null;
+ 
+
                     this.loading=false;  
                     this.data = [];
                     this.pagination.total = 0;
