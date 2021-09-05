@@ -582,10 +582,10 @@ export default {
         isRtl = isRtl.replaceAll("&gt;", ">");
         let before = isRtl.split("++");
         
-        console.log("Splitted",isRtl);
-        console.log(val,"val")
-        console.log(before,"before")
-        console.log(isRtl,"isRtl")
+        // console.log("Splitted",isRtl);
+        // console.log(val,"val")
+        // console.log(before,"before")
+        // console.log(isRtl,"isRtl")
 //         console.log("Typed left to right:");
 // console.log("2132-سسس".split('-'));
 // console.log("8635-بحد".split('-'));
