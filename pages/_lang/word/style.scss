@@ -140,8 +140,9 @@
       padding-bottom: 5px;
       .item-row-title {
         width: 100px;
-        font-weight: 600;
-        color: #aaa;
+        font-weight: 500;
+        color: rgb(109, 109, 109);
+        font-size: 14px;
         span {
           border-bottom: 1px solid #efefef;
         }
@@ -150,6 +151,7 @@
         a {
           padding: 0px 5px;
           text-decoration: underline;
+          font-size: 14px;
           &:hover,
           .selected {
             color: rgb(53, 65, 226);

@@ -30,6 +30,17 @@ export const state = () => ({
             label:''
         }
     },
+    listModal:{
+        show: false,
+        detail:{
+            type:'',
+            label:''
+        }
+    },
+    suggestWord:{
+        show: false,
+        word:''
+    },
     wordModal:{
         show: false,
         word:'',

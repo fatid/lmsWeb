@@ -46,7 +46,16 @@ export default {
         return { color: "#000", name: "-" };
       }
     },
-
+    getListData(id,type="data"){
+      let items  = this.likes.filter(k=> k.list==id );
+      if(type=="data"){
+        return items
+      }else if(type=="ids"){
+        return items.map(k=> k.id)
+      }else{
+        return items.length
+      }
+    },
 
     async getWords() {
         let fields = `dict_goole_image_search,dict_usage_mix,dict_daily_usage,dict_verb_type,dict_pattern,dict_root,dict_same_root,dict_example,dict_type,dict_verb,dict_plural,dict_singular,dict_w_opposites,dict_degree,dict_category,dict_word,dict_mean,dict_image,dict_link,dict_tag,dict_w_similar,dict_tag,id,status,created_on,created_by,id,status`;
@@ -62,6 +71,19 @@ export default {
         }
         if (this.search.level && this.search.level[0]) {
             filters.dict_degree = ["=", this.search.level];
+        }
+        if (this.search.dict_type && this.search.dict_type[0]) {
+          filters.dict_type = ["in", this.search.dict_type];
+        }
+        if(this.$route.query.list){
+          let listId = this.$route.query.list;
+          let ids = this.getListData(listId,"ids"); 
+          if(ids && ids[0]){
+            filters.id = ["in", ids];  
+          }else{
+            filters.id = ["in", ['x']]; 
+          }
+        
         }
         this.$store.commit("search/setSearch",filters);
         return new Promise((resolve, reject) => {
@@ -117,6 +139,7 @@ export default {
                 this.data = d;
                 this.$store.dispatch("search/groupFields", {module:'dict_word', group:'dict_category',lang: this.LOCALE});
                 this.$store.dispatch("search/groupFields", {module:'dict_word', group:'dict_degree',lang: this.LOCALE});
+                this.$store.dispatch("search/groupFields", {module:'dict_word', group:'dict_type',lang: this.LOCALE});
               } else {
                 this.data = [];
                 this.pagination.total = 0;
@@ -141,6 +164,7 @@ export default {
         if (this.search.qtype && this.search.qtype[0]) {
           filters.exa_type = ["in", this.search.qtype];
         }
+      
         // console.log("skills",this.search)
         if (this.search.skills && this.search.skills[0]) {
           filters.exa_skills = []
@@ -176,6 +200,18 @@ export default {
           }) 
           
         }
+
+        if(this.$route.query.list){
+          let listId = this.$route.query.list;
+          let ids = this.getListData(listId,"ids"); 
+          if(ids && ids[0]){
+            filters.id = ["in", ids]; 
+          }else{
+            filters.id = ["in", ['x']]; 
+          }
+        }
+
+
         filters.exa_timer = {exa_image:["!=", ''],rs_Question:["!=", ''],exa_sound:["!=", ''],exa_video:["!=", '']};
         this.$store.commit("search/setSearch",filters);
         let fields = "id,sort,status,exa_type,exa_degree,exa_categories,rs_Question,exa_image,exa_sound,exa_video,exa_ready,exa_timer,exa_skills";

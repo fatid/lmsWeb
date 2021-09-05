@@ -1,48 +1,45 @@
 <template>
   <div class="container">
     <div class="head-word" v-if="data[0]">
-       <span class="head-search">
-      <a    @click="getWord()">
-        <i class="fa fa-chevron-left"></i
-      ></a>
-     
-          		<input type="text" class="input-std" 
-                                     
-                                        v-model="keyword" 
-                                        :placeholder="l('Search keyword','g')"  /> 
+      <span class="head-search">
+        <a @click="getWord()"> <i class="fa fa-chevron-left"></i></a>
 
+        <input
+          type="text"
+          class="input-std"
+          v-model="keyword"
+          :placeholder="l('Search keyword', 'g')"
+        />
       </span>
       <span class="head-title">{{ data[0] ? data[0].dict_word : "" }}</span>
     </div>
 
     <div class="row">
-
       <div class="col-12 col-md-4 col-lg-3">
-              {{ l("Total meaning", "g") }} : {{ data.length }}<br />   
-              {{ l("Level", "g") }} :
-              <a v-for="d in data" class="meaning-box">{{ d.level ? d.level.name : "" }} </a>
-      
-              <hr />
-             <h4> {{ l("Words in Same Category", "g") }} :</h4>
-              <a v-for="d in visitedWords">{{ d.level ? d.level.name : "" }} </a> 
-                  <a   class="meaning-box"> example </a>
-                    <a   class="meaning-box"> example 2</a>
-                      <a   class="meaning-box"> example3</a>
-                      <a   class="meaning-box"> example </a>
-                    <a   class="meaning-box"> example1234</a>
-                      <a   class="meaning-box"> ex </a>
-              <hr />
-              <h4>{{ l("Last Visited Words", "g") }} :</h4>
-              <a v-for="d in visitedWords">{{ d.level ? d.level.name : "" }} </a>
-              <hr />
-              
-      </div>
+        {{ l("Total meaning", "g") }} : {{ data.length }}<br />
+        {{ l("Level", "g") }} :
+        <a v-for="d in data" class="meaning-box"
+          >{{ d.level ? d.level.name : "" }}
+        </a>
 
+        <hr />
+        <h4>{{ l("Words in Same Category", "g") }} :</h4>
+        <a v-for="d in visitedWords">{{ d.level ? d.level.name : "" }} </a>
+        <a class="meaning-box"> example </a>
+        <a class="meaning-box"> example 2</a>
+        <a class="meaning-box"> example3</a>
+        <a class="meaning-box"> example </a>
+        <a class="meaning-box"> example1234</a>
+        <a class="meaning-box"> ex </a>
+        <hr />
+        <h4>{{ l("Last Visited Words", "g") }} :</h4>
+        <a v-for="d in visitedWords">{{ d.level ? d.level.name : "" }} </a>
+        <hr />
+      </div>
 
       <div class="col-12 col-md-8 col-lg-9">
         <div class="item-word text-right align-right" v-for="dt in data">
           <div class="side-panel">
-         
             <div
               class="degree-show"
               v-if="dt.dict_degree"
@@ -57,7 +54,7 @@
             >
               <i class="fa fa-play"></i
             ></a>
-               <a
+            <a
               class="like"
               title=""
               :class="isLiked(dt.id) ? 'selected' : ''"
@@ -102,7 +99,7 @@
             @click="dt.show = !dt.show"
             class="show-details"
           >
-            {{l('more info','g')}} <i class="fa fa-chevron-down"></i>
+            {{ l("more info", "g") }} <i class="fa fa-chevron-down"></i>
           </div>
           <div
             v-show="dt.show"
@@ -213,11 +210,13 @@
             </div>
           </div>
         </div>
-
-        <h4>{{ l("More Examples", "g") }} : </h4>
-              <a style="text-align:right; " v-for="d in bank"> {{d.sb_sentence}}  <br /></a>
+        <div class="more-examples">
+          <h4>{{ l("More Examples", "g") }} :</h4>
+          <a style="text-align:right; " v-for="d in bank">
+            {{ d.sb_sentence }} <br
+          /></a>
+        </div>
       </div>
- 
     </div>
   </div>
 </template>
@@ -229,13 +228,13 @@ const play = require("audio-play");
 const load = require("audio-loader");
 
 export default {
-  mixins: [general, word], 
+  mixins: [general, word],
   data: () => ({
     data: [],
     bank: [],
     meanings: [],
     id: "",
-    keyword: "",
+    keyword: ""
   }),
   async created() {
     this.id =
@@ -245,16 +244,11 @@ export default {
   },
   computed: {},
   methods: {
-
-    getWord(){
- 
-        this.goPath('/filter/Word',{word:this.keyword});
-
+    getWord() {
+      this.goPath("/filter/Word", { word: this.keyword });
     },
 
-    
-
-     async getSentenceBank() {
+    async getSentenceBank() {
       let fields = `sb_sentence,id,status,created_on,created_by,id,status`;
       let filters = { sb_sentence: ["LIKE", this.id] };
       return new Promise((resolve, reject) => {
@@ -276,7 +270,6 @@ export default {
               response.data.formattedData &&
               response.data.formattedData[0]
             ) {
-           
               this.bank = response.data.formattedData;
             }
           })
@@ -287,7 +280,6 @@ export default {
       });
     },
 
-    
     async getDictionary() {
       let fields = `dict_sound,dict_degree,dict_mean,dict_goole_image_search,dict_usage_mix,dict_daily_usage,dict_verb_type,dict_pattern,dict_root,dict_same_root,dict_example,dict_type,dict_verb,dict_plural,dict_singular,dict_w_opposites,dict_word,dict_mean,dict_image,dict_link,dict_tag,dict_w_similar,dict_tag,id,status,created_on,created_by,id,status`;
       let filters = { dict_word: ["=", this.id] };
@@ -348,207 +340,205 @@ export default {
 };
 </script>
 <style lang="scss" href="./style.scss"></style>
-<style lang="scss"  >
+<style lang="scss">
 .fcrse_img {
-    width img {
-      max-width: 100%;
-      height: 200px;
-    }
+  width img {
+    max-width: 100%;
+    height: 200px;
   }
-  
-  .tags {
+}
+
+.tags {
+  display: inline-flex;
+}
+.list-group-item {
+  margin-bottom: 10px;
+  border: 0;
+  border-radius: 10px;
+  border: 0.1em solid #f7f7f7;
+  .title-item {
     display: inline-flex;
-  }
-  .list-group-item {
     margin-bottom: 10px;
-    border: 0;
-    border-radius: 10px;
-    border: 0.1em solid #f7f7f7;
-    .title-item {
-      display: inline-flex;
-      margin-bottom: 10px;
-    }
+  }
+  transition: 1s all;
+
+  &:hover {
+    background: #fff;
+    border: 0.1em solid #000;
     transition: 1s all;
-  
-    &:hover {
-      background: #fff;
-      border: 0.1em solid #000;
-      transition: 1s all;
+  }
+}
+.image-inside {
+  width: 80px;
+  height: auto;
+  margin-right: 0px;
+  float: right;
+  margin-left: 20px;
+  margin-bottom: 5px;
+}
+.box-inside {
+  background: #efefef;
+  border-radius: 0.35rem;
+  height: 40px;
+  margin-right: 10px;
+  width: 40px;
+}
+.toolbar-cart {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.head-word {
+  display: inline-flex;
+  width: 100%;
+  padding: 10px 0px;
+  justify-content: space-between;
+  border-bottom: 1px solid #d0d0d0;
+  margin-bottom: 10px;
+}
+.head-search {
+  width: 250px;
+  display: inline-flex;
+}
+.head-title {
+  font-size: 42px;
+  font-weight: 500;
+  line-height: 1.1;
+}
+.head-search a {
+  background: #fff;
+  width: 40px;
+  height: 40px;
+  text-align: center;
+  padding: 10px 0;
+  border-radius: 50%;
+  margin-top: 0px;
+  margin-right: 20px;
+}
+
+.input-std {
+  border: 1px solid #eeeeee;
+  border-radius: 20px;
+  padding: 8px 10px;
+  height: 40px;
+}
+.meaning-box {
+  border: 1px solid #efefef;
+  background: #fff;
+  border-radius: 4px;
+  padding: 5px;
+  text-align: center;
+  margin-right: 7px;
+  margin-top: 4px;
+  display: inline-block;
+}
+.item-word {
+  padding: 10px 10px 10px 55px;
+  margin-bottom: 5px;
+  border: 1px solid #efefef;
+  border-radius: 10px;
+  position: relative;
+  background: #fff;
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 1.3;
+  .item-panel {
+    &.visible-panel {
+      height: auto;
+      min-height: 50px;
+      overflow: visible;
+      transition: 0.5s all;
+    }
+    &.hidden-panel {
+      height: 0px;
+      min-height: 0px;
+      overflow: hidden;
+      transition: 0.5s all;
     }
   }
-  .image-inside {
-    width: 80px;
-    height: auto;
-    margin-right: 0px;
-    float: right;
-    margin-left: 20px;
-    margin-bottom: 5px;
+  .show-details {
+    border-top: 1px dotted #efefef;
+    width: 100%;
+    text-align: center;
+    font-size: 14px;
+    transition: 0.5s all;
+    cursor: pointer;
+    padding: 4px 0;
+    margin: 3px 0px;
   }
-  .box-inside {
-    background: #efefef;
-    border-radius: 0.35rem;
-    height: 40px;
-    margin-right: 10px;
-    width: 40px;
-  }
-  .toolbar-cart {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-  }
-  .cursor-pointer {
+  .hide-details {
+    padding: 4px 0;
+    margin: 3px 0px;
+    border-top: 1px dotted #f6f6f6;
+    border-bottom: 1px dotted #f6f6f6;
+    width: 100%;
+    text-align: center;
+    font-size: 14px;
+    transition: 0.5s all;
     cursor: pointer;
   }
-  
-  .head-word {
-    display: inline-flex;
+  .item-row {
     width: 100%;
-    padding: 10px 0px;
-    justify-content: space-between;
-    border-bottom: 1px solid #d0d0d0;
-    margin-bottom: 10px;
-  }
-  .head-search{
-    width: 250px;
     display: inline-flex;
-  }
-  .head-title {
-    font-size: 42px; 
-    font-weight: 500;
-    line-height: 1.1;
-  }
-  .head-search a {
-    background: #fff;
-    width: 40px;
-    height: 40px;
-    text-align: center;
-    padding: 10px 0;
-    border-radius: 50%;
-    margin-top: 0px;
-    margin-right: 20px;
-  }
-  
-  .input-std{
-        border: 1px solid #eeeeee;
-        border-radius: 20px;
-        padding: 8px 10px;
-        height: 40px;
-  } 
-    .meaning-box{
-          border: 1px solid #efefef;
-          background: #fff;
-          border-radius: 4px;
-          padding: 5px;
-          text-align: center;
-          margin-right: 7px;  
-          margin-top: 4px;  
-              display: inline-block;
-
-    }
-  .item-word {
-    padding: 10px 10px 10px 55px;
+    text-align: right;
+    flex-flow: row-reverse;
+    font-size: 16px;
     margin-bottom: 5px;
-    border: 1px solid #efefef;
+    padding-bottom: 5px;
+    .item-row-title {
+      width: 100px;
+      font-weight: 500;
+      color: rgb(112, 112, 112);
+      font-size: 14px;
+      span {
+        border-bottom: 1px solid #efefef;
+      }
+    }
+    .item-row-content {
+      a {
+        padding: 0px 5px;
+        text-decoration: underline;
+          font-size: 14px;
+        &:hover,
+        .selected {
+          color: rgb(53, 65, 226);
+        }
+      }
+    }
+  }
+
+  .meaning-results {
+    padding: 5px 0px;
+    text-align: right;
+  }
+  .degree-show {
+    padding: 5px;
     border-radius: 10px;
+    background: red;
+    color: #fff;
+    display: block;
     position: relative;
-    background: #fff;
-    font-size: 20px;
-    font-weight: 400;
-    line-height: 1.3;
-    .item-panel {
-      &.visible-panel {
-        height: auto;
-        min-height: 50px;
-        overflow: visible;
-        transition: 0.5s all;
-      }
-      &.hidden-panel {
-        height: 0px;
-        min-height: 0px;
-        overflow: hidden;
-        transition: 0.5s all;
-      }
-    }
-    .show-details {
-      border-top: 1px dotted #efefef;
-      width: 100%;
-      text-align: center;
-      font-size: 14px;
-      transition: 0.5s all;
-      cursor: pointer;
-      padding: 4px 0;
-      margin: 3px 0px;
-    }
-    .hide-details {
-      padding: 4px 0;
-      margin: 3px 0px;
-      border-top: 1px dotted #f6f6f6;
-      border-bottom: 1px dotted #f6f6f6;
-      width: 100%;
-      text-align: center;
-      font-size: 14px;
-      transition: 0.5s all;
-      cursor: pointer;
-    }
-    .item-row {
-      width: 100%;
-      display: inline-flex;
-      text-align: right;
-      flex-flow: row-reverse;
-      font-size: 16px;
-      margin-bottom: 5px;
-      padding-bottom: 5px;
-      .item-row-title {
-        width: 100px;
-        font-weight: 600;
-        color: #aaa;
-        span {
-          border-bottom: 1px solid #efefef;
-        }
-      }
-      .item-row-content {
-        a {
-          padding: 0px 5px;
-          text-decoration: underline;
-          &:hover,
-          .selected {
-            color: rgb(53, 65, 226);
-          }
-        }
-      }
-    }
-  
-   
-    .meaning-results {
-      padding: 5px 0px;
-      text-align: right;
-    }
-    .degree-show {
-      padding: 5px;
-      border-radius: 10px;
-      background: red;
-      color: #fff;
-      display: block;
-      position: relative;
-      width: auto;
-      margin: 5px 0px;
-    }
-    .side-panel {
-      margin-left: 10px;
-      position: absolute;
-      left: 0px;
-      top: 10px;
-    }
+    width: auto;
+    margin: 5px 0px;
+  }
+  .side-panel {
+    margin-left: 10px;
+    position: absolute;
+    left: 0px;
+    top: 10px;
+  }
 
-    a.like {
-      display: block;
-      text-align: center;
-      &:hover,
-      .selected {
-        color: rgb(212, 113, 130);
-      }
+  a.like {
+    display: block;
+    text-align: center;
+    &:hover,
+    .selected {
+      color: rgb(212, 113, 130);
     }
-  } 
+  }
+}
 </style>
- 
-
