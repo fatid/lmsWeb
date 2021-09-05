@@ -36,7 +36,7 @@
                   @click="goPath('course/'+dt.topModuleData.id+'/'+dt.id)"
                 >
                           {{dt.lesson_name}}
-                        <p>Unite: {{dt.topModuleData.unit_name}}</p>
+                        <p>{{l('Unit','g')}}: {{dt.topModuleData.unit_name}}</p>
                 </b-list-group-item>
           </b-list-group>
 

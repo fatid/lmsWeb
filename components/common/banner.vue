@@ -38,7 +38,7 @@ if(this.banners){
     let auth  = this.$store.state.user.auth;
     return this.banners.filter(k=>{
         let areas = k.cbanner_part ? k.cbanner_part.split("--") : ['.']
-        console.log(this.area,areas,areas.includes(this.area),k.cbanner_who)
+        // console.log(this.area,areas,areas.includes(this.area),k.cbanner_who)
         if(areas.includes(this.area)){
             if(k.cbanner_who=='' || k.cbanner_who=='All Users' || (k.cbanner_who=='Members' && auth && auth!=null && auth.token) || (k.cbanner_who=='New Users' && (!auth || auth==null || !auth.token)) ){
                 return k;

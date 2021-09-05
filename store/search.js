@@ -13,6 +13,7 @@ const state = () => ({
           module:'Word',
           keyword:'',
           qtype:[],
+          dict_type:[],
           media:[],
           skills:[],
           category:[],
@@ -26,6 +27,7 @@ const state = () => ({
     dict_degree:null,
     exa_degree:null,
     exa_image:null,
+    dict_type:null,
   },
   searchFilterQuery_Copy:{ 
     exa_type:null,
@@ -34,11 +36,14 @@ const state = () => ({
     dict_degree:null,
     exa_degree:null,
     exa_image:null,
+    dict_type:null,
+
   },
   counts:{ 
     topics:[],// durması lazım 
     degree:{},
     exa_type:{},
+    dict_type:{},
     categories:{},
   }, 
 })

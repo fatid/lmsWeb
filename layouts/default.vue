@@ -269,6 +269,8 @@
         <errorReport></errorReport>
         <likeModal></likeModal>
         <wordModal></wordModal>
+          <suggestWord></suggestWord>
+         <listEdit></listEdit>
 
     </div>
   </div>
@@ -284,13 +286,16 @@ var VueScrollTo = require('vue-scrollto');
 import errorReport from "@/components/common/errorReport";
 import wordModal from "@/components/modal/word";
 import likeModal from "@/components/common/like";
-
+import suggestWord from "@/components/common/suggestWord";
+import listEdit from "@/components/common/listEdit";
 export default {
   mixins: [basicMixin, canoicalMixin, general],
   components:{
     errorReport,
     likeModal,
-    wordModal
+    wordModal,
+    suggestWord,
+listEdit
   },
   watch: {
     async $route(to, from) {

@@ -205,8 +205,9 @@ export default {
       padding-bottom: 5px;
       .item-row-title {
         width: 100px;
-        font-weight: 600;
-        color: #aaa;
+        font-size: 14px;
+        font-weight: 500;
+        color: rgb(107, 107, 107);
         span {
           border-bottom: 1px solid #efefef;
         }
@@ -215,6 +216,7 @@ export default {
         a {
           padding: 0px 5px;
           text-decoration: underline;
+          font-size: 14px;
           &:hover,
           .selected {
             color: rgb(53, 65, 226);

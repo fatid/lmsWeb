@@ -82,6 +82,7 @@ optimizedImages: {
     'bootstrap-vue/nuxt',  
     // '@nuxtjs/sitemap',
       ['vue-scrollto/nuxt', { duration: 300 }],
+      'vue-social-sharing/nuxt'
 
   ],
   // router: {
@@ -140,7 +141,8 @@ optimizedImages: {
       purgecss({
         content: ['./pages/**/*.vue',  './layouts/**/*.vue', './components/**/*.vue',  './components/**/*.scss', '~/static/vendor/bootstrap/css/bootstrap.min.css','~/static/vendor/semantic/semantic.min.css'],
         css: ['**/*.css','**/*.scss'], 
-        whitelist: ['html','uil','fa-language','fa-headphones-alt','fa-book-reader','fa-comments','fa-keyboard','fa-heart','srch10','uil-envelope-alt','uil','uil-search-alt','icon','icon1','uil-bell', 'btn','btn-danger','btn-outline-danger','btn-outline-danger','btn-outline-primary','rounded-pill','body','table', 'dropdown','b-dropdown', 'ui','dropdown','pagination', 'b-pagination','page-item',  'b-dropdown','btn-group','dropdown-menu','page-link','dropdown-item','table-striped','fa-whatsapp','fa-whatsapp-square','fa-youtube','flex-row','flex-row-reverse','fa-twiter','fa-instagram','fa_youtube','fa-youtube','owl-stage-outer','owl-stage','owl-theme','owl-carousel','owl-stage-outer','owl-stage','owl-theme','stage-margin','nav-style-1','owl-loaded','owl-dot','owl-prev','owl-next','owl-nav', 'owl-dot active','owl-dots','owl-drag','owl-carousel-init'],
+        whitelist: ['share-network-email','fah','fa-envelope','fa-search','fa-link','fa-evernote','fa-facebook','fa-linkedin','fa-pinterest','fa-quora','fa-reddit','fa-comment','fa-telegram','fa-tumblr','fa-twitter','fa-whatsapp',
+          'html','uil','fa-language','fa-headphones-alt','fa-book-reader','fa-comments','fa-keyboard','fa-heart','srch10','uil-envelope-alt','uil','uil-search-alt','icon','icon1','uil-bell', 'btn','btn-danger','btn-outline-danger','btn-outline-danger','btn-outline-primary','rounded-pill','body','table', 'dropdown','b-dropdown', 'ui','dropdown','pagination', 'b-pagination','page-item',  'b-dropdown','btn-group','dropdown-menu','page-link','dropdown-item','table-striped','fa-whatsapp','fa-whatsapp-square','fa-youtube','flex-row','flex-row-reverse','fa-twiter','fa-instagram','fa_youtube','fa-youtube','owl-stage-outer','owl-stage','owl-theme','owl-carousel','owl-stage-outer','owl-stage','owl-theme','stage-margin','nav-style-1','owl-loaded','owl-dot','owl-prev','owl-next','owl-nav', 'owl-dot active','owl-dots','owl-drag','owl-carousel-init'],
       })
     ]
   }, 
