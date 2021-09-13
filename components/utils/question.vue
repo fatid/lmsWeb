@@ -3,7 +3,7 @@
     <div class="row">
       <div class="col-12">
         <div class="degree-class" v-if="question.q.exa_degree" :style="{background:level.color}">
-          {{level.name}} 
+          {{level.name}}
         </div>
         <div
           class="question"
@@ -14,7 +14,7 @@
              <!-- {{splitparagraph_answer}} {{counterStatus}} -->
           <div class="myParagraph" v-if="question.q.rs_Question">
             <!-- {{answerText == trueText ? "Yes true." : "Try Again"}}   {{answerText}}==={{trueText}} -->
-           
+ 
             <div
               class="answerSentence"
               :class="counterStatus == 'stopped' ? 'answered' : ''"
@@ -197,7 +197,7 @@
         </div>
       
         <div
-          class="alphabets"
+          class="alphabets" 
           
           v-if="question.q.exa_type == 'FillBlanks' && trueText.length"
         >
@@ -221,10 +221,16 @@
             {{ alp }}
           </div>
         </div>
-        <a
+<!--  
+          <a 
+              @click="setanswer()"
+              class="download_btn"
+              v-if="!answerable && chance == 1"
+          >{{  l("Answer", "g")   }}</a> -->
+        <a 
           @click="setanswer()"
           class="download_btn"
-          v-if="!isTimeOut && !isTrue"
+          v-else-if="answerable && !isTimeOut && !isTrue"
           >{{
             chance == 1
               ? l("Answer", "g")
@@ -233,22 +239,22 @@
               : l("Answer to learn answer", "g")
           }}</a
         >
-        <a @click="nextQuestion()" class="download_btn" v-else-if="isTimeOut"
+        <a @click="nextQuestion()" class="download_btn" v-else-if="answerable && isTimeOut"
           >Timeout. Just Answer to learn</a
         >
         <a
           class="download_reset"
-          v-show="answerText"
+          v-show="answerable && answerText"
           @click="
             resetSetwords();
             removeAnswer();
           "
           >Reset</a
         >
-        <a class="success-result download_btn" v-if="isTrue">
+        <a class="success-result download_btn" v-if="answerable &&  isTrue">
          <i class="fas fa-check-circle"></i> {{ getRandomResultText() }}
         </a>
-        <a class="download_btn fail-result" v-else-if="isTrue === false">
+        <a class="download_btn fail-result" v-else-if="answerable &&  isTrue === false">
           <i class="fas fa-exclamation-circle"></i> {{l('Lütfen cevabınızı kontrol ediniz.','g')}}
         </a>
       </div>
@@ -262,6 +268,7 @@ import counter from "@/components/utils/counter.vue";
 import general from "@/mixins/general";
 import draggable from "vuedraggable";
 import axios from "axios";
+import { encode, decode } from 'js-base64';
 
 export default {
   mixins: [general],
@@ -269,7 +276,11 @@ export default {
   props: {
     question: [Object, Array],
     levels: [Object, Array],
-    order: Number
+    order: Number,
+    answerable:{
+      type: Boolean,
+      default: false
+    }
   },
   data() {
     return {
@@ -281,6 +292,7 @@ export default {
       isTimeOut: false,
       isTrue: null,
       answerText: "",
+      answerTextReversed: "",
       answers: [],
       setKeywordKey: "setKeywordKey",
       splitwords_answer: [],
@@ -345,6 +357,14 @@ export default {
         this.$store.state.course.activeCourse = val;
       }
     },
+    resultExam: {
+      get() {
+        return this.$store.state.exam.resultExam;
+      },
+      set(val) {
+        this.$store.state.exam.resultExam = val;
+      }
+    },
     level(){
   
           let q =   this.question.q.exa_degree
@@ -383,6 +403,21 @@ export default {
       this.starter()  
   },
   watch: {
+    "answerText"(val){
+      console.log("answerText",val);
+      if(!this.answerable){
+          let id = this.question.q.id
+          let a= this.answerText;
+            // if(this.question.q.exa_type == 'ParagraphOrder'){ 
+            //     a= this.answerTextReversed;
+            // }
+            // console.log("answer",id,a,"x",this.trueText,"x",this.trueText==a)
+                this.resultExam[id]={answer: encode(a),isTrue:this.trueText==a};
+            
+          // this.resultExam[id]=this.answerText.trim();
+      }
+                // console.log("answered",this.question.q,this.trueText,this.answerText) 
+    },
     "activeCourse.last"(val) {
       this.chooseActive();
     },
@@ -471,8 +506,9 @@ export default {
           }
         }
         let c = [...this.splitwords_answer_ordered];
-        let s = c.reverse();
-        this.answerText = s.join(" ");
+        // let s = c.reverse();
+        this.answerText = c.join(" ");
+        this.answerTextReversed = c.join(" ");
       }
       // document.getElementById(data).className = "";
       // this.splitwords_answer.forEach(k=>{
@@ -541,6 +577,8 @@ export default {
     },
     splitparagraph_setanswer() {
       this.answerText = this.splitparagraph_answer.join(" ");
+      // console.log("answerText",this.answerText)
+      // if(!this.answerable){    this.setanswer()   }
     },
     decodeHTMLEntities (str) {
        var element = document.createElement('div');
@@ -581,20 +619,7 @@ export default {
         isRtl = isRtl.replaceAll("&lt;", "<");
         isRtl = isRtl.replaceAll("&gt;", ">");
         let before = isRtl.split("++");
-        
-        // console.log("Splitted",isRtl);
-        // console.log(val,"val")
-        // console.log(before,"before")
-        // console.log(isRtl,"isRtl")
-//         console.log("Typed left to right:");
-// console.log("2132-سسس".split('-'));
-// console.log("8635-بحد".split('-'));
-
-// console.log("---------------");
-
-// console.log("Typed right to left as Arabians follow:");
-// console.log("سسس-2132".split('-'));
-// console.log("بحد-8635".split('-'));
+         
         let after = before[1]!="undefined" ? before[1].split("++") : ["", ""];
     
         let answer = before[1] ? before[1].split("+") : [];
@@ -750,168 +775,175 @@ export default {
     },
     setanswer() {
       console.log("answered",this.question.q,this.trueText,this.answerText)
-      if (!this.isTrue) {
-        let unitId = this.$route.params.unit;
-        let lessonId = this.$route.params.id;
-        let activeCourse = this.activeCourse;
-        console.log("this.trueText",this.trueText,"anser",this.answerText)
-        if (this.trueText) {
-          this.$emit("answered", true);
+      if(answerable){
+          if (!this.isTrue) {
+            let unitId = this.$route.params.unit;
+            let lessonId = this.$route.params.id;
+            let activeCourse = this.activeCourse;
+  
+            if (this.trueText) {
+              this.$emit("answered", true);
 
-          this.isTrue = this.trueText === this.answerText || this.alternativeText === this.answerText   ? true : false;
-          if (this.trueText == this.answerText) {
-            let divide = this.question.q.exa_timer
-              ? parseInt(this.question.q.exa_timer) / this.updated
-              : 1000;
-            // eğer süre yarısını geçtiyse, puan yarıya düşüyor ( iki ihtimalden biri gerçekleşirse  )
+              this.isTrue = this.trueText === this.answerText || this.alternativeText === this.answerText   ? true : false;
+              if (this.trueText == this.answerText) {
+                let divide = this.question.q.exa_timer
+                  ? parseInt(this.question.q.exa_timer) / this.updated
+                  : 1000;
+                // eğer süre yarısını geçtiyse, puan yarıya düşüyor ( iki ihtimalden biri gerçekleşirse  )
 
-            if (this.chance == 1) {
-              if (divide < 2) {
-                this.score = 0.5;
-                this.counterStatus = "stopped";
+                if (this.chance == 1) {
+                  if (divide < 2) {
+                    this.score = 0.5;
+                    this.counterStatus = "stopped";
+                  } else {
+                    this.score = 1;
+                    this.counterStatus = "stopped";
+                  }
+                } else if (this.chance == 2) {
+                  this.score = 0.5;
+                  this.counterStatus = "stopped";
+                } else {
+                  this.score = 0;
+                  this.counterStatus = "stopped";
+                }
+
+                activeCourse.point =
+                  (activeCourse.point ? parseInt(activeCourse.point) : 0) +
+                  this.score;
+                activeCourse.last = lessonId;
+                if (!activeCourse.lessons) {
+                  activeCourse.lessons = {};
+                }
+    if(lessonId &&  activeCourse.lessons){
+                activeCourse.lessons[lessonId] = {
+                  completed: true,
+                  isTimeOut: this.isTimeOut,
+                  isTrue: true,
+                  duration: this.updated,
+                  chance: this.chance,
+                  score: this.score,
+                  answer: this.answerText,
+                  counterStatus: this.counterStatus
+                };
+                this.$store.dispatch("course/setCourseLast", {
+                  unitId,
+                  lessonId,
+                  courseId: "all",
+                  unitData: activeCourse
+                });
+    }
               } else {
-                this.score = 1;
-                this.counterStatus = "stopped";
+                this.chance += 1;
+                activeCourse.point = activeCourse.point + this.score;
+                activeCourse.last = lessonId;
+                if (!activeCourse.lessons) {
+                  activeCourse.lessons = {};
+                }
+                if(lessonId &&  activeCourse.lessons){
+                      activeCourse.lessons[lessonId] = {
+                        completed: false,
+                        isTimeOut: this.isTimeOut,
+                        isTrue: false,
+                        duration: this.updated,
+                        chance: this.chance,
+                        score: this.score,
+                        answer: this.answerText,
+                        counterStatus: this.counterStatus
+                      };
+                      this.$store.dispatch("course/setCourseLast", {
+                        unitId,
+                        lessonId,
+                        courseId: "all",
+                        unitData: activeCourse
+                      });
+                }
               }
-            } else if (this.chance == 2) {
-              this.score = 0.5;
-              this.counterStatus = "stopped";
             } else {
-              this.score = 0;
-              this.counterStatus = "stopped";
-            }
+              this.$emit("answered", true);
+              let multiple_options =
+                this.question.a && this.question.a[0]
+                  ? this.question.a
+                  : this.answers;
+              let answer = multiple_options.find(
+                k => k.id == this.answer && k.exa_q_true == "on"
+              );
 
-            activeCourse.point =
-              (activeCourse.point ? parseInt(activeCourse.point) : 0) +
-              this.score;
-            activeCourse.last = lessonId;
-            if (!activeCourse.lessons) {
-              activeCourse.lessons = {};
-            }
- if(lessonId &&  activeCourse.lessons){
-            activeCourse.lessons[lessonId] = {
-              completed: true,
-              isTimeOut: this.isTimeOut,
-              isTrue: true,
-              duration: this.updated,
-              chance: this.chance,
-              score: this.score,
-              answer: this.answerText,
-              counterStatus: this.counterStatus
-            };
-            this.$store.dispatch("course/setCourseLast", {
-              unitId,
-              lessonId,
-              courseId: "all",
-              unitData: activeCourse
-            });
- }
-          } else {
-            this.chance += 1;
-            activeCourse.point = activeCourse.point + this.score;
-            activeCourse.last = lessonId;
-            if (!activeCourse.lessons) {
-              activeCourse.lessons = {};
-            }
-             if(lessonId &&  activeCourse.lessons){
-                  activeCourse.lessons[lessonId] = {
-                    completed: false,
-                    isTimeOut: this.isTimeOut,
-                    isTrue: false,
-                    duration: this.updated,
-                    chance: this.chance,
-                    score: this.score,
-                    answer: this.answerText,
-                    counterStatus: this.counterStatus
-                  };
-                  this.$store.dispatch("course/setCourseLast", {
-                    unitId,
-                    lessonId,
-                    courseId: "all",
-                    unitData: activeCourse
-                  });
-             }
-          }
-        } else {
-          this.$emit("answered", true);
-          let multiple_options =
-            this.question.a && this.question.a[0]
-              ? this.question.a
-              : this.answers;
-          let answer = multiple_options.find(
-            k => k.id == this.answer && k.exa_q_true == "on"
-          );
+              if (answer) {
+                let divide = this.question.q.exa_timer
+                  ? parseInt(this.question.q.exa_timer) / this.updated
+                  : 1000;
+                // eğer süre yarısını geçtiyse, puan yarıya düşüyor ( iki ihtimalden biri gerçekleşirse  )
 
-          if (answer) {
-            let divide = this.question.q.exa_timer
-              ? parseInt(this.question.q.exa_timer) / this.updated
-              : 1000;
-            // eğer süre yarısını geçtiyse, puan yarıya düşüyor ( iki ihtimalden biri gerçekleşirse  )
+                if (this.chance == 1) {
+                  if (divide < 2) {
+                    this.score = 0.5;
+                    this.counterStatus = "stopped";
+                  } else {
+                    this.score = 1;
+                    this.counterStatus = "stopped";
+                  }
+                } else if (this.chance == 2) {
+                  this.score = 0.5;
+                  this.counterStatus = "stopped";
+                } else {
+                  this.score = 0;
+                  this.counterStatus = "stopped";
+                }
 
-            if (this.chance == 1) {
-              if (divide < 2) {
-                this.score = 0.5;
-                this.counterStatus = "stopped";
+                activeCourse.point =
+                  (activeCourse.point ? parseInt(activeCourse.point) : 0) +
+                  this.score;
+                activeCourse.last = lessonId;
+                if (!activeCourse.lessons) {
+                  activeCourse.lessons = {};
+                }
+    if(lessonId &&  activeCourse.lessons){
+                activeCourse.lessons[lessonId] = {
+                  completed: true,
+                  isTimeOut: this.isTimeOut,
+                  isTrue: true,
+                  duration: this.updated,
+                  chance: this.chance,
+                  score: this.score,
+                  answer: this.answerText,
+                  counterStatus: this.counterStatus
+                };
+                this.$store.dispatch("course/setCourseLast", {
+                  unitId,
+                  lessonId,
+                  courseId: "all",
+                  unitData: activeCourse
+                });
+    }
               } else {
-                this.score = 1;
-                this.counterStatus = "stopped";
+                this.chance += 1;
+                if(lessonId &&  activeCourse.lessons){
+                activeCourse.lessons[lessonId] = {
+                  completed: false,
+                  isTimeOut: this.isTimeOut,
+                  isTrue: false,
+                  duration: this.updated,
+                  chance: this.chance,
+                  score: this.score,
+                  answer: this.answerText,
+                  counterStatus: this.counterStatus
+                };
+                this.$store.dispatch("course/setCourseLast", {
+                  unitId,
+                  lessonId,
+                  courseId: "all",
+                  unitData: activeCourse
+                });
+                }
               }
-            } else if (this.chance == 2) {
-              this.score = 0.5;
-              this.counterStatus = "stopped";
-            } else {
-              this.score = 0;
-              this.counterStatus = "stopped";
+              this.isTrue = answer ? true : false;
             }
-
-            activeCourse.point =
-              (activeCourse.point ? parseInt(activeCourse.point) : 0) +
-              this.score;
-            activeCourse.last = lessonId;
-            if (!activeCourse.lessons) {
-              activeCourse.lessons = {};
-            }
- if(lessonId &&  activeCourse.lessons){
-            activeCourse.lessons[lessonId] = {
-              completed: true,
-              isTimeOut: this.isTimeOut,
-              isTrue: true,
-              duration: this.updated,
-              chance: this.chance,
-              score: this.score,
-              answer: this.answerText,
-              counterStatus: this.counterStatus
-            };
-            this.$store.dispatch("course/setCourseLast", {
-              unitId,
-              lessonId,
-              courseId: "all",
-              unitData: activeCourse
-            });
- }
-          } else {
-            this.chance += 1;
-             if(lessonId &&  activeCourse.lessons){
-            activeCourse.lessons[lessonId] = {
-              completed: false,
-              isTimeOut: this.isTimeOut,
-              isTrue: false,
-              duration: this.updated,
-              chance: this.chance,
-              score: this.score,
-              answer: this.answerText,
-              counterStatus: this.counterStatus
-            };
-            this.$store.dispatch("course/setCourseLast", {
-              unitId,
-              lessonId,
-              courseId: "all",
-              unitData: activeCourse
-            });
-             }
           }
-          this.isTrue = answer ? true : false;
-        }
+      }else{
+          // console.log("answered",this.question.q,this.trueText,this.answerText) 
+          // this.resultExam[1]= this.answerText.trim();
+          this.resultExam[1]= encode(this.answerText);
+
       }
     }
   }

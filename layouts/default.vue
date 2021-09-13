@@ -603,7 +603,7 @@ a {
 }
 </style>
 <style lang="scss">
-.btn-primary {
+.btn-primary, .btn-primary:hover,.btn-danger, .btn-danger:hover,.btn-success, .btn-success:hover  {
   color: #fff !important;
 }
 .modal-header {

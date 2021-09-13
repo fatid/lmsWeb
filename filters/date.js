@@ -1,14 +1,21 @@
 import Vue from "vue"
 import moment from "moment"
 
-Vue.filter("date", (dateX) => {
-    return moment(dateX).format("DD MMM YYYY")
+Vue.filter("date", (dateX,format="DD MMM YYYY") => {
+    return moment(dateX).format(format)
 })
+
 Vue.filter("onlyDay", (dateX) => {
     return moment(dateX).format("DD")
 })
 Vue.filter("onlyMonthName", (dateX) => {
     return moment(dateX).format("MMM")
+})
+Vue.filter("formatTime", (dateX) => {
+    let d = dateX / 60;
+    let m = Math.floor(s);
+    let s = dateX - m*60;
+    return m+':'+s;
 })
 Vue.filter("minuteDuration", (d) => {
     let h = d ? Math.floor(d / 60) : 0;
