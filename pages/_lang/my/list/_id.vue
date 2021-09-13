@@ -237,7 +237,7 @@ export default {
               lang: "NONE",
               filter: { fav_owner_user: ["=", rootState.user.auth.id] },
               fields:
-                "fav_content,fav_owner_user,fav_list,uye_fav_type,pdb_user",
+                "fav_content,fav_owner_user,fav_list,uye_fav_type,fav_total,pdb_user",
               sort: ["created_on,DESC"]
             }
           }).then(response => {

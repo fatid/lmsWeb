@@ -209,6 +209,8 @@ export default {
           }else{
             filters.id = ["in", ['x']]; 
           }
+          this.pagination.limit=200;
+          this.pagination.page=1;
         }
 
 

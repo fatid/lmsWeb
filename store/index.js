@@ -12,6 +12,7 @@ import user from './user'
 import form from './form'
 import core from './core'
 import poll from './poll'  
+import exam from './exam'  
 // import note from './note'
 Vue.use(Vuex); 
 
@@ -32,9 +33,7 @@ export const state = () => ({
     },
     listModal:{
         show: false,
-        detail:{
-            type:'',
-            label:''
+        data:{ 
         }
     },
     suggestWord:{
@@ -132,6 +131,7 @@ export const actions = {
            if(newList){
               
             let t = JSON.stringify(newList); 
+            let total = newList ? newList.length : 0;
             if(rootState.user.auth && rootState.user.auth.id){
               
                     await axios({
@@ -141,7 +141,7 @@ export const actions = {
                             limit: 1,
                             lang: 'NONE',
                             filter: { fav_owner_user: ["=",rootState.user.auth.id],fav_list:["=",list] },
-                            fields: "id,fav_content,fav_owner_user,fav_list,uye_fav_type,pdb_user",
+                            fields: "id,fav_content,fav_owner_user,fav_list,uye_fav_type,fav_total,pdb_user",
                             sort: ["created_on,DESC"]
                             } 
                     }).then(async response=>{ 
@@ -155,6 +155,7 @@ export const actions = {
                                 fav_content:t,
                                 fav_list:list,
                                 status:1,
+                                fav_total:total,
                                 uye_fav_type: uye_fav_type ? uye_fav_type.uye_fav_type : '',
                                 created_by: rootState.user.auth.id,
                                 fav_owner_user: rootState.user.auth.id
@@ -174,6 +175,7 @@ export const actions = {
                                             fav_content:t,
                                             fav_list:list,
                                             status:1,
+                                            fav_total:total,
                                             uye_fav_type: uye_fav_type ? uye_fav_type.uye_fav_type : '',
                                             created_by: rootState.user.auth.id,
                                             fav_owner_user: rootState.user.auth.id
@@ -277,7 +279,7 @@ export const actions = {
                     limit: 10,
                     lang: 'NONE',
                     filter: { fav_owner_user: ["=",rootState.user.auth.id] },
-                    fields: "id,fav_content,fav_owner_user,fav_list,uye_fav_type,pdb_user",
+                    fields: "id,fav_content,fav_total,fav_owner_user,fav_list,uye_fav_type,pdb_user",
                     sort: ["created_on,DESC"]
                     } 
                 }).then(response=>{
@@ -325,6 +327,7 @@ export const store = new Vuex.Store({
             form,
             core,
             search, 
-            poll, 
+            poll,
+            exam 
     }
 });

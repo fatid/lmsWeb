@@ -1,19 +1,19 @@
 <template>
-  <b-modal :title="l('List', 'g')" v-model="isVisible">
+  <b-modal :title="l('List', 'g')" v-model="listModalShow">
     <div v-if="isSuccess" class="form-group col-12 ">
       <b-alert :show="isSuccess" dismissible variant="success">
         Succesfully saved.
       </b-alert>
     </div>
 
-    <form ref="form" okTitle="Save" v-if="selectedList">
+    <form class="edit-form" ref="form" okTitle="Save" v-if="selectedList">
       <div class="d-block">
         <div class="d-block mr-5">
           <p>{{ l("List Name", "g") }}</p>
           <input
             type="text"
             name="listname"
-            class="prompt srch_explore pa-10 mr-5 w-100"
+            class=" pa-10 mr-5 w-100"
             v-model="selectedList.uye_list_name"
           />
         </div>
@@ -22,13 +22,24 @@
           <select
             type="text"
             name="listname"
-            class="prompt srch_explore pa-10 mr-5  w-100"
+            class="prompt   pa-10 mr-5  w-100"
             v-model="selectedList.uye_list_cat"
           >
             <option v-for="opt in listOptions" :value="opt.value">{{
               opt.name
             }}</option>
           </select>
+        </div>
+        <div class="d-block mt-10 mr-5" >
+          <p>{{ l("Shared with", "g") }}</p>
+
+           <textarea
+            type="text"
+            name="uye_shared_emails"
+            class="prompt   pa-10 mr-5 w-100"
+            v-model="selectedList.uye_shared_emails"
+          ></textarea>
+      
         </div>
       </div>
     </form>
@@ -37,7 +48,7 @@
         <b-button class="btn btn-primary" @click="saveUyeList(selectedList)">
           {{ l("Save", "g") }}
         </b-button>
-        <a size="md" variant="success" @click="isVisible = false">{{
+        <a size="md" variant="success" @click="listModalShow = false">{{
           l("Close", "g")
         }}</a>
       </div>
@@ -60,7 +71,7 @@ export default {
     
   },
   props:{
-      selectedList:Object
+    //   selectedList:Object
   },
   computed: {
     auth() {
@@ -83,6 +94,14 @@ export default {
         this.$store.state.listModal = val;
       }
     },
+    selectedList: {
+      get() {
+        return this.$store.state.listModal.data;
+      },
+      set(val) {
+        this.$store.state.listModal.data = val;
+      }
+    },
     listModalShow: {
       get() {
         return this.$store.state.listModal.show;
@@ -96,7 +115,7 @@ export default {
     return {
       my_lists: [],
     
-      isVisible: false,
+    //   listModalShow: false,
       isSuccess: false,
       uyeListItem: {
         id: null,
@@ -123,7 +142,7 @@ export default {
     },
     editList(list) {
       this.selectedList = list;
-      this.isVisible = true;
+      this.listModalShow = true;
     },
     getListData(id, type = "data") {
       let items = this.likes.filter(k => k.list == id);
@@ -139,7 +158,7 @@ export default {
         uye_list_name: "",
         view: "edit"
       };
-      this.isVisible = true;
+      this.listModalShow = true;
     },
     async saveUyeList(mp) {
       let method = "post";
@@ -155,14 +174,13 @@ export default {
         method,
         data: {
           id: mp.id,
-          uye_list_name: mp.uye_list_name,
-          uye_list_cat: mp.uye_list_cat,
-          status: 1,
-          prev_id: this.auth.id
+          uye_list_name: mp.uye_list_name ,
+          uye_shared_emails: mp.uye_shared_emails ,
+
         }
       }).then(response => {
         this.saveStatus = { show: true, stataus: "success" };
-        this.getUyeLists();
+        // this.getUyeLists();
       });
     },
     getUyeLists() {
@@ -180,7 +198,7 @@ export default {
           params: {
             limit: 100,
             offset: 0,
-            fields: "uye_list_name,id,uye_list_cat",
+            fields: "uye_list_name,id,uye_list_cat,uye_shared_emails",
             lang: this.$store.state.locale,
             sort: ["sort,ASC"],
             filter: filters
@@ -207,7 +225,7 @@ export default {
                 }
               }
 
-              this.isVisible = false;
+              this.listModalShow = false;
             }
           })
           .catch(err => console.log("err", err));
@@ -216,3 +234,15 @@ export default {
   }
 };
 </script>
+<style  >
+.edit-form  input{
+        border: 1px solid #efefef!important;
+        background: #fff;
+        padding: 5px;
+}
+.edit-form  textarea{
+        border: 1px solid #efefef!important;
+        background: #fff;
+        padding: 5px;
+}
+</style>
