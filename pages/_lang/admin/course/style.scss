@@ -1,0 +1,83 @@
+.modal-form{
+    display: block;
+     width: 100%;
+  .modal-form-row{
+    padding: 6px;
+    border-bottom: 1px solid #f9f9f9;
+    margin-bottom: 6px;
+    display: inline-flex;
+    width: 100%;
+  }
+  label{
+    width: 200px;
+    overflow: hidden;
+    white-space: nowrap;
+    padding: 3px;
+     line-height: 1;
+  }
+  .modal-form-input,
+  input, select{
+    padding: 7px;
+    line-height: 1.5;
+    width: 200px;
+    border: 1px solid #bfbfbf;
+    border-radius: 5px;
+    background: #fff;
+  }
+}
+
+.imageUpload{
+    width: 100px;
+}
+.table-header{
+    width: 100%;
+    display: inline-flex;
+    justify-content: space-between;
+    padding-top: 10px ;
+    padding-bottom: 10px ;
+  }
+  a.table-buttons{
+    padding: 5px;
+  }
+  a.table-buttons:hover i{
+    color: #e44432;
+  }
+
+  
+ul.my_lists{
+    height: 200px;
+    margin-right: 20px;
+    width: 200px;
+    overflow: auto;
+    padding-left: 8px;
+    direction: rtl;
+    background: #fff;
+   padding: 10px;
+   border-radius: 4px;
+}
+ul.my_lists li {
+    border-bottom: 1px solid #f5f5f5;
+    padding: 2px 0px;
+    border-radius: 3px;
+    margin-bottom: 3px;
+    cursor:pointer; 
+    display: inline-flex;
+    justify-content: space-between;
+    width: 100%;
+}
+ul.my_lists li.selected {
+    color: #d1492b;
+    font-weight:600;
+    border-radius: 3px;
+    margin-bottom: 3px;
+    cursor:pointer; 
+}
+.table_topic{
+    width: 100%;
+  }
+.topic_container{
+  display: inline-flex;
+  width: 100%;
+  flex: 200px auto;
+
+}

@@ -33,7 +33,7 @@ export default {
     },
   },
   methods:{
-
+    
     getLevel(q) {
       if (this.levels && q && q) {
         let a = q

@@ -41,6 +41,28 @@
           ></textarea>
       
         </div>
+         <div class="d-block mr-5" v-if="selectedList.id">
+          <p>{{ l("List Status", "g") }}</p>
+          <select
+            type="text"
+            name="listname"
+            class="prompt   pa-10 mr-5  w-100"
+            v-model="selectedList.uye_list_status"
+          >
+            <option v-for="opt in listStatus" :value="opt.value">{{
+              opt.name
+            }}</option>
+          </select>
+        </div>
+         <div class="d-block mr-5">
+          <p>{{ l("Shared", "g") }}</p>
+          <input
+            type="text"
+            name="listname"
+            class=" pa-10 mr-5 w-100"
+            v-model="selectedList.uye_list_name"
+          />
+        </div>
       </div>
     </form>
     <template #modal-footer="{ ok, cancel, hide }">
@@ -129,6 +151,11 @@ export default {
         { name: "Course", value: "Course" },
         { name: "Exam", value: "Exam" },
         { name: "Word", value: "Word" }
+      ],
+      listStatus: [
+        { value: "1", name: "Active" },
+        { value: "2", name: "Deactive" },
+        { value: "3", name: "Removed" }
       ]
     };
   },
@@ -176,6 +203,7 @@ export default {
           id: mp.id,
           uye_list_name: mp.uye_list_name ,
           uye_shared_emails: mp.uye_shared_emails ,
+          uye_list_status: mp.uye_list_status ,
 
         }
       }).then(response => {
@@ -198,7 +226,7 @@ export default {
           params: {
             limit: 100,
             offset: 0,
-            fields: "uye_list_name,id,uye_list_cat,uye_shared_emails",
+            fields: "uye_list_name,id,uye_list_cat,uye_shared_emails,uye_list_status",
             lang: this.$store.state.locale,
             sort: ["sort,ASC"],
             filter: filters
@@ -241,6 +269,11 @@ export default {
         padding: 5px;
 }
 .edit-form  textarea{
+        border: 1px solid #efefef!important;
+        background: #fff;
+        padding: 5px;
+}
+.edit-form  select{
         border: 1px solid #efefef!important;
         background: #fff;
         padding: 5px;

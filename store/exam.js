@@ -233,7 +233,7 @@ const actions = {
             // er_empty:form.empty,
             // er_total:form.total,
             // er_List:form.list,
-            er_time:0,
+            er_time:form.time,
             status:1
         };
 

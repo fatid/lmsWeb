@@ -56,6 +56,14 @@
         <span >
           <b-button
             v-if="list.view == 'read'"
+            variant="success"
+            :title="'Open List'"
+            @click="goPath('filter/'+list.uye_list_cat, {list:list.id})"
+            pill
+            >OPEN</b-button
+          >
+          <b-button
+            v-if="list.view == 'read'"
             variant="primary"
             :title="'Copy Link'"
             @click="copyText('my/list?id='+list.id+'&view=1')"
