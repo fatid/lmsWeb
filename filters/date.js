@@ -13,8 +13,10 @@ Vue.filter("onlyMonthName", (dateX) => {
 })
 Vue.filter("formatTime", (dateX) => {
     let d = dateX / 60;
-    let m = Math.floor(s);
+    let m = Math.floor(d);
     let s = dateX - m*60;
+    m=m<10 ? '0'+m : m ;
+    s=s<10 ? '0'+s : s ;
     return m+':'+s;
 })
 Vue.filter("minuteDuration", (d) => {

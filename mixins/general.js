@@ -367,7 +367,7 @@ export default {
     },
     getOptName(id,group,field){
         let options= this.$store.state.core.options
-    
+        console.log("options",group,options)
         if(options && options[group]){
             let res = options[group].find(k=> k.id==id)
             if(field && res){

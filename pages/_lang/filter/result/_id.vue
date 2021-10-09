@@ -34,7 +34,7 @@
                 class="btn btn-primary mr-10"
                 @click="goPath('filter/Exam',{list:data.from_er_List.id})"
                 @click.middle="goPathBlank('filter/Exam',{list:data.from_er_List.id})"
-                >{{ l("Start New Exam", "g") }} {{data.from_er_List ? data.from_er_List.id : ''}}</a
+                >{{ l("Start New Exam", "g") }} </a
               > 
               <a  v-if="view!='detail'"
                 class="btn btn-success mr-10"

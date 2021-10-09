@@ -221,7 +221,7 @@
                 <b-dropdown size="sm" variant="outline-success" v-if="!selected_list" >
                   <template #button-content>
                     <a>
-                      {{ "Order by:" + orderByList[orderBy].label }}
+                    {{l('Order by:')}}    {{ orderByList[orderBy].label }}
                       <i class="fas fa-chevron-down"></i>
                     </a>
                   </template>
@@ -234,7 +234,7 @@
                 </div>
                 <div class="filter_header_item" v-if="selected_list && selected_list_data">
 
-                        {{l('You have selected','g')}} :  <b> {{selected_list_data ? selected_list_data.uye_list_name : ''}}</b>
+                        {{l('You are in','g')}} :  <b> {{selected_list_data ? selected_list_data.uye_list_name : ''}}</b>
 
                 </div>
                  
@@ -293,6 +293,7 @@
               <div class="col-3 ">
                 <div  v-if="search.module == 'Exam' && selected_list && data && data[0]" >
                 <div v-if="exam && exam.id" >
+                            <div class="timer">  {{timeShow}} </div>
                             <a class="btn btn-primary btn-small" 
                                     @click="finishExam()"
                                 >{{l('Finish Exam','g')}} 
@@ -511,14 +512,7 @@
               <div v-else-if="search.module == 'Exam'">
 
                  <!-- uf:exam: {{uf_exam}} / {{$store.state.exam.uf_exam}} -->
-                 <div v-if="examResults && examResults.show==true"> 
-
-                        {{examResults}}
-                        <button class="btn btn-success" @click="backToList()">
-                            {{l('Back To List','g')}}
-                        </button>
-                 </div>
-                 <div v-else>
+                 <div >
                             <div
                             v-for="dt in data"
                             class="list_item"
@@ -680,7 +674,7 @@
                                     <a @click.stop="$store.state.listModal= { show:true,data: list}"> <i class="fas fa-pen"></i></a>
                         </li>
                 </ul>
-                <h4>{{l('List Shared','g')}} 
+                <h4>{{l('Ready Searches','g')}} 
 
                     <a v-show="selected_list" @click="$router.push({path:'',query:{}})">
                        X
@@ -688,7 +682,7 @@
                 
             </h4>
 
-            {{examList}}
+            Not found
             <!-- <ul class="my_lists">
                 <li 
                         @click="$router.push({path:'',query:{list:list.id==selected_list?'':list.id}})"
@@ -705,6 +699,7 @@
 import general from "@/mixins/general";
 import filter from "@/mixins/filter";
 import axios from "axios";
+import moment from "moment";
 import question from "@/components/utils/question.vue";
 import banners from "@/components/common/banner.vue";
 import moreInfoWord from "@/components/word/moreInfo.vue";
@@ -734,6 +729,9 @@ export default {
     await this.getResults();
   },
   watch: {
+    'exam.created_on'(){
+      this.countTimer();
+    },
     data(val) {
       console.log("data changed", val);
     },
@@ -827,6 +825,9 @@ export default {
   },
   data() {
     return {
+      time:0,
+      timeShow:'00:00',
+      timer:null,
       networks: [
         // { network: 'baidu', name: 'Baidu', icon: 'fas fah fa-lg fa-paw', color: '#2529d8' },
         // { network: 'buffer', name: 'Buffer', icon: 'fab fah fa-lg fa-buffer', color: '#323b43' },
@@ -939,6 +940,7 @@ export default {
                             list: this.selected_list_data.id,
                         }
                     });  
+                     clearInterval(this.timer);
                 }  
     },
     pauseeExam(id){ 
@@ -948,6 +950,19 @@ export default {
 
         this.exam = this.uf_exam;
 
+    },
+    countTimer(){
+       
+       this.timer = setInterval(()=>{ 
+         this.time = moment().diff(moment(this.exam.created_on),'seconds');
+          let d = this.time / 60;
+          let m = Math.floor(d);
+          let s = this.time - m*60;
+          m=m<10 ? '0'+m : m ;
+          s=s<10 ? '0'+s : s ;
+          this.timeShow =   m+':'+s;
+         
+        }, 1000);
     },
     startExam(){
         // sınav başladığında süre başlayacak ve yan bölümler kararacak ( limitler kalkacak )
@@ -972,6 +987,7 @@ export default {
                             total: this.selected_list_data.fav_total,
                         }
                     }); 
+
                 } 
 
 
@@ -982,12 +998,13 @@ export default {
           console.log("selected_list_data",this.selected_list_data)
          if( this.selected_list_data && this.selected_list_data.id){
              let results = this.$store.state.exam.resultExam;
-        
+              clearInterval(this.timer);
              this.$store.dispatch("exam/finishExam", {
                  form: {
                      list: this.selected_list_data.id,
                      total: this.selected_list_data.fav_total,
                      exam: this.exam,
+                     time: this.time,
                      results:results
                  }
              }); 
@@ -1473,5 +1490,17 @@ ul.my_lists li.selected {
     border-radius: 3px;
     margin-bottom: 3px;
     cursor:pointer; 
+}
+.timer{
+    border-radius: 5px;
+    background: #f9f9f9;
+    border: 1px solid #efefef;
+    padding: 4px 10px;
+    font-size: 16px;
+    /* line-height: 1.5; */
+    height: 34px;
+    color: #494949;
+    display: inline-flex;
+    margin: 0;
 }
 </style>
