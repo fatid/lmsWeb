@@ -55,6 +55,14 @@
       </div>
       <template #modal-footer>
         <div class="w-100">
+
+           <select class="modal-form-input" v-model="edited.status">
+              <option v-for="u in statusList" :key="u.value" :value="u.value">{{
+                u.label
+              }}</option>
+            </select>
+
+            
           <b-button
             variant="default"
             size="sm"
@@ -143,8 +151,9 @@
             <span v-else-if="props.column.field == 'count'">
               {{ count?  count[props.row.id] :'' }}  
             </span>
-            <span v-else>
+            <span v-else><a @click="goPath('admin/course/' + courseId + '/' + props.row.id+'/lessons')">
               {{ props.row[props.column.field] }}
+              </a>
             </span>
           </template>
         </vue-good-table>

@@ -36,6 +36,12 @@
       </div>
       <template #modal-footer>
         <div class="w-100">
+
+           <select class="modal-form-input" v-model="edited.status">
+              <option v-for="u in statusList" :key="u.value" :value="u.value">{{
+                u.label
+              }}</option>
+            </select>
           <b-button
             variant="default"
             size="sm"
