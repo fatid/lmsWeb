@@ -686,7 +686,7 @@ import CustomImage from '@/fd-tiptap/extension/kv-image';
 import FontFamily from "@tiptap/extension-font-family";
  import Document from '@tiptap/extension-document'
 import BulletList from "@tiptap/extension-bullet-list";
-import SvgIcon from "@/components/common/SvgIcon.vue";
+import SvgIcon from "@/components/common/svgIcon.vue";
 import TextAlign from "@tiptap/extension-text-align";
 import Table from "@tiptap/extension-table";
 import TableRow from "@tiptap/extension-table-row";
