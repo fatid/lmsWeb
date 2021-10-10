@@ -1,0 +1,56 @@
+{
+    "_from": "@/kv-tiptap/extension/extension-font-size",
+    "_id": "@/kv-tiptap/extension/extension-font-size@2.0.0-beta.13",
+    "_inBundle": false,
+    "_integrity": "sha512-3eFVpaO0ZxuAkFgb5mLlotbV7Y1CPka4bfAbRuo12VPhQL45P6lZ9EeH6vSCCiYAqVX3msalDLXOCVJct7N4DA==",
+    "_location": "/@/kv-tiptap/extension/extension-font-size",
+    "_phantomChildren": {},
+    "_requested": {
+      "type": "tag",
+      "registry": true,
+      "raw": "@/kv-tiptap/extension/extension-font-size",
+      "name": "@/kv-tiptap/extension/extension-font-size",
+      "escapedName": "@tiptap%2fextension-font-size",
+      "scope": "@tiptap",
+      "rawSpec": "",
+      "saveSpec": null,
+      "fetchSpec": "latest"
+    },
+    "_requiredBy": [
+      "#USER",
+      "/"
+    ],
+    "_resolved": "https://registry.npmjs.org/@/kv-tiptap/extension/extension-font-size/-/extension-font-size-2.0.0-beta.13.tgz",
+    "_shasum": "1f465b4961f875da81f925e7df34efad6342e9c7",
+    "_spec": "@/kv-tiptap/extension/extension-font-size",
+    "_where": "C:\\Users\\Fatih Demir\\projects\\corona-ux\\corona-ux",
+    "bundleDependencies": false,
+    "deprecated": false,
+    "description": "font size extension for tiptap",
+    "files": [
+      "src",
+      "dist"
+    ],
+    "funding": {
+      "type": "github",
+      "url": "https://github.com/sponsors/ueberdosis"
+    },
+    "gitHead": "5c8e46b0d48aa09ba0d2e8337ae6bbb2d7503e82",
+    "homepage": "https://tiptap.dev",
+    "keywords": [
+      "tiptap",
+      "tiptap extension"
+    ],
+    "license": "MIT",
+    "main": "dist/tiptap-extension-font-size.cjs.js",
+    "module": "dist/tiptap-extension-font-size.esm.js",
+    "name": "@/kv-tiptap/extension/extension-font-size",
+    "peerDependencies": {
+      "@tiptap/core": "^2.0.0-beta.1",
+      "@tiptap/extension-text-style": "^2.0.0-beta.1"
+    },
+    "types": "dist/packages/extension-font-size/src/index.d.ts",
+    "umd": "dist/tiptap-extension-font-size.umd.js",
+    "version": "2.0.0-beta.13"
+  }
+  

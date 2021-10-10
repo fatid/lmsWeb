@@ -81,6 +81,11 @@
       </div>
       <template #modal-footer>
         <div class="w-100">
+             <select class="modal-form-input" v-model="edited.status">
+              <option v-for="u in statusList" :key="u.value" :value="u.value">{{
+                u.label
+              }}</option>
+            </select>
           <b-button
             variant="default"
             size="sm"
@@ -184,8 +189,9 @@
             <span v-else-if="props.column.field == 'count'">
                  {{count[props.row.id]}}
             </span>
-            <span v-else>
+            <span v-else><a   @click="goPath(`admin/course/${props.row.id}/units`)">
               {{ props.formattedRow[props.column.field] }} 
+              </a>
             </span>
           </template>
         </vue-good-table>
@@ -238,12 +244,7 @@ export default {
           width: "70px",
         sortable: false,
       },
-      {
-        label: "Units",
-        field: "count",
-        width: "60px",
-        sortable: false,
-      },
+   
       {
         label: "Course Name",
         field: "cou_name"
@@ -251,6 +252,12 @@ export default {
       {
         label: "Level",
         field: "cou_level"
+      },
+         {
+        label: "Units",
+        field: "count",
+        width: "60px",
+        sortable: false,
       },
       {
         label: "Action",
