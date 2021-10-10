@@ -2,6 +2,13 @@
   <div class="container">
     <b-modal
       id="modal-xl"
+      v-model="showMass.show"
+      scrollable
+      size="xl"
+      :title="'Mass Addition'"
+    ></b-modal>
+    <b-modal
+      id="modal-xl"
       v-model="show"
       scrollable
       size="xl"
@@ -83,19 +90,57 @@
               class="modal-form-input"
               v-model="editedTopic.lesson_name"
             />
+             <select class="modal-form-input" v-model="editedTopic.lesson_type">
+              <option v-for="u in lessonType" :key="u.value" :value="u.value">{{
+                u.label
+              }}</option>
+          </select>
           </span>
         </div>  
-         <div class="modal-form-row">
+          <div class="modal-form-row" v-show="editedTopic.lesson_type=='Exam'">
        
-          <span
-            >
-            
+          <span style="width: 100%; display: block;">  
+          <span style="width: 100%; display: inline-flex;">  
+            Choose Question
+            <input
+              type="text"
+              class="modal-form-input"
+              v-model="qs.name" 
+              @change="getQuestions()"
+            />
+             <select class="modal-form-input" v-model="qs.type" @change="getQuestions()">
+              <option    v-for="(opt, key) in l('cat.QuestionTypes.list', 'g')"  :key="key" :value="key">{{
+                  opt.name 
+              }}</option>
+             </select>
+             <select class="modal-form-input" v-model="qs.level" @change="getQuestions()">
+               <option v-for="u in levels" :key="u.id" :value="u.id">{{
+                u.cou_level_name
+              }}</option>
+            </select>
+          </span>
+          <span style="width: 100%; display: block;">
+            <span class="question-border" 
+            :class="editedTopic.lesson_question==q.q.id ? 'green-border':''"
+            v-for="q in questions">  
           
-      <!-- <tiptap    /> --> 
-      <tiptap v-model="editedTopic.lesson_description"  
-              @updated="editedTopic.lesson_description=$event"
-       />
-   
+                <a v-if="editedTopic.lesson_question==q.q.id" @click="editedTopic.lesson_question='q.q.id'">Deselect this question</a>
+                <a v-else @click="editedTopic.lesson_question=q.q.id">Select this question {{q.q.id}} </a>
+
+                <question
+                  :question="q" 
+                  :isAnswered="false" 
+                ></question>
+            </span>
+            </span>
+            </span>
+        </div> 
+         <div class="modal-form-row" v-show="editedTopic.lesson_type=='Content'">
+       
+          <span style="width: 100%; display: block;">     <!-- <tiptap    /> --> 
+                  <tiptap v-model="editedTopic.lesson_description"  
+                          @updated="editedTopic.lesson_description=$event"
+                  /> 
             <!-- <textarea
               type="text"
               class="modal-form-input"
@@ -103,7 +148,7 @@
             ></textarea> -->
           </span>
         </div> 
-        <div class="ui left icon input swdh11 swdh19">
+        <div class="ui left icon input swdh11 swdh19" v-show="editedTopic.lesson_type=='Image'">
           <div v-if="!editedTopic.lesson_photo">
             <p>
               <a>{{ l("Upload image", "g") }}</a>
@@ -194,72 +239,80 @@
       </div>
       <div v-show="selectedLesson" class="col-12 col-md-12 col-sm-12">
         <div class="topic_container">
-            <ul class="my_lists">
-              <li v-for="d in data" :class="selectedLesson==d.id ? 'selected':''" > 
-              <a  
-                  @click="selectedLesson=d.id">{{ d.section_name }}
-              </a>
-              {{ count ? count[d.id] : '' }}   
-              </li></ul>
+              <div><ul class="my_lists">
+                  <li v-for="d in data" :class="selectedLesson==d.id ? 'selected':''" > 
+                      <a  @click="selectedLesson=d.id">{{ d.section_name }}
+                      </a>
+                      {{ count ? count[d.id] : '' }}   
+                  </li>
+              </ul>
+              <br />
+   <div class="btn btn-danger"   @click="openModalMass({type:'question' })">
+            + {{ l("Add Mass Questions", "g") }}
+          </div>
+              <br />
+              <br />
+   <div class="btn btn-danger"    @click="openModalMass({type:'image' })">
+            + {{ l("Add Mass Images", "g") }}
+          </div>
+              </div>
               <div class="table_topic">
- <vue-good-table
-          :columns="columns2"
-          :rows="dataLesson"
-          :search-options="{
-            enabled: true,
-            trigger: 'enter'
-          }"
-          :sort-options="{
-            enabled: true,
-            initialSortBy: { field: 'sort', type: 'asc' }
-          }"
-          :rtl="LOCALE == 'ar' ? true : false"
-        >
-          <template slot="table-row" slot-scope="props">
-            <span v-if="props.column.field == 'action'">
-              <a class="table-buttons" @click="openModalTopic(props.row)"
-                ><i class="fa fa-pen"></i
-              ></a>
-              <a
-                class="table-buttons"
-                @click="selectedLesson=props.row.id"
-                @click.middle="
-                  goPathBlank('admin/course/' + courseId + '/' + uniteId +'/lessons?lesson='+props.row.id)
-                "
-                ><i class="fas fa-list-alt"></i
-              ></a>
-              <a
-                class="table-buttons"
-                @click="
-                  goPathBlank(
-                    'course/' + props.row.prev_id + '/' + props.row.id
-                  )
-                "
-                @click.middle="
-                  goPathBlank(
-                    'course/' + props.row.prev_id + '/' + props.row.id
-                  )
-                "
-                ><i class="fa fa-eye"></i
-              ></a>
-            </span>
-            <span v-else-if="props.column.field == 'lesson_photo'">
-              <img
-                v-if="props.row.lesson_photo"
-                :src="show_image(props.row.lesson_photo, '50', '50', '', '90')"
-                alt=""
-              />
-            </span>
-            <span v-else-if="props.column.field == 'count'">
-              {{ count ? count[props.row.id] : '' }}  
-            </span>
-            <span v-else>
-               {{ props.row[props.column.field] }} 
-            </span>
-          </template>
-        </vue-good-table>
-
-
+                    <vue-good-table
+                      :columns="columns2"
+                      :rows="dataLesson"
+                      :search-options="{
+                        enabled: true,
+                        trigger: 'enter'
+                      }"
+                      :sort-options="{
+                        enabled: true,
+                        initialSortBy: { field: 'sort', type: 'asc' }
+                      }"
+                      :rtl="LOCALE == 'ar' ? true : false"
+                    >
+                      <template slot="table-row" slot-scope="props">
+                        <span v-if="props.column.field == 'action'">
+                          <a class="table-buttons" @click="openModalTopic(props.row)"
+                            ><i class="fa fa-pen"></i
+                          ></a>
+                          <a
+                            class="table-buttons"
+                            @click="selectedLesson=props.row.id"
+                            @click.middle="
+                              goPathBlank('admin/course/' + courseId + '/' + uniteId +'/lessons?lesson='+props.row.id)
+                            "
+                            ><i class="fas fa-list-alt"></i
+                          ></a>
+                          <a
+                            class="table-buttons"
+                            @click="
+                              goPathBlank(
+                                'course/' + props.row.prev_id + '/' + props.row.id
+                              )
+                            "
+                            @click.middle="
+                              goPathBlank(
+                                'course/' + props.row.prev_id + '/' + props.row.id
+                              )
+                            "
+                            ><i class="fa fa-eye"></i
+                          ></a>
+                        </span>
+                        <span v-else-if="props.column.field == 'lesson_photo'">
+                          <img
+                            v-if="props.row.lesson_photo"
+                            :src="show_image(props.row.lesson_photo, '50', '50', '', '90')"
+                            alt=""
+                          />
+                        </span>
+                        <span v-else-if="props.column.field == 'count'">
+                          {{ count ? count[props.row.id] : '' }}  
+                        </span>
+                        <span v-else>
+                          {{ props.row[props.column.field] }} 
+                        </span>
+                      </template>
+                    </vue-good-table> 
               </div>
           </div>
     
@@ -334,17 +387,23 @@ import { VueGoodTable } from "vue-good-table";
 import banners from "@/components/common/banner.vue";
 import tiptap from "@/components/common/Tiptap.vue";
 import "vue-good-table/dist/vue-good-table.css";
+import question from "@/components/utils/question.vue"; 
+
 export default {
   mixins: [general, admin_course],
   components: {
     banners,
     VueGoodTable,
-    tiptap
+    tiptap,
+    question
   },
   computed:{
     lessonId(){
       return this.$route.query.lesson;
-    }
+    },
+     levels() {
+      return this.$store.state.core.options["co_level"];
+    },
   },
   data: () => ({
     edited: {
@@ -360,6 +419,22 @@ export default {
     editedTopic:{
       status:1
     },
+    lessonType:[
+      {label:'Exam',value:'Exam'},
+      {label:'Course',value:'Course'},
+      {label:'Video',value:'Video'},
+      {label:'Image',value:'Image'},
+      {label:'Content',value:'Content'},
+    ],
+    showMass:{
+      show: false,type:null
+    },
+    qs:{
+      name:'',
+      type:'',
+      level:''
+    },
+    questions:[],
     columns: [
       {
         label: "Sort",
@@ -420,7 +495,13 @@ export default {
     selectedLesson(val){
            this.getTopics();
           this.setDefaultTopic();
+    },
+    'editedTopic.lesson_question'(val){
+
+        this.getQuestions(val);
+
     }
+
   },
   async created() {
     this.setDefault();
@@ -500,6 +581,10 @@ export default {
           sort:this.dataLesson.length+1,
        }
     },
+    openModalMass(type) {
+      this.showMass.show = true;
+      this.showMass.type = type; 
+    },
     openModal(row) {
       this.show = true;
       if(!row.id){
@@ -533,6 +618,8 @@ export default {
           lesson_name: d.lesson_name, 
           lesson_photo: d.lesson_photo, 
           lesson_description: d.lesson_description, 
+          lesson_type: d.lesson_type, 
+          lesson_question: d.lesson_question, 
           lesson_video_url: d.lesson_video_url, 
           prev_id: this.selectedLesson, 
           sort: d.sort,
@@ -579,7 +666,52 @@ export default {
         }, 500);
       });
     },
-
+ async getQuestions(id) {
+        let fields =
+        "id,sort,status,exa_type,rs_Question,exa_image,exa_sound,exa_video,exa_timer,exa_ready";
+        let filter={}
+        if(id){
+            filter.id= ["=", id];
+        }else{
+ 
+            if(this.qs.name){
+              filter.rs_Question= ["LIKE", this.qs.name];
+            }
+            if(this.qs.level){
+              filter.exa_degree= ["=", this.qs.level];
+            }
+            if(this.qs.type){
+              filter.exa_type= ["=", this.qs.type];
+            }
+        }
+      axios({
+        url: process.env.baseURL + "exam_q",
+        method: "get",
+        params: {
+          limit: 20,
+          offset: 0,
+          fields,
+          lang: this.$store.state.locale,
+          sort: ["random,ASC"],
+          filter
+        }
+      })
+        .then(response => {
+          if (
+            response.data &&
+            response.data.formattedData &&
+            response.data.formattedData[0]
+          ) {
+           this.questions  = response.data.formattedData.map(k=>{
+                return {a:null,q:k}
+            })
+          
+          }
+        })
+        .catch(e => {
+          this.questions = null;
+        });
+    },
     async getList() {
       let fields = `sort,section_name,lesson_unite,id,status,created_on,created_by,id,status`;
       // let prev = this.$route.params.course;
@@ -620,7 +752,7 @@ export default {
       });
     },
     async getTopics() {
-      let fields = `sort,lesson_name,lesson_photo,lesson_video,lesson_description,lesson_video_url,created_on,created_by,id,status`;
+      let fields = `sort,lesson_name,lesson_photo,lesson_question,lesson_video,lesson_type,lesson_description,lesson_video_url,created_on,created_by,id,status`;
       // let prev = this.$route.params.course;
       let filters = {   prev_id: ["=", this.selectedLesson] };
 filters.status=["=", this.filter.status ? this.filter.status  : 1] ;

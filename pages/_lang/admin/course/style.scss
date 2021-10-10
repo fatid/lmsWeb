@@ -35,7 +35,14 @@
     border-radius: 5px;
     background: #fff;
   }
-
+  .question-border{
+    width: 100%; display: block; border: 1px solid #efefef; border-radius: 3px; padding:10px;
+    margin-top: 6px;
+  }
+  .green-border{
+  border: 1px solid #89e23f; 
+  background: #effae7;
+  }
 .imageUpload{
     width: 100px;
 }

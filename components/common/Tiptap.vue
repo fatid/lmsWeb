@@ -2,8 +2,9 @@
   <div
     style="
       border: 1px solid #dddbda;
-      height: calc(100vh - 150px);
+      height: calc(100vh - 250px);
       padding: 0px;
+      width: 100%;
       border-radius: 10px;
     "
   >
@@ -244,7 +245,7 @@
           <svg-icon icon="kv-icon-tt-right_align_text"></svg-icon>
         </a>
 
-        <b-popover target="popover-3" triggers="hover focus">
+        <!-- <b-popover target="popover-3" triggers="hover focus">
           <compact-picker
             @input="color.highlight = $event"
             :value="color.highlight"
@@ -264,7 +265,7 @@
         </b-popover>
           <a class="last group single" id="popover-4" variant="primary"
             ><svg-icon icon="fa-palette" class="fas"></svg-icon
-          ></a>
+          ></a> -->
       </bubble-menu>
       <floating-menu
         class="floating-menu"
@@ -405,19 +406,18 @@
         </a> 
         
 
-        <el-dropdown :hide-on-click="false" >
-          <span class="el-dropdown-link single-button">
-             <svg-icon icon="kv-icon-tt-info"></svg-icon>
-            <i class="el-icon-arrow-down el-icon--right"></i>
-          </span> 
-          <el-dropdown-menu slot="dropdown" > 
+        <b-dropdown :hide-on-click="false" >
+          <template #button-content><span class="el-dropdown-link single-button">
+              <i class="fas fa-info-circle"></i>
+            <i class="fas fa-chevron-down el-icon--right"></i>
+          </span> </template>
+        
             <el-dropdown-item v-for="size in infoBoxes" :key="size.value" :value="size.value"
               ><a @click="data.info=size.value">
                  {{ size.label }}
               </a></el-dropdown-item>
-
-          </el-dropdown-menu>
-        </el-dropdown>
+ 
+        </b-dropdown>
 
 
         <a class="single-button" @click="openImageBox()">
@@ -440,7 +440,7 @@
 
 
 
-   <el-popover placement="right" width="250" trigger="hover">
+    <b-popover target="popover-5" triggers="hover focus">
                 <div class="table-chooser">
                   <div
                     v-for="col in tableColumns"
@@ -459,85 +459,88 @@
                     {{ col.label }}
                   </div>
                 </div>
-                <a slot="reference" class="single-button"  v-show="!editor.can().deleteTable()">
-                    <svg-icon icon="kv-icon-tt-table"></svg-icon>
+               
+              </b-popover>
+               <a  class="single-button"  id="popover-5" variant="primary" v-show="!editor.can().deleteTable()">
+                    <i class="fas fa-table"></i>
                 </a>
-              </el-popover>
-        <el-dropdown :hide-on-click="false" v-if="editor.can().deleteTable()">
-          <span class="el-dropdown-link single-button">
-            <svg-icon icon="kv-icon-tt-table"></svg-icon>
-            <i class="el-icon-arrow-down el-icon--right"></i>
-          </span>
 
+                <b-dropdown id="dropdown-table-2" text="Dropdown Button" class="m-md-2"  v-if="editor.can().deleteTable()">
+          <template #button-content>
+               <span class="el-dropdown-link single-button">
+             <i class="fas fa-table"></i>
+                        <i class="fas fa-chevron-down el-icon--right"></i>
+
+          </span>
+ </template>
        
-          <el-dropdown-menu slot="dropdown" >
-          
-            <el-dropdown-item v-if="editor.can().addColumnBefore()"
+         
+            <b-dropdown-item v-if="editor.can().addColumnBefore()"
               ><a @click="editor.chain().focus().addColumnBefore().run()">
                 Add Column Before
-              </a></el-dropdown-item
+              </a></b-dropdown-item
             >
-            <el-dropdown-item v-if="editor.can().addColumnAfter()"
+            <ebl-dropdown-item v-if="editor.can().addColumnAfter()"
               ><a @click="editor.chain().focus().addColumnAfter().run()">
                 Add Column After
-              </a></el-dropdown-item
+              </a></ebl-dropdown-item
             >
-            <el-dropdown-item v-if="editor.can().deleteColumn()"
+            <b-dropdown-item v-if="editor.can().deleteColumn()"
               ><a @click="editor.chain().focus().deleteColumn().run()">
                 Delete Column
-              </a></el-dropdown-item
+              </a></b-dropdown-item
             >
-            <el-dropdown-item v-if="editor.can().addRowBefore()"
+            <b-dropdown-item v-if="editor.can().addRowBefore()"
               ><a @click="editor.chain().focus().addRowBefore().run()">
                 Addd Row Before
-              </a></el-dropdown-item
+              </a></b-dropdown-item
             >
-            <el-dropdown-item v-if="editor.can().addRowAfter()"
+            <b-dropdown-item v-if="editor.can().addRowAfter()"
               ><a @click="editor.chain().focus().addRowAfter().run()">
                 Add Row After
-              </a></el-dropdown-item
+              </a></b-dropdown-item
             >
-            <el-dropdown-item v-if="editor.can().deleteRow()"
+            <b-dropdown-item v-if="editor.can().deleteRow()"
               ><a @click="editor.chain().focus().deleteRow().run()">
                 Delete Row
-              </a></el-dropdown-item
+              </a></b-dropdown-item
             >
-            <el-dropdown-item v-if="editor.can().deleteTable()"
+            <b-dropdown-item v-if="editor.can().deleteTable()"
               ><a @click="editor.chain().focus().deleteTable().run()">
                 Delete Table
-              </a></el-dropdown-item
+              </a></b-dropdown-item
             >
-            <el-dropdown-item v-if="editor.can().mergeCells()">
+            <b-dropdown-item v-if="editor.can().mergeCells()">
               <a @click="editor.chain().focus().mergeCells().run()">
                 Merge Cells
-              </a></el-dropdown-item
+              </a></b-dropdown-item
             >
-            <el-dropdown-item v-if="editor.can().splitCell()"
+            <b-dropdown-item v-if="editor.can().splitCell()"
               ><a @click="editor.chain().focus().splitCell().run()">
                 Split Cell
-              </a></el-dropdown-item
+              </a></b-dropdown-item
             >
-            <el-dropdown-item v-if="editor.can().toggleHeaderColumn()"
+            <b-dropdown-item v-if="editor.can().toggleHeaderColumn()"
               ><a @click="editor.chain().focus().toggleHeaderColumn().run()">
                 Toggle Header Column
-              </a></el-dropdown-item
+              </a></b-dropdown-item
             >
-            <el-dropdown-item v-if="editor.can().toggleHeaderRow()"
+            <b-dropdown-item v-if="editor.can().toggleHeaderRow()"
               ><a @click="editor.chain().focus().toggleHeaderRow().run()">
                 Toggle Header Row
-              </a></el-dropdown-item
+              </a></b-dropdown-item
             >
-            <el-dropdown-item v-if="editor.can().toggleHeaderCell()"
+            <b-dropdown-item v-if="editor.can().toggleHeaderCell()"
               ><a @click="editor.chain().focus().toggleHeaderCell().run()">
                 Toggle Header Cell
-              </a></el-dropdown-item
+              </a></b-dropdown-item
             >
-            <el-dropdown-item v-if="editor.can().mergeOrSplit()"
+            <b-dropdown-item v-if="editor.can().mergeOrSplit()"
               ><a @click="editor.chain().focus().mergeOrSplit().run()">
                 Merge or Split
-              </a></el-dropdown-item
+              </a></b-dropdown-item
             >
-            <el-dropdown-item
+            <b-dropdown-item
               v-if="editor.can().setCellAttribute('backgroundColor', '#FAF594')"
               ><a
                 @click="
@@ -549,13 +552,13 @@
                 "
               >
                 Set Cell Atributes
-              </a></el-dropdown-item
+              </a></b-dropdown-item
             >
             <!-- <el-dropdown-item v-if="editor.can().fixTables()"><a  @click="editor.chain().focus().fixTables().run()"  >
       Fix Tables
     </a></el-dropdown-item> -->
-          </el-dropdown-menu>
-        </el-dropdown>
+          
+        </b-dropdown>
 
         <a
           class="single-button"
@@ -618,26 +621,28 @@
           </svg>
         </a>
 
-        <el-popover placement="right" width="275" trigger="click">
+       <b-popover target="popover-3" triggers="hover focus">
           <compact-picker
             @input="color.highlight = $event"
             :value="color.highlight"
             :palette="palette"
           ></compact-picker>
-          <a class="single-button" slot="reference"
+         
+        </b-popover>
+         <a class="single-button"  id="popover-3" variant="primary"
             ><i class="fas fa-marker"></i
           ></a>
-        </el-popover>
-        <el-popover placement="right" width="275" trigger="click">
+       <b-popover target="popover-4" triggers="hover focus">
           <compact-picker
             @input="color.text = $event"
             :value="color.text"
             :palette="palette"
           ></compact-picker>
-          <a class="single-button" slot="reference"
+     
+        </b-popover>
+             <a class="single-button"  id="popover-4" variant="primary"
             ><i class="fas fa-palette"></i
           ></a>
-        </el-popover>
 
         <a class="single-button">
           <svg
@@ -933,6 +938,10 @@ export default {
 </script> 
 <style lang="scss">
 /* Basic editor styles */
+.btn.dropdown-toggle{
+    padding:0!important;
+}
+
 .ProseMirror {
   padding: 0px 10px;
   height: calc(100vh - 210px);
