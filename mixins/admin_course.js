@@ -10,6 +10,9 @@ export default {
       lesson:{},
       course:{},
       unite:{},
+      filter:{
+        status:1
+      },
       statusList:[
         {value:1,label:'Published'},
         {value:2,label:'Hidden'},

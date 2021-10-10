@@ -37,11 +37,11 @@
       <template #modal-footer>
         <div class="w-100">
 
-           <select class="modal-form-input" v-model="edited.status">
+          <select class="modal-form-input" v-model="edited.status">
               <option v-for="u in statusList" :key="u.value" :value="u.value">{{
                 u.label
               }}</option>
-            </select>
+          </select>
           <b-button
             variant="default"
             size="sm"
@@ -136,6 +136,11 @@
       </div>
       <template #modal-footer>
         <div class="w-100">
+            <select class="modal-form-input" v-model="editedTopic.status">
+              <option v-for="u in statusList" :key="u.value" :value="u.value">{{
+                u.label
+              }}</option>
+          </select>
           <b-button
             variant="default"
             size="sm"
@@ -168,6 +173,17 @@
           </h3>
         </div>
         <div>
+
+           <select
+            class="modal-form-input"
+            v-model="filter.status"
+            @change=" selectedLesson ?  getTopics(): getList()"
+           
+          >
+            <option v-for="u in statusList" :key="u.value" :value="u.value">{{
+              u.label
+            }}</option>
+          </select>
           <div class="btn btn-success" v-if="selectedLesson"  @click="openModalTopic({id:null })">
             + {{ l("Add New Topic", "g") }}
           </div>
@@ -567,8 +583,8 @@ export default {
     async getList() {
       let fields = `sort,section_name,lesson_unite,id,status,created_on,created_by,id,status`;
       // let prev = this.$route.params.course;
-      let filters = { status: ["=", 1], prev_id: ["=", this.uniteId] };
-
+      let filters = {   prev_id: ["=", this.uniteId] };
+      filters.status=["=", this.filter.status ? this.filter.status  : 1] ;
       return new Promise((resolve, reject) => {
         axios({
           url: process.env.baseURL + "sections",
@@ -606,8 +622,8 @@ export default {
     async getTopics() {
       let fields = `sort,lesson_name,lesson_photo,lesson_video,lesson_description,lesson_video_url,created_on,created_by,id,status`;
       // let prev = this.$route.params.course;
-      let filters = { status: ["=", 1], prev_id: ["=", this.selectedLesson] };
-
+      let filters = {   prev_id: ["=", this.selectedLesson] };
+filters.status=["=", this.filter.status ? this.filter.status  : 1] ;
       return new Promise((resolve, reject) => {
         axios({
           url: process.env.baseURL + "lesson",

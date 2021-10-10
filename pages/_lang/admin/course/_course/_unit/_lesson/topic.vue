@@ -245,6 +245,7 @@ export default {
           section_name: d.section_name, 
           prev_id: this.uniteId, 
           status: d.status,
+          pdb_status: d.status,
           sort: d.sort,
         }
       }).then(response => {

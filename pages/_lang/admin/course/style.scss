@@ -26,6 +26,16 @@
   }
 }
 
+.modal-form-input,
+  input, select{
+    padding: 7px;
+    line-height: 1.5;
+    width: 150px;
+    border: 1px solid #bfbfbf;
+    border-radius: 5px;
+    background: #fff;
+  }
+
 .imageUpload{
     width: 100px;
 }
