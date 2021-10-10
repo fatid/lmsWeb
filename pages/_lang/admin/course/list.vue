@@ -8,7 +8,7 @@
       :title="edited.id ? l('Editing', 'g') : l('Create New', 'g')"
     >
       <!-- {{edited}} -->
-    
+
       <b-alert :show="saveStatus.show" dismissible :variant="saveStatus.status">
         {{ l("Saved", "g") }}
       </b-alert>
@@ -61,7 +61,7 @@
         <div class="ui left icon input swdh11 swdh19">
           <div v-if="!edited.cou_image">
             <p>
-              <a>{{ l("Upload avatar", "g") }}</a>
+              <a>{{ l("Upload image", "g") }}</a>
             </p>
             <input
               type="file"
@@ -81,11 +81,11 @@
       </div>
       <template #modal-footer>
         <div class="w-100">
-             <select class="modal-form-input" v-model="edited.status">
-              <option v-for="u in statusList" :key="u.value" :value="u.value">{{
-                u.label
-              }}</option>
-            </select>
+          <select class="modal-form-input" v-model="edited.status">
+            <option v-for="u in statusList" :key="u.value" :value="u.value">{{
+              u.label
+            }}</option>
+          </select>
           <b-button
             variant="default"
             size="sm"
@@ -112,13 +112,21 @@
           <h3>{{ l("Course", "g") }}</h3>
         </div>
         <div>
+          <select
+            class="modal-form-input"
+            v-model="filter.status"
+            @change="getList()"
+          >
+            <option v-for="u in statusList" :key="u.value" :value="u.value">{{
+              u.label
+            }}</option>
+          </select>
           <div class="btn btn-primary" @click="openModal({ id: 'new' })">
             {{ l("Add New", "g") }}
           </div>
         </div>
       </div>
       <div class="col-12 col-md-12 col-sm-12">
-       
         <vue-good-table
           :columns="columns"
           :rows="data"
@@ -127,12 +135,11 @@
             trigger: 'enter'
           }"
           :sort-options="{
-    enabled: true,
-    initialSortBy: {field: 'cou_name', type: 'asc'}
-  }"
-    :rtl="LOCALE=='ar' ? true : false"
+            enabled: true,
+            initialSortBy: { field: 'cou_name', type: 'asc' }
+          }"
+          :rtl="LOCALE == 'ar' ? true : false"
         >
-        
           <template slot="table-row" slot-scope="props">
             <span v-if="props.column.field == 'action'">
               <a class="table-buttons" @click="openModal(props.row)"
@@ -187,10 +194,11 @@
               </span>
             </span>
             <span v-else-if="props.column.field == 'count'">
-                 {{count[props.row.id]}}
+              {{ count[props.row.id] }}
             </span>
-            <span v-else><a   @click="goPath(`admin/course/${props.row.id}/units`)">
-              {{ props.formattedRow[props.column.field] }} 
+            <span v-else
+              ><a @click="goPath(`admin/course/${props.row.id}/units`)">
+                {{ props.formattedRow[props.column.field] }}
               </a>
             </span>
           </template>
@@ -230,21 +238,22 @@ export default {
       cou_name: "",
       cou_level: "",
       cou_category: "",
-      cou_link: ""
+      cou_link: "",
+      status: 1
     },
     columns: [
       {
         label: "No",
         field: "sort",
-          width: "30px"
+        width: "30px"
       },
       {
         label: "Image",
         field: "cou_image",
-          width: "70px",
-        sortable: false,
+        width: "70px",
+        sortable: false
       },
-   
+
       {
         label: "Course Name",
         field: "cou_name"
@@ -253,25 +262,26 @@ export default {
         label: "Level",
         field: "cou_level"
       },
-         {
+      {
         label: "Units",
         field: "count",
         width: "60px",
-        sortable: false,
+        sortable: false
       },
       {
         label: "Action",
         field: "action",
-          width: "120px",
-        sortable: false,
-
+        width: "120px",
+        sortable: false
       }
     ]
   }),
   async created() {
-
-     this.$store.dispatch("search/groupFields", {module:'unite', group:'prev_id',lang: this.LOCALE});
-
+    this.$store.dispatch("search/groupFields", {
+      module: "unite",
+      group: "prev_id",
+      lang: this.LOCALE
+    });
 
     await this.$store.dispatch("core/getOptions", {
       slang: this.$store.state.locale,
@@ -323,7 +333,8 @@ export default {
           cou_category: d.cou_category,
           cou_image: d.cou_image,
           cou_link: d.cou_link,
-          status: 1
+          status: d.status,
+          pdb_status: d.status
         }
       }).then(response => {
         this.saveStatus = { show: true, stataus: "success" };
@@ -341,7 +352,7 @@ export default {
     async getList() {
       let fields = `cou_name,cou_level,cou_category,cou_link,cou_tags,cou_total_time,cou_image,cou_short,cou_description,cou_total_view,id,status,created_on,created_by,id,status`;
 
-      let filters = { status: ["=", 1] };
+      let filters = { status: ["=", this.filter.status ? this.filter.status  : 1] };
       if (this.search.keyword) {
         filters.cou_name = ["LIKE", this.search.keyword];
       }

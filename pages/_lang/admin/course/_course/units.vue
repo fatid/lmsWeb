@@ -7,7 +7,7 @@
       size="xl"
       :title="edited.id ? l('Editing', 'g') : l('Create New', 'g')"
     >
-      <!-- {{edited}} -->
+    
       <b-alert :show="saveStatus.show" dismissible :variant="saveStatus.status">
         {{ l("Saved", "g") }}
       </b-alert>
@@ -62,7 +62,7 @@
               }}</option>
             </select>
 
-            
+
           <b-button
             variant="default"
             size="sm"
@@ -93,6 +93,15 @@
           </h3>
         </div>
         <div>
+           <select
+            class="modal-form-input"
+            v-model="filter.status"
+            @change="getList()"
+          >
+            <option v-for="u in statusList" :key="u.value" :value="u.value">{{
+              u.label
+            }}</option>
+          </select>
           <div class="btn btn-primary" @click="openModal({ id: null })">
             {{ l("Add New", "g") }}
           </div>
@@ -283,6 +292,7 @@ export default {
           unit_name: d.unit_name,
           unit_image: d.unit_image,
           status: d.status,
+          pdb_status: d.status,
           prev_id:this.courseId,
           prev:this.courseId,
           sort: d.sort,
@@ -300,8 +310,8 @@ export default {
     async getList() {
       let fields = `sort,unit_name,unit_image,id,status,created_on,created_by,id,status`;
       let prev = this.$route.params.course;
-      let filters = { status: ["=", 1], prev_id: ["=", prev] };
-
+      let filters = {   prev_id: ["=", prev] };
+      filters.status=["=", this.filter.status ? this.filter.status  : 1] ;
       return new Promise((resolve, reject) => {
         axios({
           url: process.env.baseURL + "unite",
