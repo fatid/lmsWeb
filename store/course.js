@@ -1,11 +1,13 @@
 import axios from 'axios' 
 const Cookies =   require('js-cookie')
 import { encode, decode } from 'js-base64';
+import moment from 'moment';
 
 const state = () => ({
     courses: [],
     categories:{},
     activeCourse:{},
+    orders:[],
     courseProcess:{
         last:{
             courseId:null,
@@ -23,8 +25,81 @@ const mutations= {
     setCategory(state, payload){
         state.categories = payload 
      },
+     setOrders(state, payload){
+        state.orders = payload
+    },
 }
 const actions = {
+
+    async setCourseOrder({ commit, dispatch, state,rootState },payload){
+        let corder_date=moment().format("YYYY-MM-DD")
+        let slang = payload &&  payload.lang  ? payload.lang : "ar";
+        let user = rootState.user.auth;
+        let sendobj = {
+            corder_course:payload.id,
+            corder_user:user.id,
+            corder_end:null,
+            corder_date:corder_date,
+            status:1,
+            pdb_status:1,
+            lang:'NONE',
+            id:null
+        }
+        let found = state.orders ? state.orders.find(a=> a.corder_course==payload.id) : [];
+        let method="post";
+        let url =process.env.baseURL+'Course_Order';
+        if(found && found.id){
+            sendobj.id=found.id;
+            method="patch";
+            url=url+"/"+found.id; 
+        }
+        await axios({
+            url,
+            method,
+            data: { 
+                ...sendobj 
+            }
+        })
+          .then(response => { 
+              if(response.data.status == 'success'){
+                //console.log(response.status); 
+                dispatch('getCourseOrders',{})
+                let sended ={};
+                 sended.name = sendobj.name  
+                 sended.title= "Congratulations" 
+                 sended.status= true,
+                 sended.show= true,
+                 sended.text="Kaydınız başarıyla alındı. Teşekkürler" 
+                 commit("setForm", { v: sended,  callback: resolve  })
+                 return sended;
+              }
+          })
+          .catch(err => {
+             console.log("Error:"+err);
+             commit("setForm", { v: sended,  callback: resolve  })
+          });
+    },
+    async getCourseOrders({ commit, dispatch, state , rootState},payload){
+        let slang = payload &&  payload.lang  ? payload.lang : "ar";
+        let user = rootState.user.auth;
+        await axios({
+        url: process.env.baseURL+'Course_Order',
+        method: "get",
+        params: {
+          limit: 100,
+          lang: slang,
+          filter: { status: ["=",1],corder_user:["=",user.id]  },
+          fields: "id,corder_course,corder_user,corder_end,corder_date",
+          sort: ["corder_course,DESC"]
+        }
+      })
+        .then(response => {
+          commit('setOrders',response.data.formattedData);
+        })
+        .catch(e => {
+          console.log("ERR", e);
+        });
+      },
     getAllCourseProcess({state}, payload){
 
         let st = localStorage.getItem('courseProcess'); 

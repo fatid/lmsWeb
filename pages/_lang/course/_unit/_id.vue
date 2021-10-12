@@ -18,7 +18,7 @@
                @click.middle="goPathBlank('course/'+data.from_prev.cou_link)"
               aria-current="page"
             >
-              {{data.from_prev.cou_name}}
+              {{data.from_prev.section_name}}
             </li>
             <li
               class="breadcrumb-item active" v-if="data.from_lesson_subject"
@@ -209,7 +209,7 @@ export default {
     total: 0,
     order: 1,
     allLessons: [],
-    fields: `prev.cou_name,prev.cou_link,lesson_subject.section_name,prev.cou_level,sections.section_name,lesson_question,sort,lesson_photo,lesson_counter,lesson_subject,lesson_type,lesson_description,lesson_name,id,status,created_on,created_by,lesson_video_url,lesson_video`,
+    fields: `prev.section_name,lesson_course.cou_link,lesson_subject.section_name,sections.section_name,lesson_question,sort,lesson_photo,lesson_counter,lesson_subject,lesson_type,lesson_description,lesson_name,id,status,created_on,created_by,lesson_video_url,lesson_video`,
     unit: null,
     next: null,
     prev: null
@@ -325,7 +325,7 @@ console.log("list",list)
           fields,
           lang: this.$store.state.locale,
           sort: ["sort,ASC"],
-          filter: { lesson_subject: ["=", lesson_section] }
+          filter: { prev_Id: ["=", lesson_section] }
         }
       })
         .then(response => {

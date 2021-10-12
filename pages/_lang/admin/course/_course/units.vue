@@ -208,17 +208,17 @@ export default {
         width: "70px",
         sortable: false,
       },
+   
       {
+        label: "Unit Name",
+        field: "unit_name"
+      },
+   {
         label: "Lesson",
         field: "count",
         width: "60px",
         sortable: false,
       },
-      {
-        label: "Unit Name",
-        field: "unit_name"
-      },
-
       {
         label: "Action",
         field: "action",

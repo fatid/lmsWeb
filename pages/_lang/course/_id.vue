@@ -3,7 +3,7 @@
  <div class="_215b01">
      <div class="section3125">
        <div class="container">
-     
+    
               <div class="row justify-content-center">
                 <div  style="width:170px;">
                   <div class="preview_video">
@@ -27,7 +27,7 @@
                             )
                           }}
                         </div>
-                     
+                       
                     
                       </div>
                     </a>
@@ -45,6 +45,16 @@
                   <div class="_215b03">
                     <h2>{{ data.cou_name }}</h2>
                     <span class="_215b04">{{ data.cou_short }} </span>
+                    <div class="width-100 margin-top-10 mt-10 g-mt-10"> 
+                          <a v-if="!isCourseSelected" href="#"  @click="joinCourse(data)" class="btn btn-primary">
+                          <span><i class="fas fa-sign-in-alt"></i></span>
+                          {{ l("Join Course", "g") }}
+                        </a>
+                          <a v-else href="#"  @click="joinCourse(data)" class="btn btn-primary">
+                          <span><i class="fas fa-sign-in-alt"></i></span>
+                          {{ l("You've already joined course", "g") }}
+                        </a>
+                  </div>
                   </div>
                   <!-- <div class="_215b05">
                     <div class="crse_reviews mr-2">
@@ -189,7 +199,7 @@
                       {{ num + 1 }}
                     </div>
                     <div class="left-content" @click="goPath('course/' + les.id + '/' + les.id)"
-                      @click.middle="goPathBlank('course/' + les.id + '/' + les.id)"
+                      @click.middle="goPathBlank('course/' + les.prev_Id + '/' + les.id)"
                     >
                       <div class="top">
                         <div class="title">{{ les.section_name }}</div>
@@ -418,7 +428,7 @@ export default {
   mixins: [general],
 
   data: () => ({
-    data: [],
+    data:  {},
     units: [],
     lessons: [], 
     sections: [], 
@@ -444,6 +454,7 @@ export default {
         });
     }
     this.$store.dispatch("course/getAllCourseProcess", {});
+    this.$store.dispatch("course/getCourseOrders", {});
     this.getCourse();
   },
   computed: {
@@ -451,13 +462,30 @@ export default {
     courseProcess() {
       return this.$store.state.course.courseProcess;
     },
+    courseOrders() {
+      return this.$store.state.course.orders;
+    },
     auth() {
       return this.$store.state.user.auth;
     },
-    
+    isCourseSelected(){
+      if(this.courseOrders){
+        let found = this.courseOrders.find(a=> a.corder_course==this.data.id);
+        console.log("found",found);
+        if(found){
+          return found;
+        }
+
+      }
+      return false
+        // return this.courseOrders.find(a=> a.id==this.data.id);
+    }
   },
   methods: {
-  
+    joinCourse(){
+        
+        this.$store.dispatch("course/setCourseOrder", {...this.data}); 
+    },
     getCourseIcon(les) {
       if (les.lesson_type == "Course" && les.lesson_video) {
         return "uil uil-play-circle";
@@ -522,15 +550,15 @@ export default {
     },
 
     getCourses(prev) {
-      return this.lessons ? this.lessons.filter(k => k.lesson_unite == prev) : [];
+      return this.lessons ? this.lessons.filter(k => k.prev_Id == prev) : [];
     },
      filterSections(prev) {
-      return this.sections.filter ? this.sections.filter(k => k.lesson_unite == prev) : [];
+      return this.sections.filter ? this.sections.filter(k => k.prev_Id == prev) : [];
     },
      async getSections(prev) {
-      let fields = `lesson_unite,section_name,id,status,created_on,created_by`;
+      let fields = `lesson_course,section_name,id,status,created_on,created_by,prev_Id`;
 
-      let filters = { status: ["=", 1], prev_id: ["=", prev] };
+      let filters = { status: ["=", 1], lesson_course: ["=", prev] };
 
       return new Promise((resolve, reject) => {
         axios({
@@ -600,7 +628,7 @@ export default {
       });
     },
     async getCourse() {
-      console.log("this.pageInfo", this.pageInfo);
+      // console.log("this.pageInfo", this.pageInfo);
       if (this.pageInfo && this.pageInfo.wa_content_id) {
         let fields = `cou_name,cou_level,cou_campaign_text,cou_short,cou_category,cou_tags,cou_total_time,cou_image,cou_description,cou_total_view,id,status,created_on,created_by,id,status`;
         // console.log("pageData",this.pageInfo)
