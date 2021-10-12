@@ -3,6 +3,7 @@ import axios from 'axios'
 const state = () => ({
     countries: [],
     banners:[],
+  
     options: {
       'co_level':[],
       'uye_Lists':[],
@@ -19,7 +20,7 @@ const mutations= {
     },
     setOptions(state, payload){
        state.options[payload.group] = payload.data
-    }
+    }    
 }
 const actions = {
 
@@ -61,6 +62,7 @@ async getOptions({ commit, dispatch, state },payload){
     }
   
 },
+
 async getCountries({ commit, dispatch, state },payload){
     let slang = payload &&  payload.lang  ? payload.lang : "ar"
     await axios({

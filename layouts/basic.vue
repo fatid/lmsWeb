@@ -32,7 +32,7 @@
         </div>
           
       </div>  
-       <div class="menu-select">
+       <div class="menu-select" v-if="!isMobile">
         
 
          <a  @click.middle="goPathBlank('courses/all_courses')"    @click="goPath('courses/all_courses')"><b-button pill :variant="pagePath=='Exam ' ? 'outline-danger':'danger'"  >{{ l("Courses", "g") }}</b-button></a>
@@ -49,13 +49,13 @@
 					<a href="shopping_cart.html" class="option_links" title="cart"><i class='uil uil-shopping-cart-alt'></i><span class="noti_count">2</span></a>
 				</li> -->
      
-          <li class="ui dropdown" v-show="auth && auth!=null && auth.token">
+          <li class="ui dropdown " v-show="!isMobile && auth && auth!=null && auth.token">
             <a href="#" class="option_links" title="Messages">
               <i class="far fa-envelope"></i>
               <span class="noti_count">0</span>  
               </a> 
           </li>
-          <li class="ui dropdown" v-show="auth && auth!=null && auth.token">
+          <li class="ui dropdown" v-show="!isMobile &&  auth && auth!=null && auth.token">
               <a href="#" class="option_links" title="Notifications">
                 <i class="far fa-bell"></i>
                  <span class="noti_count">0</span>  

@@ -275,14 +275,14 @@
                           <a class="table-buttons" @click="openModalTopic(props.row)"
                             ><i class="fa fa-pen"></i
                           ></a>
-                          <a
+                          <!-- <a
                             class="table-buttons"
                             @click="selectedLesson=props.row.id"
                             @click.middle="
                               goPathBlank('admin/course/' + courseId + '/' + uniteId +'/lessons?lesson='+props.row.id)
                             "
                             ><i class="fas fa-list-alt"></i
-                          ></a>
+                          ></a> -->
                           <a
                             class="table-buttons"
                             @click="
@@ -443,17 +443,17 @@ export default {
          type: 'number',
       },
    
+     
       {
+        label: "Lesson Name",
+        field: "section_name"
+      },
+ {
         label: "Lesson",
         field: "count",
         width: "60px",
         sortable: false,
       },
-      {
-        label: "Lesson Name",
-        field: "section_name"
-      },
-
       {
         label: "Action",
         field: "action",
@@ -557,6 +557,7 @@ export default {
       this.edited = {
           id: null,
           section_name: "",
+          lesson_course:null,
           status:1,
           prev_id:this.uniteId, 
           sort:this.data.length+1,
@@ -620,6 +621,7 @@ export default {
           lesson_description: d.lesson_description, 
           lesson_type: d.lesson_type, 
           lesson_question: d.lesson_question, 
+          lesson_subject: this.sectionId,
           lesson_video_url: d.lesson_video_url, 
           prev_id: this.selectedLesson, 
           sort: d.sort,
@@ -653,6 +655,7 @@ export default {
         data: {
           id: d.id &&  d.id!='new' ? d.id : null,
           section_name: d.section_name, 
+          lesson_course: this.courseId, 
           prev_id: this.uniteId, 
           status: d.status,
           sort: d.sort,
@@ -713,7 +716,7 @@ export default {
         });
     },
     async getList() {
-      let fields = `sort,section_name,lesson_unite,id,status,created_on,created_by,id,status`;
+      let fields = `sort,section_name,lesson_course,id,status,created_on,created_by,id,status`;
       // let prev = this.$route.params.course;
       let filters = {   prev_id: ["=", this.uniteId] };
       filters.status=["=", this.filter.status ? this.filter.status  : 1] ;

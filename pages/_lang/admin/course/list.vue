@@ -25,6 +25,16 @@
           </span>
         </div>
         <div class="modal-form-row">
+          <label>{{ l("Campaign Text", "g") }}</label>
+          <span
+            ><input
+              type="text"
+              class="modal-form-input"
+              v-model="edited.cou_campaign_text" 
+            />
+          </span>
+        </div>
+        <div class="modal-form-row">
           <label>{{ l("Level", "g") }}</label>
           <span>
             <select class="modal-form-input" v-model="edited.cou_level">
@@ -236,6 +246,7 @@ export default {
     edited: {
       id: null,
       cou_name: "",
+      cou_campaign_text: "",
       cou_level: "",
       cou_category: "",
       cou_link: "",
@@ -329,6 +340,7 @@ export default {
         data: {
           id: d.id,
           cou_name: d.cou_name,
+          cou_campaign_text: d.cou_campaign_text,
           cou_level: d.cou_level,
           cou_category: d.cou_category,
           cou_image: d.cou_image,
@@ -350,7 +362,7 @@ export default {
       this.edited = row;
     },
     async getList() {
-      let fields = `cou_name,cou_level,cou_category,cou_link,cou_tags,cou_total_time,cou_image,cou_short,cou_description,cou_total_view,id,status,created_on,created_by,id,status`;
+      let fields = `cou_name,cou_campaign_text,cou_level,cou_category,cou_link,cou_tags,cou_total_time,cou_image,cou_short,cou_description,cou_total_view,id,status,created_on,created_by,id,status`;
 
       let filters = { status: ["=", this.filter.status ? this.filter.status  : 1] };
       if (this.search.keyword) {
