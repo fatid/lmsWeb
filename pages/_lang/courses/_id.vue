@@ -176,4 +176,25 @@ export default {
 }
 
 
+.search-header{
+  display:inline-flex;
+  width:100%;
+  padding: 10px 0px;
+  justify-content: space-between;
+  border-bottom: 1px solid #d0d0d0;
+  margin-bottom: 10px;
+  .title-field{
+
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 1.6;
+  }
+  .search-field{
+    .input-std{
+      border: 1px solid #d0d0d0;
+      border-radius: 10px;
+      padding: 7px 10px;
+    }
+  } 
+}
 </style>
