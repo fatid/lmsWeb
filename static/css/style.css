@@ -479,7 +479,7 @@ i.icon1 {
 
 .opts_account {
     padding: 12px 0;
-    float: right;
+    /* float: right; */
 }
 
 .opts_account img {

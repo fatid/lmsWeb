@@ -69,7 +69,7 @@
               >{{ l("LOGIN", "g") }}</a
             >
           </li> 
-             <li>
+             <li class="ui dropdown">
 
               <b-dropdown variant="link" toggle-class="text-decoration-none" no-caret>
                <template #button-content>
@@ -100,10 +100,10 @@
                             <img :src="auth && auth.U_Photo ? auth.U_Photo : '/images/hd_dp.jpg'" alt="" />
                           </a>
                   </template>
-                    <b-dropdown-item  @click.middle="goPathBlank('my/profile')"          @click="goPath('my/profile')"           >  {{l('Profile','g')}}    </b-dropdown-item>
-                  <b-dropdown-item  @click.middle="goPathBlank('courses/all_courses')" @click="goPath('courses/all_courses')" >     {{l('My Courses','g')}} </b-dropdown-item>
-                  <b-dropdown-item  @click.middle="goPathBlank('my/list')"             @click="goPath('my/list')"             >     {{l('My List','g')}}    </b-dropdown-item>
-                  <b-dropdown-item  @click.middle="goPathBlank('my/quiz')"             @click="goPath('my/quiz')"             >   {{l('My Exams','g')}}   </b-dropdown-item>
+                    <b-dropdown-item  @click.middle="goPathBlank('my/profile')"           @click="goPath('my/profile')"           >  {{l('Profile','g')}}    </b-dropdown-item>
+                  <b-dropdown-item  @click.middle="goPathBlank('my/courses')"             @click="goPath('my/courses')" >     {{l('My Courses','g')}} </b-dropdown-item>
+                  <b-dropdown-item  @click.middle="goPathBlank('my/list')"                @click="goPath('my/list')"             >     {{l('My List','g')}}    </b-dropdown-item>
+                  <b-dropdown-item  @click.middle="goPathBlank('my/quiz')"                @click="goPath('my/quiz')"             >   {{l('My Exams','g')}}   </b-dropdown-item>
               
                   <b-dropdown-item  @click="goPath('form/login?logout=true')" >  Sign Out</b-dropdown-item> 
                 </b-dropdown>  

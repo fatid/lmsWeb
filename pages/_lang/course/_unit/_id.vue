@@ -45,15 +45,15 @@
         </nav>
       </div>
     </div>
-    <div class="card-header"> 
-    </div>
+    <!-- <div class="card-header"> 
+    </div> -->
 <div class="card-header" v-if="1==1">
  
       <div
         v-for="(st, i) in getPages()"
         @click="selectStep(st)"
         class="head-tab"
-        :class="st== order ? 'selected-tab' : ''"
+        :class="{ 'selected-tab' : st== order , 'active-tab':  activeLesson.cl_completed_list_arr.includes(st.id) }  "
       >
         
         {{ st== steps.length ? "Results" : st }}
@@ -166,14 +166,21 @@
         ><i class="fa fa-chevron-left" /> {{ l("Prev", "g") }}</a
       >
       <a
-        class="next"
+        class="next primary"
         v-if="next && next.id"
         @click="goPath('course/' + unit + '/' + next.id)"
         
           @click.middle="
             goPathBlank('course/' + unit + '/' + next.id)
           "
-        ><i class="fa fa-chevron-right" /> {{ l("Next", "g") }}</a
+        ><i class="fa fa-chevron-right" /> {{ l("See Next", "g") }}</a
+      >
+      <a
+        class="next"
+        v-if="next && next.id"
+        @click="completeThisTopic( unit , next.id)"
+         
+        ><i class="fa fa-chevron-right" /> {{ l("Next Topic", "g") }}</a
       >
       <b-button
         variant="outline-primary"
@@ -199,6 +206,18 @@ export default {
       lesson_question: ""
     },
     totalPoints: [],
+    activeLesson:{
+      id:null,  
+      cl_lesson:null,
+      cl_status:null,
+      cl_last_topic:null,
+      cl_completed_list:'',
+      cl_completed_list_arr:[],
+      cl_unite:null,
+      cl_user:null,
+      pdb_user:'',
+      status:1,
+    },
     updated: null,
     isAnswered: true,
     question: {
@@ -227,11 +246,13 @@ export default {
       fields: "id,cou_label_name"
     });
 
+    this.getCompletedStatus();
     this.getCourseLast(this.unit);
     this.getLessons();
   },                         
   
   methods: {
+    
     getPages(){
         let list = [];
         let steps = this.steps;
@@ -256,13 +277,94 @@ export default {
                 list.push(i)
             }
         }
-console.log("list",list)
+// console.log("list",list)
         return list
         // [1,2 ... 5 6 7 ... 10 11]
     },
     getCourseLast(unit) {
       let id = this.$route.params.id;
       this.$store.dispatch("course/getCourseLast", { unit, id });
+    },
+    getCompletedStatus(){
+    let auth  = this.$store.state.user.auth;
+        console.log("auth",auth)
+      let lesson_section = this.$route.params.unit;
+
+        axios({
+        url: process.env.baseURL + "my_lesson",
+        method: "get",
+        params: {
+          limit: 1,
+          offset: 0,
+          fields:'id,status,pdb_user,cl_completed_list,cl_last_topic,cl_user,cl_status,cl_unite,cl_lesson',
+          lang: this.$store.state.locale,
+          token: this.$store.state.user && this.$store.state.user.auth ? this.$store.state.user.auth.token : '',
+          sort: ["sort,ASC"],
+          filter: { cl_lesson: ["=", lesson_section], cl_user:["=", auth.id] }
+        }
+      })
+        .then(response => {
+      
+            let activeLesson = response.data.formattedData[0];
+            if(activeLesson){
+              activeLesson.cl_completed_list_arr =  activeLesson && activeLesson.cl_completed_list ?  activeLesson.cl_completed_list.split(",") : []
+              this.activeLesson=activeLesson;
+              this.goPath("course/" + this.unit + "/" + activeLesson.cl_last_topic);
+
+              
+            }
+        });
+    },
+   async  completeThisTopic(unit,next){
+      let method =  "post";
+      let url = process.env.baseURL + "my_lesson";
+      let data = this.data
+      this.activeLesson.cl_completed_list_arr.push(data.id) 
+      this.activeLesson.cl_lesson =  this.$route.params.unit;
+      this.activeLesson.cl_unite =  this.$route.params.unit;
+      this.activeLesson.cl_user =  this.$store.state.user.auth.id;
+
+      this.activeLesson.cl_last_topic = next;
+      this.activeLesson.cl_status = 'Active';
+      this.activeLesson.cl_completed_list =  this.activeLesson.cl_completed_list_arr.join(",");
+      let auth  = this.$store.state.user.auth;
+
+      // cl_status:null,
+      // cl_last_topic:null,
+      // cl_completed_list:[],
+      // cl_unite:null,
+      let  activeLesson = {...this.activeLesson}
+      if(activeLesson && activeLesson.id){
+          url=process.env.baseURL + "my_lesson/"+activeLesson.id;
+          method =  "put";
+      }
+      await axios({
+        url,
+        method,
+        data: {
+          token: this.$store.state.user && this.$store.state.user.auth ? this.$store.state.user.auth.token : '',
+          id: activeLesson.id, 
+          cl_lesson:  activeLesson.cl_lesson,
+          cl_unite:  activeLesson.cl_unite,
+          cl_last_topic:  activeLesson.cl_last_topic,
+          cl_status:  activeLesson.cl_status,
+          cl_completed_list:  activeLesson.cl_completed_list,
+          status:  activeLesson.status,
+          pdb_user: auth.id,
+          cl_user: auth.id
+        }
+      }).then(response => {
+        this.saveStatus = { show: true, stataus: "success" };
+        // console.log("response",response.data)
+         let activeLesson = response.data;
+          activeLesson.cl_completed_list_arr =  activeLesson.cl_completed_list ?  activeLesson.cl_completed_list.split(",") : []
+         this.activeLesson = activeLesson;
+      });
+      this.setCourseLast({
+        unitId: this.$route.params.unit,
+        lessonId: next,
+        unitData: unit
+      });
     },
     setCourseLast() {
       let unitId = this.$route.params.unit;
@@ -281,7 +383,7 @@ console.log("list",list)
             total_completed++;
           }
         });
-        console.log("total_completed", total_completed);
+        // console.log("total_completed", total_completed);
         activeCourse.totalCompleted = total_completed;
         console.log(total_completed, this.total, total_completed / this.total);
         activeCourse.totalCompletedRate = Math.round(
@@ -483,11 +585,12 @@ console.log("list",list)
   watch: {
     "$route.params.id"(val) {
       // this.activeCourse.last = val;
-      this.setCourseLast({
-        unitId: this.$route.params.unit,
-        lessonId: val,
-        unitData: this.activeCourse
-      });
+      // setCourseLast
+      // this.setCourseLast({
+      //   unitId: this.$route.params.unit,
+      //   lessonId: val,
+      //   unitData: this.activeCourse
+      // });
     },
     "data.lesson_question"(val) {
       // console.log("get question", this.data.lesson_question);
@@ -566,13 +669,22 @@ console.log("list",list)
   background: rgb(226, 184, 168);
   color: #fff;
 }
+.active-tab {
+  background: rgb(73, 177, 25);
+  color: #fff;
+}
 .arrows a.next {
   border-radius: 10px;
-  background: rgb(40, 81, 194);
+  background: rgb(49, 143, 25);
   font-size: 12px;
   font-size: 14px;
   padding: 10px;
 }
+
+.arrows a.next.primary{
+  background: rgb(40, 81, 194);
+
+  }
 .arrows a.next:hover,
 .arrows a.prev:hover {
   color: rgb(40, 81, 194);

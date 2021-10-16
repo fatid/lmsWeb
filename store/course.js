@@ -89,7 +89,12 @@ const actions = {
           limit: 100,
           lang: slang,
           filter: { status: ["=",1],corder_user:["=",user.id]  },
-          fields: "id,corder_course,corder_user,corder_end,corder_date",
+          fields: "id,"+
+          "corder_course,corder_course.cou_short,corder_course.cou_name,corder_course.cou_level,corder_course.cou_category,corder_course.cou_image,corder_course.cou_link,"+
+          "corder_text,corder_last_unite,corder_last_lesson,corder_last_topic,"+
+          "corder_last_lesson.section_name,"+
+          "corder_last_unite.unit_name,"+
+          "corder_last_topic.lesson_name",
           sort: ["corder_course,DESC"]
         }
       })

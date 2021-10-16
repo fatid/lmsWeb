@@ -6,7 +6,63 @@
       scrollable
       size="xl"
       :title="'Mass Addition'"
-    ></b-modal>
+    >
+    
+            <input
+              multiple
+              type="file"
+              name="changeFileMass"
+              @change="onFileChangeMass($event, 'lesson_photo')"
+            />
+          <!-- {{massImageUpload}} -->
+        <draggable v-model="massImageUpload" draggable=".draggable" class="draggable-box"> 
+            <div v-for="im in massImageUpload" class="draggable">
+                <img :src="im.lesson_photo" class="g-width-200 imageUpload" />
+                <br />
+                <input
+                  type="text"
+                  class="modal-form-input"
+                  v-model="im.lesson_name"
+                />
+            </div>
+        </draggable>
+
+          <template #modal-footer>
+        <div class="w-100">
+              <div class="modal-form-row">
+         <label>{{l('Start Sort Order','g')}}</label>
+          <span
+            ><input
+              type="number"
+              class="modal-form-input"
+              v-model="massSettings.sort"
+            />
+          </span>
+        </div> 
+            <!-- <select class="modal-form-input" v-model="massImageUpload">
+              <option v-for="u in statusList" :key="u.value" :value="u.value">{{
+                u.label
+              }}</option>
+          </select> -->
+          <b-button
+            variant="default"
+            size="sm"
+            class="float-right"
+            @click="showMass.show = false"
+          >
+            Close
+          </b-button>
+          <b-button
+            variant="primary"
+            size="sm"
+            class="float-right"
+            @click="saveMassUpload()"
+          >
+            {{ l("Save", "g") }}
+          </b-button>
+        </div>
+      </template>
+    </b-modal>
     <b-modal
       id="modal-xl"
       v-model="show"
@@ -229,6 +285,10 @@
               u.label
             }}</option>
           </select>
+          <div class="btn btn-danger" v-if="selected && selected[0]"  @click="removeSelected()">
+            + {{ l("Remove Selected", "g") }}
+            
+          </div>
           <div class="btn btn-success" v-if="selectedLesson"  @click="openModalTopic({id:null })">
             + {{ l("Add New Topic", "g") }}
           </div>
@@ -257,6 +317,7 @@
           </div>
               </div>
               <div class="table_topic">
+               <!-- selected: {{selected}} -->
                     <vue-good-table
                       :columns="columns2"
                       :rows="dataLesson"
@@ -304,6 +365,10 @@
                             :src="show_image(props.row.lesson_photo, '50', '50', '', '90')"
                             alt=""
                           />
+                        </span>
+                        <span v-else-if="props.column.field == 'sort'">
+                          <input type="checkbox" :value="props.row.id" v-model="selected" />
+                            {{ props.row[props.column.field] }} 
                         </span>
                         <span v-else-if="props.column.field == 'count'">
                           {{ count ? count[props.row.id] : '' }}  
@@ -368,6 +433,7 @@
               />
             </span>
             <span v-else-if="props.column.field == 'count'">
+              
               {{ count ? count[props.row.id] : '' }}  
             </span>
             <span v-else>
@@ -388,13 +454,14 @@ import banners from "@/components/common/banner.vue";
 import tiptap from "@/components/common/Tiptap.vue";
 import "vue-good-table/dist/vue-good-table.css";
 import question from "@/components/utils/question.vue"; 
-
+  import draggable from 'vuedraggable'
 export default {
   mixins: [general, admin_course],
   components: {
     banners,
     VueGoodTable,
     tiptap,
+    draggable,
     question
   },
   computed:{
@@ -413,6 +480,7 @@ export default {
       keyword: ""
     },
     selectedLesson:null,
+    selected:[],
     topics:[],
     dataLesson:[],
     showTopic:false,
@@ -489,7 +557,12 @@ export default {
         width: "120px",
         sortable: false,
       }
-    ]
+    ],
+    massImageUpload:[],
+    massSettings: {
+        sort:1,
+        status:1,
+    }
   }),
   watch:{
     selectedLesson(val){
@@ -533,6 +606,59 @@ export default {
   },
 
   methods: {
+
+removeSelected(){
+  let s = this.selected;
+  if(s && s[0]){
+    let length= s.length
+
+    s.forEach(async (id,i)=>{ 
+          await axios({
+            url: process.env.baseURL + "lesson/" + id,
+            method:'put',
+            data: {
+              id:id,
+              status: 3, 
+            }
+          }).then(response => { 
+            if(i==length-1){
+              this.getTopics(); 
+            }
+          });
+         
+      })
+      
+  }
+},
+    onFileChangeMass(e,field) {
+      var files = e.target.files || e.dataTransfer.files;
+      if (!files.length)
+        return;
+        // console.log("files",files)
+      let length = files.length;
+      for(let i=0; i<=length; i++){
+           if(files[i]){ 
+             this.createImageMass(files[i],field); 
+           } 
+      } 
+    },
+    createImageMass(file,field) {
+      var image = new Image();
+      var reader = new FileReader();
+      var vm = this; 
+      reader.onload = (e) => {
+        console.log("e created",field) 
+        this.massImageUpload.push({'lesson_photo':e.target.result});
+      };
+      reader.readAsDataURL(file);
+    },
+    removeImageMass: function (e) {
+      this.massImageUpload[e] = '';
+    },
+
+
+
+
     onFileChange2(e,field) {
       var files = e.target.files || e.dataTransfer.files;
       if (!files.length)
@@ -602,8 +728,40 @@ export default {
         this.editedTopic = {...row};
       }
     },
-    async saveTopic() {
-      let d = this.editedTopic;
+
+    saveMassUpload(){
+
+        let massImageUpload  = this.massImageUpload 
+
+      if(massImageUpload && massImageUpload[0]){
+        let total = parseInt(this.massSettings.sort);
+        massImageUpload.forEach((k,i)=>{
+            let  data =  {
+                  id: null,
+                  status: 1,
+                  lesson_name: k.lesson_name, 
+                  lesson_photo: k.lesson_photo, 
+                  lesson_description: '', 
+                  lesson_type: "Image", 
+                  lesson_question: '', 
+                  lesson_video_url: '', 
+                  lesson_subject: this.sectionId,
+                  prev_id: this.selectedLesson, 
+                  sort: total+i,
+             }
+             let updatePage = i==massImageUpload.length-1 ? true : false
+              
+             this.saveTopic(data,updatePage)
+              if(updatePage){
+               massImageUpload=[]
+             }
+        })
+      }
+        
+
+    },
+    async saveTopic(d,updatePage=true) {
+       d = d ? d :  this.editedTopic;
       let method = "post";
       let url = process.env.baseURL + "lesson";
       if (d.id && d.id != "new") {
@@ -627,19 +785,24 @@ export default {
           sort: d.sort,
         }
       }).then(response => {
-        this.saveStatus = { show: true, status: "success" };
-        this.getTopics();
-        this.setDefaultTopic();
+
+        if(updatePage){
+          this.saveStatus = { show: true, status: "success" };
+          this.getTopics();
+          this.setDefaultTopic();
            this.$store.dispatch("search/groupFields", {
-      module: "lesson",
-      group: "prev_id",
-      lang: this.LOCALE
-    });
-        setTimeout(() => {
-          this.showTopic = false;
-          this.saveStatus = { show: false, status: "success" };
-        }, 500);
-      });
+              module: "lesson",
+              group: "prev_id",
+              lang: this.LOCALE
+            });
+            setTimeout(() => {
+              this.showTopic = false;
+              this.saveStatus = { show: false, status: "success" };
+               }, 500);
+          }
+        }).catch(err=>{
+          console.log("err",err)
+        });
     },
     async save() {
       let d = this.edited;
@@ -799,5 +962,14 @@ filters.status=["=", this.filter.status ? this.filter.status  : 1] ;
 </script>
 <style lang="scss" src="@/pages/_lang/admin/course/style.scss"></style>
 <style lang="scss">
-
+.draggable-box{
+  display: inline-flex;
+  width: 100%;
+.draggable{
+  display: block;
+  margin: 5px;
+  border: .1em solid #efefef;
+  padding: 5px;
+}
+}
 </style>
