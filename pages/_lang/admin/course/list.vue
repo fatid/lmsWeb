@@ -14,23 +14,38 @@
       </b-alert>
       <div class="modal-form" :lang="LOCALE">
         <div class="modal-form-row">
-          <label>{{ l("Title", "g") }}</label>
+          <label>{{ l("Title", "g") }} EN/AR</label>
           <span
             ><input
               type="text"
               class="modal-form-input"
-              v-model="edited.cou_name"
+              v-model="edited.all_cou_name.en"
               @blur="createUrl(false)"
+               placeholder="in English"
+            />
+            <input
+              type="text"
+              class="modal-form-input"
+              v-model="edited.all_cou_name.ar"
+              @blur="createUrl(false)"
+              placeholder="in Arabic"
             />
           </span>
         </div>
         <div class="modal-form-row">
-          <label>{{ l("Campaign Text", "g") }}</label>
+          <label>{{ l("Campaign Text", "g") }} EN/AR</label>
           <span
             ><input
               type="text"
               class="modal-form-input"
-              v-model="edited.cou_campaign_text" 
+              v-model="edited.all_cou_campaign_text.en" 
+              placeholder="in English"
+            />
+            <input
+              type="text"
+              class="modal-form-input"
+              v-model="edited.all_cou_campaign_text.ar" 
+               placeholder="in Arabic"
             />
           </span>
         </div>
@@ -51,7 +66,7 @@
               ><input
                 type="text"
                 class="modal-form-input"
-                v-model="edited.cou_link"
+                v-model="edited.all_cou_link.en"
               />
 
               <a @click="createUrl(true)">Random</a>
@@ -91,6 +106,15 @@
       </div>
       <template #modal-footer>
         <div class="w-100">
+      
+          <label>{{l('Sort Order','g')}}</label>
+           <input
+              type="number"
+              class="modal-form-input"
+              v-model="edited.sort"
+              :placeholder="l('Sort Order','g')"
+            />
+      
           <select class="modal-form-input" v-model="edited.status">
             <option v-for="u in statusList" :key="u.value" :value="u.value">{{
               u.label
@@ -245,11 +269,27 @@ export default {
     },
     edited: {
       id: null,
-      cou_name: "",
+      cou_name: '',
+      all_cou_name: {
+        en:'',
+        ar:'',
+        tr:''
+      },
       cou_campaign_text: "",
+      all_cou_campaign_text: {
+        en:'',
+        ar:'',
+        tr:''
+      },
+      
       cou_level: "",
       cou_category: "",
       cou_link: "",
+      all_cou_link: {
+        en:'',
+        ar:'',
+        tr:''
+      },
       status: 1
     },
     columns: [
@@ -334,17 +374,27 @@ export default {
         method = "put";
         url = process.env.baseURL + "courses/" + d.id;
       }
+
+      if(d.all_cou_link.en){
+          
+          d.all_cou_link={
+            en:d.all_cou_link.en,
+            ar:d.all_cou_link.ar,
+            tr:d.all_cou_link.tr
+          }
+          
+      }
       await axios({
         url,
         method,
         data: {
           id: d.id,
-          cou_name: d.cou_name,
-          cou_campaign_text: d.cou_campaign_text,
+          cou_name: d.all_cou_name,
+          cou_campaign_text: d.all_cou_campaign_text,
           cou_level: d.cou_level,
           cou_category: d.cou_category,
           cou_image: d.cou_image,
-          cou_link: d.cou_link,
+          cou_link: d.all_cou_link,
           status: d.status,
           pdb_status: d.status
         }
@@ -362,7 +412,7 @@ export default {
       this.edited = row;
     },
     async getList() {
-      let fields = `cou_name,cou_campaign_text,cou_level,cou_category,cou_link,cou_tags,cou_total_time,cou_image,cou_short,cou_description,cou_total_view,id,status,created_on,created_by,id,status`;
+      let fields = `sort,cou_name,cou_campaign_text,cou_level,cou_category,cou_link,cou_tags,cou_total_time,cou_image,cou_short,cou_description,cou_total_view,id,status,created_on,created_by,id,status`;
 
       let filters = { status: ["=", this.filter.status ? this.filter.status  : 1] };
       if (this.search.keyword) {
@@ -376,6 +426,7 @@ export default {
             limit: 100,
             offset: 0,
             fields,
+            editMode:true,
             lang: this.$store.state.locale,
             sort: ["pdb_date,DESC"],
             filter: filters
@@ -388,7 +439,12 @@ export default {
               response.data.formattedData[0]
             ) {
               let d = response.data.formattedData;
-
+              d= d.map(k=>{
+                k.all_cou_name  = k.all_cou_name ? k.all_cou_name : {tr:'',en:'',ar:''}
+                k.all_cou_campaign_text  = k.all_cou_campaign_text ? k.all_cou_campaign_text : {tr:'',en:'',ar:''}
+                k.all_cou_link  = k.all_cou_link ? k.all_cou_link : {tr:'',en:'',ar:''}
+                return k;
+              })
               this.data = d;
             } else {
               this.data = {};
