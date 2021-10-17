@@ -228,7 +228,7 @@ export default {
     total: 0,
     order: 1,
     allLessons: [],
-    fields: `prev.section_name,lesson_course.cou_link,lesson_subject.section_name,sections.section_name,lesson_question,sort,lesson_photo,lesson_counter,lesson_subject,lesson_type,lesson_description,lesson_name,id,status,created_on,created_by,lesson_video_url,lesson_video`,
+    fields: `prev.section_name,lesson_subject.section_name,lesson_question,sort,lesson_photo,lesson_counter,lesson_subject,lesson_type,lesson_description,lesson_name,id,status,created_on,created_by,lesson_video_url,lesson_video`,
     unit: null,
     next: null,
     prev: null
@@ -285,7 +285,7 @@ export default {
       let id = this.$route.params.id;
       this.$store.dispatch("course/getCourseLast", { unit, id });
     },
-    getCompletedStatus(){
+    getCompletedStatus(force=false){
     let auth  = this.$store.state.user.auth;
         console.log("auth",auth)
       let lesson_section = this.$route.params.unit;
@@ -309,7 +309,12 @@ export default {
             if(activeLesson){
               activeLesson.cl_completed_list_arr =  activeLesson && activeLesson.cl_completed_list ?  activeLesson.cl_completed_list.split(",") : []
               this.activeLesson=activeLesson;
-              this.goPath("course/" + this.unit + "/" + activeLesson.cl_last_topic);
+                let id = this.$route.params.id;
+                let unit = this.$route.params.unit;
+              if(id==unit){
+                this.goPath("course/" + this.unit + "/" + activeLesson.cl_last_topic);
+              }
+             
 
               
             }
@@ -396,6 +401,7 @@ export default {
         courseId: "all",
         unitData: activeCourse
       });
+      this.goPath('course/' + unitId + '/' + this.next.id);
     },
     getCourseIcon(les) {
       if (les.lesson_type == "Course" && les.lesson_video) {
@@ -448,7 +454,7 @@ export default {
             });
             this.total = this.allLessons.length;
             this.steps = this.allLessons.map(k => "");
-            this.setCourseLast();
+            // this.setCourseLast();
             this.setSelect();
           }
         })
