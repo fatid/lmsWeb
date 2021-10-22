@@ -9,37 +9,37 @@
             </li>
 
             <li
-              class="breadcrumb-item active" v-if="data.from_prev"
+              class="breadcrumb-item active" v-if="course"
               @click="
                 goPath(
-                  'course/'+data.from_prev.cou_link
+                  'course/'+course.cou_link
                 )
               "
-               @click.middle="goPathBlank('course/'+data.from_prev.cou_link)"
+               @click.middle="goPathBlank('course/'+course.cou_link)"
               aria-current="page"
             >
-              {{data.from_prev.section_name}}
+              {{course.section_name}}
             </li>
             <li
-              class="breadcrumb-item active" v-if="data.from_lesson_subject"
+              class="breadcrumb-item active" v-if="unite"
               @click="
                 goPath(
-                  'course/'+data.from_prev.cou_link
+                  'course/'+course.cou_link
                 )
               "
-                @click.middle="goPathBlank('course/'+data.from_prev.cou_link)"
+                @click.middle="goPathBlank('course/'+course)"
               aria-current="page"
             >
-              {{data.from_lesson_subject.section_name}}
+              {{unite.unit_name}}
             </li>
           </ol>
 
           <a
             class="download_btn2"
             @click="
-              goPath('course/'+data.from_prev.cou_link)
+              goPath('course/'+course.cou_link)
             "
-              @click.middle="goPathBlank('course/'+data.from_prev.cou_link)"
+              @click.middle="goPathBlank('course/'+course.cou_link)"
             >{{l('Back to Course','g')}}</a
           >
         </nav>
@@ -47,13 +47,32 @@
     </div>
     <!-- <div class="card-header"> 
     </div> -->
-<div class="card-header" v-if="1==1">
+    <div  class="card" v-if="steps.length==0">
+<div class="result_content" >
+          <h2>  There isn't any topic in this lesson. </h2>
+          <p>
+          <a
+          class="download_btn"
+          download="w3logo"
+          @click="
+            goPath('course/'+course.cou_link)
+          "
+          @click.middle="
+            goPathBlank('course/'+course.cou_link)
+          "
+          >Turn Back Course Page</a
+        >
+</p>
+    </div>
+    </div>
+    <div v-else>
+<div class="card-header"  v-if="1==1" >
  
       <div
         v-for="(st, i) in getPages()"
         @click="selectStep(st)"
         class="head-tab"
-        :class="{ 'selected-tab' : st== order , 'active-tab':  activeLesson.cl_completed_list_arr.includes(st.id) }  "
+         :class="isCompleted(st,i)"
       >
         
         {{ st== steps.length ? "Results" : st }}
@@ -64,7 +83,7 @@
         v-for="(st, i) in steps.length"
         @click="selectStep(i + 1)"
         class="head-tab"
-        :class="i + 1 == order ? 'selected-tab' : ''"
+        :class="isCompleted(i)"
       >    
         {{ i + 1 == steps.length ? "Results" : i + 1 }}
       </div>
@@ -76,6 +95,7 @@
       ></vue-step> -->
     </div> 
     <!-- {{activeCourse}} -->
+
     <div class="card" v-if="data.lesson_question">
       <question
         :question="question"
@@ -137,21 +157,25 @@
       </div>
     </div>
     <div class="card" v-show="data.id == 'finish'">
-      <div class="result_content">
+      <div class="result_content" v-if="isCompletedAll()">
         <h2>Congratulation!</h2>
         <p>You finished this course.</p>
-        <p>Your total score is: {{ activeCourse.point * 10 }}</p>
+        <p v-if="activeCourse.point">Your total score is: {{ activeCourse.point * 10 }}</p>
         <a
           class="download_btn"
           download="w3logo"
           @click="
-            goPath('course/the_only_course_you_need_to_learn_web_development')
+            goPath('course/'+course.cou_link)
           "
           @click.middle="
-            goPathBlank('course/the_only_course_you_need_to_learn_web_development')
+            goPathBlank('course/'+course.cou_link)
           "
           >Turn Back Course Page</a
         >
+      </div>
+       <div class="result_content" v-else>
+        <h2>You've not complete course yet</h2>
+
       </div>
     </div>
     <div class="arrows " v-if="data.id != 'finish'">
@@ -189,6 +213,7 @@
         >Report Error</b-button
       >
     </div>
+    </div>
   </div>
 </template>
 <script>
@@ -206,6 +231,9 @@ export default {
       lesson_question: ""
     },
     totalPoints: [],
+    section:{},
+    course:{},
+    unite:{},
     activeLesson:{
       id:null,  
       cl_lesson:null,
@@ -249,6 +277,7 @@ export default {
     this.getCompletedStatus();
     this.getCourseLast(this.unit);
     this.getLessons();
+    this.getSection();
   },                         
   
   methods: {
@@ -463,6 +492,39 @@ export default {
           console.log(e);
         });
     },
+    async getSection() {
+      let fields =
+        "id,sort,status,prev_id,prev.unit_name,lesson_course.cou_link,lesson_course.cou_name";
+      
+      axios({
+        url: process.env.baseURL + "sections",
+        method: "get",
+        params: {
+          limit: 1,
+          offset: 0,
+          fields,
+          lang: this.$store.state.locale,
+          sort: ["sort,ASC"],
+          filter: { id: ["=", this.unit] }
+        }
+      })
+        .then(response => {
+          if (
+            response.data &&
+            response.data.formattedData &&
+            response.data.formattedData[0]
+          ) {
+            this.sections = response.data.formattedData[0];
+            this.course = response.data.formattedData[0].from_lesson_course;
+            this.unite = response.data.formattedData[0].from_prev;
+          }
+        })
+        .catch(e => {
+          this.unite= null;
+          this.course= null;
+          this.unite= null;
+        });
+    },
     async getQuestion() {
       let fields =
         "id,sort,status,exa_type,rs_Question,exa_image,exa_sound,exa_video,exa_timer,exa_ready";
@@ -531,6 +593,28 @@ export default {
       this.prev = this.allLessons[this.data.sort - 2];
       this.order = this.data.sort;
     },
+    isCompletedAll(st,i){
+        let allCompleted = true;
+        let ids = this.allLessons.map(k=> k.id);
+        ids.forEach(a=>{
+          if(a!="finish"){
+            let ca= this.activeLesson.cl_completed_list_arr.includes(a) 
+            if(!ca){
+              allCompleted=false;
+            }
+            }
+        })
+    
+       return allCompleted
+       
+    },
+    isCompleted(st,i){
+        let id = this.allLessons[st - 1].id;
+        let ca= this.activeLesson.cl_completed_list_arr.includes(id) 
+        console.log("isCompleted",);
+       return i + 1 == this.order ? 'selected-tab' :  ca ? 'active-tab' : ''
+       
+    },
     selectStep(step) {
       let id = this.allLessons[step - 1].id;
       this.goPath("course/" + this.unit + "/" + id);
@@ -589,7 +673,8 @@ export default {
     }
   },
   watch: {
-    "$route.params.id"(val) {
+    "$route.params.unit"(val) {
+      this.getSection();
       // this.activeCourse.last = val;
       // setCourseLast
       // this.setCourseLast({

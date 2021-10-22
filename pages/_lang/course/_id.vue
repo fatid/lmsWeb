@@ -168,7 +168,7 @@
                   </div>
                   <div class="section-header-right">
                     <span class="num-items-in-section">
-                      {{
+                      <!-- {{
                         unit.stats
                           ? unit.stats.totalCompletedRate == 100
                             ? l("Completed", "g")
@@ -176,7 +176,8 @@
                             ? l("Ongoing", "g")
                             : l("Not Started", "g")
                           : l("Not Started", "g")
-                      }}
+                      }} -->
+                      <!-- <a class="btn btn-primary">Start Course</a> -->
                     </span>
                     <span class="section-header-length">
                       %{{
@@ -195,6 +196,7 @@
                     
                     :class="unit.accordion ? 'lecture-hidden' : ''"
                   >
+                    <div style="display: inline-flex; min-width: 50%;">
                     <div class="left-content-number">
                       {{ num + 1 }}
                     </div>
@@ -205,6 +207,9 @@
                         <div class="title">{{ les.section_name }}</div>
                       </div>
                     </div>
+                    
+                    </div>
+                <div style="display: inline-flex; min-width: 50%;     justify-content: end;">
                        <a    
                         href="javascript:;"  
                         class="_215b11"
@@ -225,24 +230,25 @@
                   
                    
                   
-                    <div class="end-detail">
+                    <div class="end-detail">  <a class="btn btn-primary">Start</a>
                       <!-- <i :class="getCourseIcon(les)" class="icon_142"></i>
                       <div class="title">
                         {{ les.lesson_total_time | minuteDuration }}
                       </div> -->
                     </div>
                   </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
 
-          <div class="student_reviews" id="crse_comment" v-if="1==2">
+          <div class="student_reviews" id="crse_comment"  >
             <div class="row">
               <div class="col-lg-5">
                 <div class="reviews_left">
                   <h3>Feedback</h3>
-                  <div class="total_rating">
+                  <!-- <div class="total_rating">
                     <div class="_rate001">-</div>
                     <div class="rating-box">
                       <span class="rating-star full-star"></span>
@@ -250,9 +256,8 @@
                       <span class="rating-star full-star"></span>
                       <span class="rating-star full-star"></span>
                       <span class="rating-star full-star"></span>
-                    </div>
-                    <div class="_rate002">Course Rating</div>
-                  </div>
+                    </div> 
+                  </div> -->
                   <!-- <div class="_rate003">
                     <div class="_rate004">
                       <div class="progress progress1">
@@ -369,6 +374,7 @@
                   </div>
                 </div>
 				No comment 
+   
                 <!-- <div class="review_all120">
                   <div class="review_item">
                     <div class="review_usr_dt">
@@ -430,6 +436,7 @@ export default {
   data: () => ({
     data:  {},
     units: [],
+    mylessons: [],
     lessons: [], 
     sections: [], 
     inputList: ""
@@ -470,8 +477,7 @@ export default {
     },
     isCourseSelected(){
       if(this.courseOrders){
-        let found = this.courseOrders.find(a=> a.corder_course==this.data.id);
-        console.log("found",found);
+        let found = this.courseOrders.find(a=> a.corder_course==this.data.id); 
         if(found){
           return found;
         }
@@ -480,6 +486,16 @@ export default {
       return false
         // return this.courseOrders.find(a=> a.id==this.data.id);
     }
+  },
+  watch:{
+    'courseOrders'(val){ 
+ 
+      if(this.isCourseSelected){
+        this.getMyLessons();
+      }else{
+        this.mylessons=[];
+      }
+    }  
   },
   methods: {
     joinCourse(){
@@ -548,7 +564,58 @@ export default {
           });
       });
     },
+async getMyLessons(){
 
+
+ let auth  = this.$store.state.user.auth;
+        let id =  this.isCourseSelected ? this.isCourseSelected.id : null; 
+ 
+        await axios({
+          url: process.env.baseURL + "my_lesson",
+          method: "get",
+          params: {
+            limit: 1,
+            offset: 0,
+            fields:'id,status,pdb_user,cl_completed_list,cl_last_topic,cl_user,cl_status,cl_unite,cl_lesson',
+            lang: this.$store.state.locale,
+            token: this.$store.state.user && this.$store.state.user.auth ? this.$store.state.user.auth.token : '',
+            sort: ["sort,ASC"],
+            filter: { prev_id: ["=", id], cl_user:["=", auth.id] }
+          }
+        })
+        .then(response => {
+            this.mylessons=response.data.formattedData;
+        })
+        .catch(e => {
+             this.mylessons=[];
+        });
+      },
+async getCourseOrders(){
+        let slang =  "ar";
+        let user = this.$store.state.user.auth;
+        await axios({
+        url: process.env.baseURL+'Course_Order',
+        method: "get",
+        params: {
+          limit: 100,
+          lang: slang,
+          filter: { corder_course: ["=",1], status: ["=",1],corder_user:["=",user.id]  },
+          fields: "id,"+
+          "corder_course,corder_course.cou_short,corder_course.cou_name,corder_course.cou_level,corder_course.cou_category,corder_course.cou_image,corder_course.cou_link,"+
+          "corder_text,corder_last_unite,corder_last_lesson,corder_last_topic,"+
+          "corder_last_lesson.section_name,"+
+          "corder_last_unite.unit_name,"+
+          "corder_last_topic.lesson_name",
+          sort: ["corder_course,DESC"]
+        }
+      })
+        .then(response => {
+            this.order=response.data.formattedData;
+        })
+        .catch(e => {
+             this.order="";
+        });
+      },
     getCourses(prev) {
       return this.lessons ? this.lessons.filter(k => k.prev_Id == prev) : [];
     },
@@ -662,6 +729,7 @@ export default {
                 this.getUnits(d.id);
                 this.getSections(d.id);
                 this.getLesson(d.id);
+                this.getMyLessons();
                 this.data = d;
               } else {
                 this.data = {};
@@ -686,11 +754,13 @@ export default {
 .left-content {
   padding: 4px 0px;
   cursor: pointer;
+  width: fit-content;
 }
 .left-content-number {
   position: relative;
   height: 25px;
   width: 25px;
+  max-width: 25px;
   border-radius: 50%;
   background: gray;
   padding: 4px 0px;

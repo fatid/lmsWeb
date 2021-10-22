@@ -23,7 +23,7 @@
     font-size: 18px !important;
 }
 
-.opts_account img {
+.opts_account img, .opts_account div  {
     margin-left: 5px !important;
 	width: 30px !important;
 }
