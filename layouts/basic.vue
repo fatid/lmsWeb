@@ -69,9 +69,9 @@
               >{{ l("LOGIN", "g") }}</a
             >
           </li> 
-             <li class="ui dropdown">
+                 <li class="ui dropdown">
 
-              <b-dropdown variant="link" toggle-class="text-decoration-none" no-caret>
+              <b-dropdown variant="link" toggle-class="text-decoration-none" >
                <template #button-content>
                           <a
                           
@@ -108,6 +108,7 @@
                   <b-dropdown-item  @click="goPath('form/login?logout=true')" >  Sign Out</b-dropdown-item> 
                 </b-dropdown>  
            </li> 
+       
         </ul>
       </div>
       </div>
@@ -728,8 +729,8 @@ a.selected-language{
   color: #a0a0a0!important;
 }
 div.image-lang{
-  height: 40px;
-  width: 40px;
+  height: 36px;
+  width: 36px;
   border-radius: 50%;
   border: 4px solid #fafafa;
 background-size: 60px auto;

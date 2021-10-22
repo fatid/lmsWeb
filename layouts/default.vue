@@ -69,9 +69,11 @@
               >{{ l("LOGIN", "g") }}</a
             >
           </li> 
-          <li class="ui dropdown">
+         
+        
+    <li class="ui dropdown">
 
-              <b-dropdown variant="link" toggle-class="text-decoration-none" no-caret>
+              <b-dropdown variant="link" toggle-class="text-decoration-none" >
                <template #button-content>
                           <a
                           
@@ -79,6 +81,7 @@
                             title="Account"
                           > 
                           <div class="image-lang" :class="$store.state.locale=='ar' ? 'selected':''"  :style="{ backgroundImage: 'url(\'/img/'+$store.state.locale+'.svg\')' }" title="Arabic"  ></div> 
+                          <!-- <img :src="'/img/'+$store.state.locale+'.svg'" title="Arabic"  />  -->
                             
                           </a>
                   </template>
@@ -88,8 +91,7 @@
                 </b-dropdown>  
 
             </li>
-        
-
+        </ul>
             <li class="ui dropdown" v-show="auth && auth.token">  
 
   <b-dropdown variant="link" toggle-class="text-decoration-none" no-caret>
@@ -115,7 +117,7 @@
                   <b-dropdown-item  @click="goPath('form/login?logout=true')" > {{l('Sign Out','g')}}</b-dropdown-item> 
                 </b-dropdown>  
            </li> 
-        </ul>
+        
       </div>
       </div>
     </header>
@@ -724,8 +726,8 @@ a.selected-language{
   color: #a0a0a0!important;
 }
 div.image-lang{
-  height: 40px;
-  width: 40px;
+  height: 36px;
+  width: 36px;
   border-radius: 50%;
   border: 4px solid #fafafa;
 background-size: 60px auto;
