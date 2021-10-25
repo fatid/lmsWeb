@@ -1,8 +1,89 @@
 <template>
   <div class="container">
+     <b-modal
+      id="modal-xl"
+      v-model="showMass.showQ" 
+      scrollable
+      size="xl"
+      :title="'Mass Question'"
+    >
+  <span style="width: 100%; display: block;">
+    
+           <span style="width: 100%; display: inline-flex;">  
+            Choose Question
+            <input
+              type="text"
+              class="modal-form-input"
+              v-model="qs.name" 
+              @change="getQuestions()"
+            />
+             <select class="modal-form-input" v-model="qs.type" @change="getQuestions()">
+              <option    v-for="(opt, key) in l('cat.QuestionTypes.list', 'g')"  :key="key" :value="key">{{
+                  opt.name 
+              }}</option>
+             </select>
+             <select class="modal-form-input" v-model="qs.level" @change="getQuestions()">
+               <option v-for="u in levels" :key="u.id" :value="u.id">{{
+                u.cou_level_name
+              }}</option>
+            </select>
+          </span>
+          </span>
+  <span style="width: 100%; display: block;">
+            <span class="question-border" 
+            v-for="q in questions"
+            :class="q && q.q && massQuestion.includes(q.q.id) ? 'green-border':''"
+            v-if="q && q.q "
+            >  
+          
+                <a v-if="massQuestion.includes(q.q.id) " @click="deselect(q.q.id)">Deselect this question</a>
+                <a v-else @click="massQuestion.push(q.q.id)">Select this question  </a>
+
+                <question
+                  :question="q" 
+                  :isAnswered="false" 
+                ></question>
+            </span>
+            </span>
+          <template #modal-footer>
+        <div class="w-100">
+              <div class="modal-form-row">
+         <label>{{l('Start Sort Order','g')}}</label>
+          <span
+            ><input
+              type="number"
+              class="modal-form-input"
+              v-model="massSettings.sort"
+            />
+          </span>
+        </div> 
+            <!-- <select class="modal-form-input" v-model="massImageUpload">
+              <option v-for="u in statusList" :key="u.value" :value="u.value">{{
+                u.label
+              }}</option>
+          </select> -->
+          <b-button
+            variant="default"
+            size="sm"
+            class="float-right"
+            @click="showMass.show = false"
+          >
+            Close
+          </b-button>
+          <b-button
+            variant="primary"
+            size="sm"
+            class="float-right"
+            @click="saveMassQuestion()"
+          >
+            {{ l("Save", "g") }}
+          </b-button>
+        </div>
+      </template>
+    </b-modal>
     <b-modal
       id="modal-xl"
-      v-model="showMass.show"
+      v-model="showMass.showI" 
       scrollable
       size="xl"
       :title="'Mass Addition'"
@@ -48,7 +129,7 @@
             variant="default"
             size="sm"
             class="float-right"
-            @click="showMass.show = false"
+            @click="showMass.showI = false"
           >
             Close
           </b-button>
@@ -495,7 +576,8 @@ export default {
       {label:'Content',value:'Content'},
     ],
     showMass:{
-      show: false,type:null
+      showI: false, 
+      showQ: false, 
     },
     qs:{
       name:'',
@@ -559,6 +641,7 @@ export default {
       }
     ],
     massImageUpload:[],
+    massQuestion:[],
     massSettings: {
         sort:1,
         status:1,
@@ -607,6 +690,12 @@ export default {
 
   methods: {
 
+    deselect(id){
+
+     this.massQuestion= this.massQuestion.filter(k=> k!=id) 
+      // " @click="deselect(q.q.id)
+
+    },
 removeSelected(){
   let s = this.selected;
   if(s && s[0]){
@@ -709,8 +798,11 @@ removeSelected(){
        }
     },
     openModalMass(type) {
-      this.showMass.show = true;
-      this.showMass.type = type; 
+      if(type.type=="question"){
+        this.showMass.showQ = true;
+      }else if(type.type=="image"){
+        this.showMass.showI = true;
+      } 
     },
     openModal(row) {
       this.show = true;
@@ -729,6 +821,34 @@ removeSelected(){
       }
     },
 
+    saveMassQuestion(){
+      // massQuestion
+      let massQuestion  = this.massQuestion  
+      if(massQuestion && massQuestion[0]){
+        let total = parseInt(this.massSettings.sort);
+        massQuestion.forEach((k,i)=>{
+            let  data =  {
+                  id: null,
+                  status: 1,
+                  lesson_name: k.lesson_name, 
+                  lesson_photo: '', 
+                  lesson_description: '', 
+                  lesson_type: "Exam", 
+                  lesson_question: k, 
+                  lesson_video_url: '', 
+                  lesson_subject: this.sectionId,
+                  prev_id: this.selectedLesson, 
+                  sort: total+i,
+             }
+             let updatePage = i==massQuestion.length-1 ? true : false
+              
+             this.saveTopic(data,updatePage)
+              if(updatePage){
+               massQuestion=[]
+             }
+        })
+      }
+    },
     saveMassUpload(){
 
         let massImageUpload  = this.massImageUpload 
