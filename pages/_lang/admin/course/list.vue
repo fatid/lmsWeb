@@ -50,6 +50,23 @@
           </span>
         </div>
         <div class="modal-form-row">
+          <label>{{ l("Description", "g") }} 
+                <a :class="selectedLang=='en'?'bolda':''" @click="selectedLang='en'">EN</a>/ 
+                  <a :class="selectedLang=='ar'?'bolda':''" @click="selectedLang='ar'">AR</a>/ 
+                </label>
+            <span  v-show="selectedLang=='en'" style="width: 100%; display: block;">     <!-- <tiptap    /> --> 
+                  <tiptap v-model="edited.all_cou_description.en"  
+                          @updated="edited.all_cou_description.en=$event"
+                  /> 
+            </span>
+             <span  v-show="selectedLang=='ar'" style="width: 100%; display: block;">     <!-- <tiptap    /> --> 
+                  <tiptap v-model="edited.all_cou_description.ar"  
+                          @updated="edited.all_cou_description.ar=$event"
+                  /> 
+            </span>
+            
+        </div>
+        <div class="modal-form-row">
           <label>{{ l("Level", "g") }}</label>
           <span>
             <select class="modal-form-input" v-model="edited.cou_level">
@@ -244,6 +261,7 @@
 <script>
 import general from "@/mixins/general";
 import admin_course from "@/mixins/admin_course";
+import tiptap from "@/components/common/Tiptap.vue";
 
 import axios from "axios";
 import banners from "@/components/common/banner.vue";
@@ -253,7 +271,8 @@ export default {
   mixins: [general, admin_course],
   components: {
     banners,
-    VueGoodTable
+    VueGoodTable,
+    tiptap
   },
   computed: {
     levels() {
@@ -267,6 +286,7 @@ export default {
     search: {
       keyword: ""
     },
+    selectedLang:"ar",
     edited: {
       id: null,
       cou_name: '',
@@ -281,7 +301,11 @@ export default {
         ar:'',
         tr:''
       },
-      
+       all_cou_description: {
+        en:'',
+        ar:'',
+        tr:''
+      },
       cou_level: "",
       cou_category: "",
       cou_link: "",
@@ -391,6 +415,7 @@ export default {
           id: d.id,
           cou_name: d.all_cou_name,
           cou_campaign_text: d.all_cou_campaign_text,
+          cou_description: d.all_cou_description,
           cou_level: d.cou_level,
           cou_category: d.cou_category,
           cou_image: d.cou_image,
@@ -442,6 +467,7 @@ export default {
               d= d.map(k=>{
                 k.all_cou_name  = k.all_cou_name ? k.all_cou_name : {tr:'',en:'',ar:''}
                 k.all_cou_campaign_text  = k.all_cou_campaign_text ? k.all_cou_campaign_text : {tr:'',en:'',ar:''}
+                k.all_cou_description  = k.all_cou_description ? k.all_cou_description : {tr:'',en:'',ar:''}
                 k.all_cou_link  = k.all_cou_link ? k.all_cou_link : {tr:'',en:'',ar:''}
                 return k;
               })
@@ -1482,4 +1508,5 @@ table.vgt-table tr.clickable:hover {
   color: #394567;
   opacity: 0.3;
 }
+
 </style>

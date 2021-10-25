@@ -21,7 +21,7 @@
                          >												
 								</div>
 							</div>
-							<div class="ui search focus mt-15">
+							<div class="ui search focus mt-15 mt-0mobile">
 								 <div class="ui left icon input swdh11 swdh19">
 									<input class="prompt srch_explore" type="email" v-model="form2.U_mail" name="emailaddress"   id="id_email" required="" maxlength="64" placeholder="Email Address">															
 								 
@@ -31,7 +31,7 @@
                   </select>										  				
 								</div>
 							</div>
-							<div class="ui search focus mt-15">
+							<div class="ui search focus mt-15 mt-0mobile">
 								<div class="ui left icon input swdh11 swdh19">
 									<input class="prompt srch_explore" type="password" name="password"  v-model="form2.U_Password" id="id_password" required="" maxlength="64" :placeholder="l('Password','g')">															
 									<input class="prompt srch_explore" type="password" name="password2" v-model="form2.U_Password_re" id="id_password" required="" maxlength="64" :placeholder="l('Retype Password','g')">															
@@ -83,7 +83,7 @@
           <i class="uil uil-google"></i>Continue with Google
         </button> -->
         <form>
-          <div class="ui search focus mt-15">
+          <div class="ui search focus mt-15 mt-0mobile">
             <div class="ui left icon input swdh95">
               <input
                 class="prompt srch_explore"
@@ -95,7 +95,7 @@
               <i class="uil uil-envelope icon icon2"></i>
             </div>
           </div>
-          <div class="ui search focus mt-15">
+          <div class="ui search focus mt-15 mt-0mobile">
             <div class="ui left icon input swdh95">
               <input
                 class="prompt srch_explore"
@@ -204,7 +204,7 @@ export default {
               U_rname: "",
               U_surname: "",
               U_mail: "",
-              U_role: "",
+              U_role: "RoleStudent",
               U_Password: "",
               U_Password_re: "",
               accept:false 
@@ -246,5 +246,18 @@ a.login-btn{
   width: 100%;
   display: block;
   padding: 10px;
+}
+@media (max-width: 991px) {
+.swdh19{
+  display: inline-block!important;
+  width: 100%!important;
+}
+.swdh19 .srch_explore{
+  width: 100%!important;
+  margin-bottom: 5px!important;
+}
+.mt-0mobile{
+  margin-top: 0px!important;
+}
 }
 </style>
