@@ -8,7 +8,7 @@
           </div>
         </div>
       </div>
-      <div class="col-9 col-md-9 col-sm-12">
+      <div class="col-9 col-md-9 col-sm-12  col-xs-12">
         <div class="fcrse_1 my_crse_1" v-for="d in courseOrders">
           <a
             @click="goPath('course/' + d.from_corder_course.cou_link)"

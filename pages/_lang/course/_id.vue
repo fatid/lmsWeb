@@ -230,12 +230,12 @@
                   
                    
                   
-                    <div class="end-detail">  <a class="btn btn-primary">Start</a>
-                      <!-- <i :class="getCourseIcon(les)" class="icon_142"></i>
-                      <div class="title">
-                        {{ les.lesson_total_time | minuteDuration }}
-                      </div> -->
+                    <div class="end-detail"  v-if="!myLessonLoading"> 
+                         <a class="btn btn-success" v-if="my_lessons_formatted[les.id] &&  my_lessons_formatted[les.id].cl_is_completed">Finished</a>
+                         <a class="btn btn-primary"  @click="goPath('course/' + les.id + '/' + les.id)" v-else-if="my_lessons_formatted[les.id] && my_lessons_formatted[les.id].cl_completed_list">Continue</a>
+                         <a class="btn btn-default"  @click="goPath('course/' + les.id + '/' + les.id)" v-else>Start</a> 
                     </div>
+                   
                   </div>
                   </div>
                 </div>
@@ -435,11 +435,13 @@ export default {
 
   data: () => ({
     data:  {},
+    my_lessons_formatted:  {},
     units: [],
     mylessons: [],
     lessons: [], 
     sections: [], 
-    inputList: ""
+    inputList: "",
+    myLessonLoading:false,
   }),
   async created() {
     await this.$store.dispatch("core/getOptions", {
@@ -488,7 +490,7 @@ export default {
     }
   },
   watch:{
-    'courseOrders'(val){ 
+    'data'(val){ 
  
       if(this.isCourseSelected){
         this.getMyLessons();
@@ -568,26 +570,37 @@ async getMyLessons(){
 
 
  let auth  = this.$store.state.user.auth;
-        let id =  this.isCourseSelected ? this.isCourseSelected.id : null; 
- 
+        let id =  this.data ? this.data.id : null; 
+        this.myLessonLoading=true;
         await axios({
           url: process.env.baseURL + "my_lesson",
           method: "get",
           params: {
-            limit: 1,
+            limit: 500,
             offset: 0,
-            fields:'id,status,pdb_user,cl_completed_list,cl_last_topic,cl_user,cl_status,cl_unite,cl_lesson',
+            fields:'id,status,pdb_user,cl_completed_list,cl_is_completed,cl_last_topic,cl_course,cl_user,cl_status,cl_unite,cl_lesson',
             lang: this.$store.state.locale,
             token: this.$store.state.user && this.$store.state.user.auth ? this.$store.state.user.auth.token : '',
             sort: ["sort,ASC"],
-            filter: { prev_id: ["=", id], cl_user:["=", auth.id] }
+            filter: { cl_course: ["=", id], cl_user:["=", auth.id] }
           }
         })
         .then(response => {
             this.mylessons=response.data.formattedData;
+            if(response.data.formattedData){
+              response.data.formattedData.forEach(a=>{
+                this.my_lessons_formatted[a.cl_lesson]=a;
+              })
+              
+            }
+            this.myLessonLoading=false;
+
         })
         .catch(e => {
              this.mylessons=[];
+              this.myLessonLoading=false;
+              this.my_lessons_formatted={}
+
         });
       },
 async getCourseOrders(){
@@ -729,8 +742,9 @@ async getCourseOrders(){
                 this.getUnits(d.id);
                 this.getSections(d.id);
                 this.getLesson(d.id);
-                this.getMyLessons();
+         
                 this.data = d;
+                       this.getMyLessons();
               } else {
                 this.data = {};
               }

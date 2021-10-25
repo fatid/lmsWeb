@@ -3,7 +3,7 @@
     <header class="header clearfix main-header"  >
       <div class="container">
         <button type="button" id="toggleMenu" v-if="isMobile" class="toggle_menu">
-        <i class="uil uil-bars"></i>
+        <i class="fas fa-bars"></i>
       </button>
       <button id="collapse_menu" class="collapse_menu" v-if="isMobile">
         <i class="uil uil-bars collapse_menu--icon "></i>

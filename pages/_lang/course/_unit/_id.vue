@@ -18,7 +18,7 @@
                @click.middle="goPathBlank('course/'+course.cou_link)"
               aria-current="page"
             >
-              {{course.section_name}}
+              {{course.cou_name}}
             </li>
             <li
               class="breadcrumb-item active" v-if="unite"
@@ -47,7 +47,11 @@
     </div>
     <!-- <div class="card-header"> 
     </div> -->
-    <div  class="card" v-if="steps.length==0">
+    <div  class="card" v-if="loading">
+
+          Loading...
+    </div>
+    <div  class="card" v-else-if="!loading && steps.length==0">
 <div class="result_content" >
           <h2>  There isn't any topic in this lesson. </h2>
           <p>
@@ -230,6 +234,7 @@ export default {
       id: null,
       lesson_question: ""
     },
+    loading:false,
     totalPoints: [],
     section:{},
     course:{},
@@ -237,6 +242,7 @@ export default {
     activeLesson:{
       id:null,  
       cl_lesson:null,
+      cl_course:null,
       cl_status:null,
       cl_last_topic:null,
       cl_completed_list:'',
@@ -262,6 +268,7 @@ export default {
     prev: null
   }),
   async created() {
+    this.loading=true;
     this.unit = this.$route.params.unit;
     await this.$store.dispatch("core/getOptions", {
       slang: this.$store.state.locale,
@@ -278,6 +285,9 @@ export default {
     this.getCourseLast(this.unit);
     this.getLessons();
     this.getSection();
+    setTimeout(() => {
+      this.loading=false;
+    }, 600);
   },                         
   
   methods: {
@@ -325,7 +335,7 @@ export default {
         params: {
           limit: 1,
           offset: 0,
-          fields:'id,status,pdb_user,cl_completed_list,cl_last_topic,cl_user,cl_status,cl_unite,cl_lesson',
+          fields:'id,status,pdb_user,cl_completed_list,cl_last_topic,cl_user,cl_status,cl_unite,cl_lesson,cl_course',
           lang: this.$store.state.locale,
           token: this.$store.state.user && this.$store.state.user.auth ? this.$store.state.user.auth.token : '',
           sort: ["sort,ASC"],
@@ -354,6 +364,8 @@ export default {
       let url = process.env.baseURL + "my_lesson";
       let data = this.data
       this.activeLesson.cl_completed_list_arr.push(data.id) 
+      this.activeLesson.cl_completed_list_arr = [...new Set(this.activeLesson.cl_completed_list_arr)];
+      this.activeLesson.cl_course =  this.course.id;
       this.activeLesson.cl_lesson =  this.$route.params.unit;
       this.activeLesson.cl_unite =  this.$route.params.unit;
       this.activeLesson.cl_user =  this.$store.state.user.auth.id;
@@ -379,10 +391,12 @@ export default {
           token: this.$store.state.user && this.$store.state.user.auth ? this.$store.state.user.auth.token : '',
           id: activeLesson.id, 
           cl_lesson:  activeLesson.cl_lesson,
+          cl_course:  activeLesson.cl_course,
           cl_unite:  activeLesson.cl_unite,
           cl_last_topic:  activeLesson.cl_last_topic,
           cl_status:  activeLesson.cl_status,
           cl_completed_list:  activeLesson.cl_completed_list,
+          cl_is_completed: this.isCompletedAll(),
           status:  activeLesson.status,
           pdb_user: auth.id,
           cl_user: auth.id
@@ -493,8 +507,9 @@ export default {
         });
     },
     async getSection() {
+      this.loading=true;
       let fields =
-        "id,sort,status,prev_id,prev.unit_name,lesson_course.cou_link,lesson_course.cou_name";
+        "id,sort,status,prev_id,prev.unit_name,lesson_course.cou_link,lesson_course.cou_name,lesson_course.id";
       
       axios({
         url: process.env.baseURL + "sections",
@@ -517,12 +532,15 @@ export default {
             this.sections = response.data.formattedData[0];
             this.course = response.data.formattedData[0].from_lesson_course;
             this.unite = response.data.formattedData[0].from_prev;
+
           }
+            this.loading=false;
         })
         .catch(e => {
           this.unite= null;
           this.course= null;
           this.unite= null;
+          this.loading=false;
         });
     },
     async getQuestion() {
@@ -593,7 +611,7 @@ export default {
       this.prev = this.allLessons[this.data.sort - 2];
       this.order = this.data.sort;
     },
-    isCompletedAll(st,i){
+    isCompletedAll(){
         let allCompleted = true;
         let ids = this.allLessons.map(k=> k.id);
         ids.forEach(a=>{

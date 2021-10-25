@@ -26,6 +26,15 @@
   }
 }
 
+.boldA{
+  font-weight: 600;
+  color: red;
+}
+.ProseMirror{
+  height: auto;
+  border:0;
+}
+
 input[type=text].modal-form-input 
 , select.modal-form-input {
     padding: 7px;
