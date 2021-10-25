@@ -719,6 +719,7 @@ a {
 
 .header_right{
   display: inline-flex;
+   margin-top: 6px;
 }
 .language-select{
     display: block;
@@ -759,7 +760,7 @@ header.modal-header{
 .menu-select{
     display: inline-block;
     margin-right: 20px;
-    margin-top: 20px;
+    margin-top: 10px;
     margin-left: 10px;
 }
 </style>

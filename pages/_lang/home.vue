@@ -3,7 +3,7 @@
     <div class="row">
       <div class="col-12 ">
         <div class="search-header">
-          <div class="title-field">My Active Courses</div>
+          <div class="title-field">{{l('My Active Courses','g')}}</div>
           <div class="search-field"> 
           </div>
         </div>
