@@ -53,6 +53,14 @@ export default {
     newAdd: {
       uye_list_name: ""
     },
+    comment:{
+      title:'',
+      content:'',
+      model:'',
+      app:'',
+      status:1,
+      user:''
+    },
     addedLists:[]
   }),
   
@@ -93,7 +101,7 @@ export default {
   },
   methods: {
  
-    },
+   
     async save(mp) {
       let method = "post";
       let url = process.env.baseURL + "comments";
@@ -167,7 +175,7 @@ export default {
       }
     }
   }
-};
+}
 </script>
 <style>
 .modal-like .modal-body {

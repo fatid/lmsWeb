@@ -248,6 +248,7 @@
               <div class="col-lg-5">
                 <div class="reviews_left">
                   <h3>Feedback</h3>
+                  <a @click="addNewComment=true">New Comment</a>
                   <!-- <div class="total_rating">
                     <div class="_rate001">-</div>
                     <div class="rating-box">

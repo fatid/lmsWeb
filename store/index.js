@@ -31,6 +31,13 @@ export const state = () => ({
             label:''
         }
     },
+    commentModal:{
+        show: false,
+        detail:{
+            module:'',
+            label:''
+        }
+    },
     listModal:{
         show: false,
         data:{ 

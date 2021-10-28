@@ -38,11 +38,11 @@
  
  
    <b-list-group class="w-100 width-100 "> 
-                <b-list-group-item  v-for="dt in listItems"  class="d-flex w-100 width-100 justify-content-between align-items-center"  style="cursor: pointer;"
+                <b-list-group-item :key="'listItems'+dt.id"  v-for="dt in listItems"  class="d-flex w-100 width-100 justify-content-between align-items-center"  style="cursor: pointer;"
                   @click="goUrl('course/'+dt.id+'/'+dt.id)"
                 >
                           {{dt.section_name}}<br />
-                        <p>Unite: {{dt.topModuleData.unit_name}}</p>
+                        <p>Unit: {{dt.topModuleData.unit_name}}</p>
                 </b-list-group-item>
           </b-list-group>
     </div>
