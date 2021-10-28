@@ -10,7 +10,8 @@
   <span style="width: 100%; display: block;">
     
            <span style="width: 100%; display: inline-flex;">  
-            Choose Question
+            Choose Question</span>
+            <span style="width: 100%; display: inline-flex;">
             <input
               type="text"
               class="modal-form-input"
@@ -207,141 +208,6 @@
     </b-modal>
 
 
- <b-modal
-      id="modal-xl"
-      v-model="showTopic"
-      scrollable
-      size="xl"
-      :title="editedTopic.id ? l('Editing', 'g') : l('Create New', 'g')"
-    >
-      <!-- {{editedTopic}} -->
-      <b-alert :show="saveStatus.show" dismissible :variant="saveStatus.status">
-        {{ l("Saved", "g") }}
-      </b-alert>
-      <div class="modal-form" :lang="LOCALE">
-        <div class="modal-form-row">
-          <label>{{l('Title','g')}}</label>
-          <span
-            ><input
-              type="text"
-              class="modal-form-input"
-              v-model="editedTopic.lesson_name"
-            />
-             <select class="modal-form-input" v-model="editedTopic.lesson_type">
-              <option v-for="u in lessonType" :key="u.value" :value="u.value">{{
-                u.label
-              }}</option>
-          </select>
-          </span>
-        </div>  
-          <div class="modal-form-row" v-show="editedTopic.lesson_type=='Exam'">
-       
-          <span style="width: 100%; display: block;">  
-          <span style="width: 100%; display: inline-flex;">  
-            Choose Question
-            <input
-              type="text"
-              class="modal-form-input"
-              v-model="qs.name" 
-              @change="getQuestions()"
-            />
-             <select class="modal-form-input" v-model="qs.type" @change="getQuestions()">
-              <option    v-for="(opt, key) in l('cat.QuestionTypes.list', 'g')"  :key="key" :value="key">{{
-                  opt.name 
-              }}</option>
-             </select>
-             <select class="modal-form-input" v-model="qs.level" @change="getQuestions()">
-               <option v-for="u in levels" :key="u.id" :value="u.id">{{
-                u.cou_level_name
-              }}</option>
-            </select>
-          </span>
-          <span style="width: 100%; display: block;">
-            <span class="question-border" 
-            :class="editedTopic.lesson_question==q.q.id ? 'green-border':''"
-            v-for="q in questions">  
-          
-                <a v-if="editedTopic.lesson_question==q.q.id" @click="editedTopic.lesson_question='q.q.id'">Deselect this question</a>
-                <a v-else @click="editedTopic.lesson_question=q.q.id">Select this question {{q.q.id}} </a>
-
-                <question
-                  :question="q" 
-                  :isAnswered="false" 
-                ></question>
-            </span>
-            </span>
-            </span>
-        </div> 
-         <div class="modal-form-row" v-show="editedTopic.lesson_type=='Content'">
-       
-          <span style="width: 100%; display: block;">     <!-- <tiptap    /> --> 
-                  <tiptap v-model="editedTopic.lesson_description"  
-                          @updated="editedTopic.lesson_description=$event"
-                  /> 
-            <!-- <textarea
-              type="text"
-              class="modal-form-input"
-              v-model="editedTopic.lesson_description"
-            ></textarea> -->
-          </span>
-        </div> 
-        <div class="ui left icon input swdh11 swdh19" v-show="editedTopic.lesson_type=='Image'">
-          <div v-if="!editedTopic.lesson_photo">
-            <p>
-              <a>{{ l("Upload image", "g") }}</a>
-            </p>
-            <input
-              type="file"
-              name="changeFile"
-              @change="onFileChange2($event, 'lesson_photo')"
-            />
-          </div>
-          <div v-else>
-            <img :src="editedTopic.lesson_photo" class="g-width-200 imageUpload" />
-            <p class="margin-top-10 mt-10 g-mt-10">
-              <a @click="removeImage2('lesson_photo')"
-                ><i class="fa fa-times"></i> {{ l("Remove image", "g") }}</a
-              >
-            </p>
-          </div>
-        </div>
-        <div class="modal-form-row">
-          <label>{{l('Sort Order','g')}}</label>
-          <span
-            ><input
-              type="number"
-              class="modal-form-input"
-              v-model="editedTopic.sort"
-            />
-          </span>
-        </div>  
-      </div>
-      <template #modal-footer>
-        <div class="w-100">
-            <select class="modal-form-input" v-model="editedTopic.status">
-              <option v-for="u in statusList" :key="u.value" :value="u.value">{{
-                u.label
-              }}</option>
-          </select>
-          <b-button
-            variant="default"
-            size="sm"
-            class="float-right"
-            @click="showTopic = false"
-          >
-            Close
-          </b-button>
-          <b-button
-            variant="primary"
-            size="sm"
-            class="float-right"
-            @click="saveTopic()"
-          >
-            {{ l("Save", "g") }}
-          </b-button>
-        </div>
-      </template>
-    </b-modal>
 
 
     <div class="row">
@@ -388,17 +254,243 @@
                   </li>
               </ul>
               <br />
-   <div class="btn btn-danger"   @click="openModalMass({type:'question' })">
+   <!-- <div class="btn btn-danger"   @click="openModalMass({type:'question' })">
             + {{ l("Add Mass Questions", "g") }}
           </div>
               <br />
               <br />
    <div class="btn btn-danger"    @click="openModalMass({type:'image' })">
             + {{ l("Add Mass Images", "g") }}
-          </div>
+          </div> -->
               </div>
-              <div class="table_topic">
+
+              
+ <div
+      v-if="showTopic" 
+       class="edit_topic"
+    >
+              <div  >
+
+     <h3>{{editedTopic.id ? l('Editing', 'g') : l('Create New', 'g') }}</h3>
+      <!-- {{editedTopic}} -->
+      <b-alert :show="saveStatus.show" dismissible :variant="saveStatus.status">
+        {{ l("Saved", "g") }}
+      </b-alert>
+      <div class="modal-form" :lang="LOCALE">
+        <div class="modal-form-row">
+          <label>{{l('Title','g')}}</label>
+          <span
+            ><input
+              type="text"
+              class="modal-form-input"
+              v-model="editedTopic.lesson_name"
+            />
+             <select class="modal-form-input" v-model="editedTopic.lesson_layout" @change="setLayout()">
+              <option v-for="u in lessonLayout" :key="u.value" :value="u.value">{{
+                u.label
+              }}</option>
+          </select>
+             <!-- <select class="modal-form-input" v-model="editedTopic.lesson_type">
+              <option v-for="u in lessonType" :key="u.value" :value="u.value">{{
+                u.label
+              }}</option>
+          </select> -->
+          </span>
+        </div>  
+ <div class="container"> 
+ 
+      <draggable v-model="layout" draggable=".draggable" class="row "> 
+      
+        <div   class="draggable"
+          :class="'col-'+lt.size"
+         v-for="lt in layout">
+           <div class="layout-container " 
+          :class="lt.class"
+        >
+        <template v-if="lt.class=='text-T'">
+          <span class="placeholder">{{editedTopic.lesson_name}}</span> 
+        </template>
+         <template v-else-if="lt.class=='text-B'">
+              <div v-if="lt.type">
+
+                  <span class="tem-header-content">
+                              
+                          <a   @click="lt.type=''">  Change Type     </a>
+
+                          <select class="mini-select" v-model="lt.size" >
+                                                            <option v-for="u in 12" :key="u+'sizes'" :value="u">{{  u
+                                                            }}</option>
+                                                          </select>
+                          <select class="mini-select" v-model="lt.alignment" >
+                                                            <option v-for="u in alignments" :key="u+'sizes'" :value="u.value">{{  u.label
+                                                            }}</option>
+                                                          </select>
+
+                  </span>
+                 <div class="modal-form-row" v-show="lt.type=='Exam'">
+       
+                                                        <span style="width: 100%; display: block;">  
+                                                        <span style="width: 100%; display: inline-flex;">  
+            Choose Question</span>
+            <span style="width: 100%; display: inline-flex;">
+                                                          <input
+                                                            type="text"
+                                                            class="modal-form-input"
+                                                            v-model="qs.name" 
+                                                            @change="getQuestions()"
+                                                          />
+                                                          <select class="modal-form-input" v-model="qs.type" @change="getQuestions()">
+                                                            <option    v-for="(opt, key) in l('cat.QuestionTypes.list', 'g')"  :key="key" :value="key">{{
+                                                                opt.name 
+                                                            }}</option>
+                                                          </select>
+                                                          <select class="modal-form-input" v-model="qs.level" @change="getQuestions()">
+                                                            <option v-for="u in levels" :key="u.id" :value="u.id">{{
+                                                              u.cou_level_name
+                                                            }}</option>
+                                                          </select>
+                                                        </span>
+                                                        <span style="width: 100%; display: block; height: 300px; overflow:auto;">
+                                                          <span class="question-border" 
+                                                          :class="lt.content==q.q.id ? 'green-border':''"
+                                                          v-for="q in questions">  
+                                                              <input type="checkbox"  :checked="lt.content==q.q.id" />
+                                                              <a v-if="lt.content==q.q.id" @click="lt.content='q.q.id'">Deselect this question</a>
+                                                              <a v-else @click="lt.content=q.q.id">Select this question  </a>
+
+                                                              <question
+                                                                :question="q" 
+                                                                :isAnswered="false" 
+                                                              ></question>
+                                                          </span>
+                                                          </span>
+                                                          </span>
+                                                      </div>
+                                                       <div style="width: 100%; display: block;" v-show="lt.type=='Video'">
+                                                         <div    style="width: 100%; display: block;" ><textarea
+                                                            
+                                                            v-model="lt.content"  
+                                                          ></textarea>
+                                                          </div>
+                                                          <div v-if="lt.content"  style="width: 100%; display: block;" >
+                                                            <iframe width="100%" height="315"  :src="lt.content"></iframe>
+                                                            <!-- <video width="400" controls>
+                                                              <source :src="lt.content" type="video/mp4">
+                                                              <source :src="lt.content" type="video/ogg">
+                                                              Your browser does not support HTML video.
+                                                            </video>  -->
+                                                               
+                                                          </div>
+                                                      </div>
+                                                      <div class="modal-form-row" v-show="lt.type=='Content'">
+                                                    
+                                                        <span style="width: 100%; display: block;">     <!-- <tiptap    /> --> 
+                                                                <tiptap v-model="lt.content"  
+                                                                        @updated="lt.content=$event"
+                                                                />  
+                                                        </span>
+                                                      </div> 
+                                                      <div class="ui left icon input swdh11 swdh19" v-show="lt.type=='Image'">
+                                                        <div v-if="!lt.content">
+                                                          <p>
+                                                            <a>{{ l("Upload image", "g") }}</a>
+                                                          </p>
+                                                          <input
+                                                            type="file"
+                                                            name="changeFile"
+                                                            @change="onFileChange2($event, 'lesson_photo',lt)"
+                                                          />
+                                                          <p>{{lt}}</p>
+                                                        </div>
+                                                        <div v-else>
+                                                          <img :src="lt.content" class="g-width-200 imageUpload" />
+                                                          <p class="margin-top-10 mt-10 g-mt-10">
+                                                            <a @click="removeImage2('lesson_photo',lt)"
+                                                              ><i class="fa fa-times"></i> {{ l("Remove image", "g") }}</a
+                                                            >
+                                                          </p><p class="margin-top-10 mt-10 g-mt-10">
+                                                          Width:
+                                                          <input
+                                                            type="text"
+                                                            class="modal-form-input"
+                                                            v-model="lt.width"  
+                                                          />
+                                                          </p><p class="margin-top-10 mt-10 g-mt-10">
+                                                          Height:
+                                                          <input
+                                                            type="text"
+                                                            class="modal-form-input"
+                                                            v-model="lt.height"  
+                                                          />
+                                                          </p>
+                                                        </div>
+                                                      </div>
+              </div><div v-else>
+                      <span class="tem-header-content">Add Item 
+
+<select class="mini-select" v-model="lt.size" >
+                                                            <option v-for="u in 12" :key="u+'sizes'" :value="u">{{  u
+                                                            }}</option>
+                                                          </select>
+<select class="mini-select" v-model="lt.alignment" >
+                                                            <option v-for="u in alignments" :key="u+'sizes'" :value="u.value">{{  u.label
+                                                            }}</option>
+                                                          </select>
+
+                      </span>
+                    <ul><li>
+                    <a v-for="item in lessonType" @click="lt.type=item.value">
+                      + {{item.label}}
+                    </a></li></ul>
+                </div>
+           </template>
+        </div>
+        </div>
+      </draggable>
+        
+        </div>
+        
+        <div class="modal-form-row">
+          <label>{{l('Sort Order','g')}}</label>
+          <span
+            ><input
+              type="number"
+              class="modal-form-input"
+              v-model="editedTopic.sort"
+            />
+          </span>
+        </div>  
+      </div>
+     
+        <div class="w-100">
+            <select class="modal-form-input" v-model="editedTopic.status">
+              <option v-for="u in statusList" :key="u.value" :value="u.value">{{
+                u.label
+              }}</option>
+          </select>
+          <b-button
+            variant="default"
+            size="sm"
+            class="float-right"
+            @click="showTopic = false"
+          >
+            Close
+          </b-button>
+          <b-button
+            variant="primary"
+            size="sm"
+            class="float-right"
+            @click="saveTopic()"
+          >
+            {{ l("Save", "g") }}
+          </b-button>
+        </div>
+    
+    </div>
+    </div>
+              <div v-else class="table_topic">
                <!-- selected: {{selected}} -->
+
                     <vue-good-table
                       :columns="columns2"
                       :rows="dataLesson"
@@ -406,6 +498,8 @@
                         enabled: true,
                         trigger: 'enter'
                       }"
+                      :isDraggable="true"
+                      @on-dragged="dragged"
                       :sort-options="{
                         enabled: true,
                         initialSortBy: { field: 'sort', type: 'asc' }
@@ -424,7 +518,7 @@
                               goPathBlank('admin/course/' + courseId + '/' + uniteId +'/lessons?lesson='+props.row.id)
                             "
                             ><i class="fas fa-list-alt"></i
-                          ></a> -->
+                          ></a> --> 
                           <a
                             class="table-buttons"
                             @click="
@@ -438,6 +532,11 @@
                               )
                             "
                             ><i class="fa fa-eye"></i
+                          ></a>
+                           <a
+                            class="table-buttons"
+                            @click="duplicate(props.row)" 
+                            ><i class="fa fa-copy"></i
                           ></a>
                         </span>
                         <span v-else-if="props.column.field == 'lesson_photo'">
@@ -534,6 +633,7 @@ import { VueGoodTable } from "vue-good-table";
 import banners from "@/components/common/banner.vue";
 import tiptap from "@/components/common/Tiptap.vue";
 import "vue-good-table/dist/vue-good-table.css";
+import VueGoodTablePlugin from 'vue-good-table';
 import question from "@/components/utils/question.vue"; 
   import draggable from 'vuedraggable'
 export default {
@@ -566,14 +666,32 @@ export default {
     dataLesson:[],
     showTopic:false,
     editedTopic:{
-      status:1
+      status:1,
+      lesson_layout:'12T+12B'
     },
+    lessonLayout:[
+      {label:'1 Field',value:'12T'},
+      {label:'Title & 1 Field',value:'12T+12B'},
+      {label:'Title & 2 Field',value:'12T+6B+6B'},
+      {label:'Title & 4 Field',value:'12T+6B+6B+6B+6B'},
+      {label:'4 Field',value:'6B+6B+6B+6B'}, 
+    ],
+    alignments:[
+      {label:'Left',value:'align-left'},
+      {label:'Center',value:'align-center'},
+      {label:'Right',value:'align-right'}, 
+    ],
+    layout:[
+        
+    ],
     lessonType:[
-      {label:'Exam',value:'Exam'},
-      {label:'Course',value:'Course'},
+      {label:'Title',value:'Title'},
+      {label:'Question',value:'Exam'},
+      // {label:'Course',value:'Course'},
       {label:'Video',value:'Video'},
       {label:'Image',value:'Image'},
       {label:'Content',value:'Content'},
+      {label:'Audio',value:'Audio'},
     ],
     showMass:{
       showI: false, 
@@ -667,6 +785,7 @@ export default {
       group: "prev_id",
       lang: this.LOCALE
     });
+    this.setLayout();
     this.getList();
     this.getCourseName();
     this.getUniteName();
@@ -689,7 +808,42 @@ export default {
   },
 
   methods: {
+    dragged(e){
+      console.log("e",e)
+    },
+    duplicate(row){
+        let r = {...row}
+        r.id='duplicate';
+        this.openModalTopic(r);
+    },
+    setLayout(){
+        let saved_layout = [...this.layout]
+        this.layout = []
+        let t = this.editedTopic.lesson_layout
+        let ta = t.split('+')
+        console.log("ta",ta);
+        ta.forEach((k,i)=>{
+            let width=saved_layout[i] && saved_layout[i].width ? saved_layout[i].width: '';
+            let height=saved_layout[i] && saved_layout[i].height ? saved_layout[i].height: '';
+            let alignment=saved_layout[i] && saved_layout[i].alignment ? saved_layout[i].alignment: '';
+            let type=saved_layout[i] ? saved_layout[i].type: '';
+            let content=saved_layout[i] ? saved_layout[i].content: '';
+            let l = k.slice(-1); 
+            let t = k.slice(0, -1); 
+            this.layout.push({
+              class:'text-'+l,
+              size:t,
+              height:height,
+              alignment:alignment,
+              width:width,
+              type:type,
+              content:content
+            })
+        })
 
+        // console.log("this.layout",this.layout);
+
+    },
     deselect(id){
 
      this.massQuestion= this.massQuestion.filter(k=> k!=id) 
@@ -748,24 +902,26 @@ removeSelected(){
 
 
 
-    onFileChange2(e,field) {
+    onFileChange2(e,field,lt){
       var files = e.target.files || e.dataTransfer.files;
       if (!files.length)
         return;
-      this.createImage2(files[0],field);
+      this.createImage2(files[0],field,lt);
     },
-    createImage2(file,field) {
+    createImage2(file,field,lt) {
       var image = new Image();
       var reader = new FileReader();
       var vm = this;
 
       reader.onload = (e) => {
-        this.editedTopic[field] = e.target.result;
+     
+        lt.content = e.target.result;
       };
       reader.readAsDataURL(file);
     },
-    removeImage2: function (e) {
-      this.editedTopic[e] = '';
+    removeImage2: function (e,lt) {
+      
+        lt.content = ''; 
     },
 
     setDefault(){
@@ -790,6 +946,8 @@ removeSelected(){
           lesson_acc_type: "",
           lesson_subject: "",
           lesson_description: "",
+          lesson_layout:'12T:12B',
+          lesson_content: [],
           lesson_total_time: "",
           lesson_counter: "", 
           status:1,
@@ -814,10 +972,17 @@ removeSelected(){
     },
     openModalTopic(row) {
       this.showTopic = true;
-      if(!row.id){
+      if(row.id=="duplicate"){
+        row.id=null;
+        this.editedTopic = {...row}; 
+        this.layout = row.lesson_content
+
+      }else if(!row.id){
         this.setDefaultTopic();
       }else{
-        this.editedTopic = {...row};
+        this.editedTopic = {...row}; 
+        // this.setLayout(); 
+        this.layout = row.lesson_content
       }
     },
 
@@ -833,6 +998,8 @@ removeSelected(){
                   lesson_name: k.lesson_name, 
                   lesson_photo: '', 
                   lesson_description: '', 
+                  lesson_content: '', 
+                  lesson_layout: '12B', 
                   lesson_type: "Exam", 
                   lesson_question: k, 
                   lesson_video_url: '', 
@@ -862,6 +1029,8 @@ removeSelected(){
                   lesson_name: k.lesson_name, 
                   lesson_photo: k.lesson_photo, 
                   lesson_description: '', 
+                  lesson_content: '', 
+                  lesson_layout: '12B', 
                   lesson_type: "Image", 
                   lesson_question: '', 
                   lesson_video_url: '', 
@@ -888,6 +1057,43 @@ removeSelected(){
         method = "put";
         url = process.env.baseURL + "lesson/" + d.id;
       }
+
+      d.lesson_description='';
+      d.lesson_question='';
+      d.lesson_photo=null;
+      d.lesson_video_url='';
+      d.lesson_type='';
+      let vg="";
+      if(this.layout && this.layout[0]){
+            this.layout.forEach(a=>{
+
+              if(a.type=='Exam'){
+                  d.lesson_question=a.content;
+                  d.lesson_type=d.lesson_type+vg+a.type
+                  vg=",";
+              }else
+              if(a.type=='Course'){
+                  d.lesson_type=d.lesson_type+vg+a.type
+                  vg=",";
+              }else
+              if(a.type=='Video'){
+                  d.lesson_video_url=a.content;
+                  d.lesson_type=d.lesson_type+vg+a.type
+                  vg=",";
+              }else
+              if(a.type=='Image'){
+                  d.lesson_photo=a.content;
+                  d.lesson_type=d.lesson_type+vg+a.type
+                  vg=",";
+              }else
+              if(a.type=='Content'){
+                  d.lesson_description=a.content;
+                  d.lesson_type=d.lesson_type+vg+a.type
+                  vg=",";
+              }  
+            })
+      }
+      let lesson_content = JSON.stringify(this.layout)
       await axios({
         url,
         method,
@@ -896,8 +1102,10 @@ removeSelected(){
           status: d.status,
           lesson_name: d.lesson_name, 
           lesson_photo: d.lesson_photo, 
+          lesson_content: lesson_content,  
           lesson_description: d.lesson_description, 
           lesson_type: d.lesson_type, 
+          lesson_layout:  d.lesson_layout,
           lesson_question: d.lesson_question, 
           lesson_subject: this.sectionId,
           lesson_video_url: d.lesson_video_url, 
@@ -908,6 +1116,7 @@ removeSelected(){
 
         if(updatePage){
           this.saveStatus = { show: true, status: "success" };
+         
           this.getTopics();
           this.setDefaultTopic();
            this.$store.dispatch("search/groupFields", {
@@ -1038,7 +1247,7 @@ removeSelected(){
       });
     },
     async getTopics() {
-      let fields = `sort,lesson_name,lesson_photo,lesson_question,lesson_video,lesson_type,lesson_description,lesson_video_url,created_on,created_by,id,status`;
+      let fields = `sort,prev_id,lesson_name,lesson_photo,lesson_question,lesson_video,lesson_type,lesson_content,lesson_layout,lesson_description,lesson_video_url,created_on,created_by,id,status`;
       // let prev = this.$route.params.course;
       let filters = {   prev_id: ["=", this.selectedLesson] };
 filters.status=["=", this.filter.status ? this.filter.status  : 1] ;
@@ -1062,9 +1271,12 @@ filters.status=["=", this.filter.status ? this.filter.status  : 1] ;
               response.data.formattedData[0]
             ) {
               let d = response.data.formattedData;
-
+             
               this.dataLesson = d.map(element => {
-                element.sort = parseInt(element.sort)
+                element.sort = parseInt(element.sort);
+                  if(element.lesson_content){
+                    element.lesson_content = JSON.parse(element.lesson_content)
+                  }
                 return { ...element };
               });
             } else {
@@ -1091,5 +1303,10 @@ filters.status=["=", this.filter.status ? this.filter.status  : 1] ;
   border: .1em solid #efefef;
   padding: 5px;
 }
+}
+.edit_topic{
+  border-radius: 5px;
+  background: #fff;
+  padding: 10px;
 }
 </style>

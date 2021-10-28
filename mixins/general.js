@@ -44,6 +44,14 @@ export default {
         this.$store.state.likeModal=val;
       }
     },
+     commentModal:{
+      get(){
+        return this.$store.state.commentModal;
+      },
+      set(val){
+        this.$store.state.commentModal=val;
+      }
+    },
   },
   methods:{
     removeLikeModal(selected,topModuleData,type){

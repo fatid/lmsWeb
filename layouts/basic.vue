@@ -269,6 +269,7 @@
          <suggestWord></suggestWord>
          <listEdit></listEdit>
         <likeModal></likeModal>
+        <commentModal></commentModal>
     </div>
 
    
@@ -288,6 +289,7 @@ var Vue = require('vue');
 var VueScrollTo = require('vue-scrollto');
 import errorReport from "@/components/common/errorReport";
 import likeModal from "@/components/common/like";
+import commentModal from "@/components/common/comment";
 import footerComp from "@/components/common/footer";
 import suggestWord from "@/components/common/suggestWord";
 import listEdit from "@/components/common/listEdit";
@@ -296,6 +298,7 @@ export default {
   components:{
     errorReport,
     likeModal,
+    commentModal,
     footerComp,
     suggestWord,
     listEdit

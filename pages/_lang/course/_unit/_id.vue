@@ -100,25 +100,24 @@
     </div> 
     <!-- {{activeCourse}} -->
 
-    <div class="card" v-if="data.lesson_question">
+    <!-- <div class="card" v-if="data.lesson_question">
       <question
         :question="question"
         :order="data.sort"
         :isAnswered="isAnswered"
         @answered="isAnswered = $event"
       ></question>
-    </div>
-    <div class="card" v-else-if="data.lesson_name && data.id != 'finish'">
-      <div class="row" style="margin-top: 30px;">
+    </div> -->
+ 
+    <div class="card" v-if="data.lesson_name && data.id != 'finish'"> 
+      <div class="row" style="margin-top: 10px;">
         <!-- <div class="col-md-12">{{ data.sort }} / {{ total }}</div> -->
+ 
+            <!-- <h2>{{ data.sort }} - {{ data.lesson_name }}</h2> -->
 
-        <div class="col-auto">
-          <div class="title484">
-            <h2>{{ data.sort }} - {{ data.lesson_name }}</h2>
-
-            <img class="line-title" src="/images/line.svg" alt="" />
-            <div class="row">
-              <div class="col-2">
+            <!-- <img class="line-title" src="/images/line.svg" alt="" /> -->
+            
+              <!-- <div class="col-2">
                 <img
                   :src="show_image(data.lesson_photo, '150', '150', '', '90')"
                 />
@@ -126,14 +125,50 @@
               <div class="col">
                 <p v-html="HtmlEncode(data.lesson_description)"></p>
                 {{ HtmlEncode(data.lesson_question) }}
+              </div> -->
+              <!-- {{data.lesson_layout}} -->
+                   <div class="container">
+                <div class="row">
+              <div  v-if="data.lesson_content"  :class="'col-md-'+lt.size+' col-12 '"   v-for="lt in data.lesson_content">
+           
+                   <div class="layout-container"   :class="lt.class+' '+lt.alignment"  > 
+                     <template v-if="lt.class=='text-T'">
+                         {{data.lesson_name}} 
+                    </template>
+                    <template v-else-if="lt.class=='text-B'">
+                      
+                            <div    v-if="lt.type=='Exam'">
+                       
+                                     <question
+                                    :question="question"
+                                    :order="data.sort"
+                                    :isAnswered="isAnswered"
+                                    @answered="isAnswered = $event"
+                                  ></question>
+
+                            </div>
+                            <div class="modal-form-row" v-else-if="lt.type=='Video'">
+                               <iframe width="100%" height="315"  :src="lt.content"></iframe>
+                            </div>
+                            <div class="modal-form-row" v-else-if="lt.type=='Content'">
+                                <p v-html="HtmlEncode(lt.content)"></p>
+                            </div>
+                            <div class="modal-form-row" v-else-if="lt.type=='Image'">
+                                  <img :style="{'width':lt.width,'height':lt.height}"
+                  :src="show_image(data.lesson_photo, '750', '750', '', '90')"
+                />
+
+                            </div>
+                    </template>
+                  </div>
               </div>
-            </div>
+              </div>
+              </div>
 
             <!-- @finish="finished"
                 @update="updated" -->
-          </div>
-        </div>
-        <div class="col-md-6">
+           
+        <!-- <div class="col-md-6">
           <div v-if="data.lesson_video">
             <video
               width="100%"
@@ -157,7 +192,7 @@
               allowfullscreen
             ></iframe>
           </div>
-        </div>
+        </div> -->
       </div>
     </div>
     <div class="card" v-show="data.id == 'finish'">
@@ -262,7 +297,7 @@ export default {
     total: 0,
     order: 1,
     allLessons: [],
-    fields: `prev.section_name,lesson_subject.section_name,lesson_question,sort,lesson_photo,lesson_counter,lesson_subject,lesson_type,lesson_description,lesson_name,id,status,created_on,created_by,lesson_video_url,lesson_video`,
+    fields: `lesson_content,lesson_layout,prev.section_name,lesson_subject.section_name,lesson_question,sort,lesson_photo,lesson_counter,lesson_subject,lesson_type,lesson_description,lesson_name,id,status,created_on,created_by,lesson_video_url,lesson_video`,
     unit: null,
     next: null,
     prev: null
@@ -489,6 +524,9 @@ export default {
             let i = 0;
             this.allLessons = allLessons.map(k => {
               i++;
+              if(k.lesson_content){
+                  k.lesson_content = JSON.parse(k.lesson_content)
+              }
               return { ...k, sort: i };
             });
             this.allLessons.push({
@@ -829,6 +867,16 @@ a.download_btn2 {
   color: #fff !important;
   padding: 5px;
   border-radius: 7px;
+}
+
+.text-T{
+  padding: 10px;
+  border-bottom: 1px solid #f7f7f7;
+  font-size: 24px;
+  width: 100%;
+  display: block;
+  margin-bottom: 15px;
+
 }
 
 </style>

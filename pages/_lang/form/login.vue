@@ -142,7 +142,7 @@
   </div>
 </template>
 <script>
-import general from "@/mixins/general";
+import general from "@/mixins/general"; 
 import axios from "axios";
 import basicMixin from "~/mixins/basic.js";
 import validate from "@/mixins/validate";
@@ -153,7 +153,20 @@ export default {
     computed:{
         signupSuccess(){
           return this.$store.state.user.signupSuccess
+        },
+        logoutQ(){
+          return this.$route.query.logout
         }
+    },
+    watch:{
+      logoutQ(val){
+        this.$store.dispatch("user/logout",{});
+      }
+    },
+    created(){
+      if(this.logoutQ){
+         this.$store.dispatch("user/logout",{});
+      }
     },
  data() {
     return {

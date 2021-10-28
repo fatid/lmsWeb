@@ -92,7 +92,7 @@
 
             </li>
         </ul>
-            <li class="ui dropdown" v-show="auth && auth.token">  
+            <li class="ui dropdown" v-if="auth && auth.token">  
 
   <b-dropdown variant="link" toggle-class="text-decoration-none" no-caret>
                <template #button-content>
@@ -121,7 +121,7 @@
       </div>
       </div>
     </header>
-
+ 
    
     <!-- Header End -->
     <!-- Left Sidebar Start -->

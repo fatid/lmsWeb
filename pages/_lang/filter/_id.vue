@@ -332,6 +332,7 @@
                 </template>
                 <b-dropdown-item
                   @click="viewType = order"
+                  :key="'viewTypes'+i"
                   v-for="(order, i) in viewTypes"
                   >{{ order.label }}
                 </b-dropdown-item>

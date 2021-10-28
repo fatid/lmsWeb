@@ -2,7 +2,7 @@
   <div
     style="
       border: 1px solid #dddbda;
-      height: calc(100vh - 250px);
+      height: 400px;
       padding: 0px;
       width: 100%;
       border-radius: 10px;
@@ -106,7 +106,8 @@
           @click="editor.chain().focus().unsetAllMarks().run()"
           :class="{ 'is-active': editor.isActive('strike') }"
         >
-          <svg-icon icon="kv-icon-trash"></svg-icon>
+          <!-- <svg-icon icon="kv-icon-trash"></svg-icon> -->
+          <i class="fas fa-trash"></i>
         </a>
 
 
@@ -199,28 +200,31 @@
           @click="editor.chain().focus().toggleBold().run()"
           :class="{ 'is-active': editor.isActive('bold') }"
         >
-          <svg-icon icon="kv-icon-tt-richtextbulletedlist"></svg-icon>
+     
+          <i class="fas fa-list-ul"></i>
+
+          <!-- <svg-icon icon="kv-icon-tt-richtextbulletedlist"></svg-icon> -->
         </a>
         <a
           class="group"
           @click="editor.chain().focus().toggleOrderedList().run()"
           :class="{ 'is-active': editor.isActive('orderedList') }"
         >
-          <svg-icon icon="kv-icon-tt-richtextnumberedlist"></svg-icon>
+           <i class="fas fa-list-ol"></i>
         </a>
         <a
           class="group"
           @click="editor.chain().focus().toggleBlockquote().run()"
           :class="{ 'is-active': editor.isActive('blockquote') }"
         >
-          <svg-icon icon="kv-icon-tt-richtextindent"></svg-icon>
+          <i class="fas fa-indent"></i>
         </a>
         <a
           class="last group"
           @click="editor.chain().focus().toggleBlockquote().run()"
           :class="{ 'is-active': editor.isActive('blockquote') }"
         >
-          <svg-icon icon="kv-icon-tt-richtextoutdent"></svg-icon>
+          <i class="fas fa-outdent"></i>
         </a>
 
         <a
@@ -228,21 +232,25 @@
           @click="editor.chain().focus().setTextAlign('left').run()"
           :class="{ 'is-active': editor.isActive({ textAlign: 'left' }) }"
         >
-          <svg-icon icon="kv-icon-tt-left_align_text"></svg-icon>
+          <!-- <svg-icon icon="kv-icon-tt-left_align_text"></svg-icon>
+           -->
+           <i class="fas fa-align-left"></i>
         </a>
         <a
           class="group"
           @click="editor.chain().focus().setTextAlign('center').run()"
           :class="{ 'is-active': editor.isActive({ textAlign: 'center' }) }"
         >
-          <svg-icon icon="kv-icon-tt-center_align_text"></svg-icon>
+                     <i class="fas fa-align-center"></i>
+
         </a>
         <a
           class="last group"
           @click="editor.chain().focus().setTextAlign('right').run()"
           :class="{ 'is-active': editor.isActive({ textAlign: 'right' }) }"
         >
-          <svg-icon icon="kv-icon-tt-right_align_text"></svg-icon>
+                   <i class="fas fa-align-right"></i>
+
         </a>
 
         <!-- <b-popover target="popover-3" triggers="hover focus">
@@ -412,10 +420,10 @@
             <i class="fas fa-chevron-down el-icon--right"></i>
           </span> </template>
         
-            <el-dropdown-item v-for="size in infoBoxes" :key="size.value" :value="size.value"
+            <b-dropdown-item v-for="size in infoBoxes" :key="size.value" :value="size.value"
               ><a @click="data.info=size.value">
                  {{ size.label }}
-              </a></el-dropdown-item>
+              </a></b-dropdown-item>
  
         </b-dropdown>
 
@@ -944,7 +952,8 @@ export default {
 
 .ProseMirror {
   padding: 0px 10px;
-  height: calc(100vh - 210px);
+  height: 345px;
+  border:0!important;
   line-height: 1.1;
   overflow: auto;
   > * + * {
@@ -952,6 +961,9 @@ export default {
   }
 
 
+.ProseMirror-focused {
+border:0!important;
+}
   ul,
   ol {
     padding: 0 1rem;

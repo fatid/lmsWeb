@@ -103,7 +103,7 @@
             }}</option>
           </select>
           <div class="btn btn-primary" @click="openModal({ id: null })">
-            {{ l("Add New", "g") }}
+            + {{ l("Add New Unit", "g") }}
           </div>
         </div>
       </div>
