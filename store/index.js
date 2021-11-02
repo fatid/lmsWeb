@@ -36,7 +36,8 @@ export const state = () => ({
         detail:{
             module:'',
             label:''
-        }
+        },
+        module:''
     },
     listModal:{
         show: false,

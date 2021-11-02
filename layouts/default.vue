@@ -273,6 +273,8 @@
         <wordModal></wordModal>
           <suggestWord></suggestWord>
          <listEdit></listEdit>
+        <commentModal></commentModal>
+
 
     </div>
   </div>
@@ -290,6 +292,9 @@ import wordModal from "@/components/modal/word";
 import likeModal from "@/components/common/like";
 import suggestWord from "@/components/common/suggestWord";
 import listEdit from "@/components/common/listEdit";
+import commentModal from "@/components/common/comment";
+
+
 export default {
   mixins: [basicMixin, canoicalMixin, general],
   components:{
@@ -297,6 +302,7 @@ export default {
     likeModal,
     wordModal,
     suggestWord,
+    commentModal,
 listEdit
   },
   watch: {

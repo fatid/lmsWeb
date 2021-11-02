@@ -109,7 +109,7 @@
       ></question>
     </div> -->
  
-    <div class="card" v-if="data.lesson_name && data.id != 'finish'"> 
+    <div class="card" v-if="data.id && data.id != 'finish'"> 
       <div class="row" style="margin-top: 10px;">
         <!-- <div class="col-md-12">{{ data.sort }} / {{ total }}</div> -->
  

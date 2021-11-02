@@ -368,6 +368,7 @@ export default {
 
   data: () => ({
     languages: [
+      { value: "ar", name: "Arabic" },
       { value: "tr", name: "Turkish" },
       { value: "en", name: "English" }
     ],

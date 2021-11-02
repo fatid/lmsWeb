@@ -231,9 +231,9 @@
                    
                   
                     <div class="end-detail"  v-if="!myLessonLoading"> 
-                         <a class="btn btn-success" v-if="my_lessons_formatted[les.id] &&  my_lessons_formatted[les.id].cl_is_completed">Finished</a>
-                         <a class="btn btn-primary"  @click="goPath('course/' + les.id + '/' + les.id)" v-else-if="my_lessons_formatted[les.id] && my_lessons_formatted[les.id].cl_completed_list">Continue</a>
-                         <a class="btn btn-default"  @click="goPath('course/' + les.id + '/' + les.id)" v-else>Start</a> 
+                         <a class="btn btn-success" v-if="my_lessons_formatted[les.id] &&  my_lessons_formatted[les.id].cl_is_completed">{{l('Finished','g')}} </a>
+                         <a class="btn btn-primary"  @click="goPath('course/' + les.id + '/' + les.id)" v-else-if="my_lessons_formatted[les.id] && my_lessons_formatted[les.id].cl_completed_list">{{l('Continue','g')}} </a>
+                         <a class="btn btn-default"  @click="goPath('course/' + les.id + '/' + les.id)" v-else>{{l('Start','g')}}</a> 
                     </div>
                    
                   </div>
@@ -247,8 +247,8 @@
             <div class="row">
               <div class="col-lg-5">
                 <div class="reviews_left">
-                  <h3>Feedback</h3>
-                  <a @click="addNewComment=true">New Comment</a>
+                  <h3>{{l('Feedback','g')}}</h3>
+                  <a class="btn btn-primary"   @click="openCommentModal(data, null,'courses')">+ {{l('New Comment','g')}}</a>
                   <!-- <div class="total_rating">
                     <div class="_rate001">-</div>
                     <div class="rating-box">
@@ -374,14 +374,15 @@
                     </div>
                   </div>
                 </div>
-				No comment 
-   
-                <!-- <div class="review_all120">
+				        <div v-if="!comments || !comments[0]">
+                      No comments
+                </div><div v-else>
+                <div class="review_all120" v-for="comment in comments">
                   <div class="review_item">
                     <div class="review_usr_dt">
                       <img src="images/left-imgs/img-1.jpg" alt="" />
                       <div class="rv1458">
-                        <h4 class="tutor_name1">John Doe</h4>
+                        <h4 class="tutor_name1">{{comment.yh_Name}} {{comment.yh_Surname}}</h4>
                         <span class="time_145">2 hour ago</span>
                       </div>
                     </div>
@@ -393,10 +394,7 @@
                       <span class="rating-star half-star"></span>
                     </div>
                     <p class="rvds10">
-                      Nam gravida elit a velit rutrum, eget dapibus ex
-                      elementum. Interdum et malesuada fames ac ante ipsum
-                      primis in faucibus. Fusce lacinia, nunc sit amet tincidunt
-                      venenatis.
+                      {{comment.yh_Message}}
                     </p>
                     <div class="rpt100">
                       <span>Was this review helpful?</span>
@@ -413,11 +411,11 @@
                       <a href="#" class="report145">Report</a>
                     </div>
                   </div>
-
+                </div>
                   <div class="review_item">
                     <a href="#" class="more_reviews">See More Reviews</a>
                   </div>
-                </div> -->
+                </div>  
               </div>
             </div>
           </div>
@@ -438,11 +436,13 @@ export default {
     data:  {},
     my_lessons_formatted:  {},
     units: [],
+    comments: [],
     mylessons: [],
     lessons: [], 
     sections: [], 
     inputList: "",
     myLessonLoading:false,
+    addNewComment:false,
   }),
   async created() {
     await this.$store.dispatch("core/getOptions", {
@@ -466,6 +466,7 @@ export default {
     this.$store.dispatch("course/getAllCourseProcess", {});
     this.$store.dispatch("course/getCourseOrders", {});
     this.getCourse();
+    this.getComments();
   },
   computed: {
     
@@ -635,6 +636,42 @@ async getCourseOrders(){
     },
      filterSections(prev) {
       return this.sections.filter ? this.sections.filter(k => k.prev_Id == prev) : [];
+    },
+      async getComments() {
+      let fields = `yh_Message,yh_MainId,yh_Group,status,yh_Points,yh_UserId,yh_Mail,yh_Surname,yh_Name,yh_PageId,id,status,created_on,created_by,prev_Id`;
+      let id=this.data.id
+      let filters = { status: ["=", 1], yh_PageId: ["=", id], yh_Group: ["=", 'courses'] };
+
+      return new Promise((resolve, reject) => {
+        axios({
+          url: process.env.baseURL + "AllYorumlar",
+          method: "get",
+          params: {
+            limit: 100,
+            offset: 0,
+            fields,
+            lang: this.$store.state.locale,
+            sort: ["sort,ASC"],
+            filter: filters
+          }
+        })
+          .then(response => {
+            if (
+              response.data &&
+              response.data.formattedData &&
+              response.data.formattedData[0]
+            ) {
+              let d = response.data.formattedData;
+              this.comments = d;
+            } else {
+              this.comments = [];
+            }
+          })
+          .catch(e => {
+            this.comments = [];
+            console.log(e);
+          });
+      });
     },
      async getSections(prev) {
       let fields = `lesson_course,section_name,id,status,created_on,created_by,prev_Id`;
