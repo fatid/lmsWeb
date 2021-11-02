@@ -26,7 +26,14 @@
                   >{{ l("Notification", "general") }}
                 </a>
               </li>
-            
+               <li class="nav-item">
+                <a
+                  class="nav-link"
+                  @click="show = 'comments'"
+                  :class="show == 'comments' ? 'active' : ''"
+                  >{{ l("My Comments", "general") }}
+                </a>
+              </li>
               <li class="nav-item">
                 <a
                   class="nav-link"
@@ -476,6 +483,38 @@
             </div>
             <div
               class="tab-pane fade"
+              :class="show == 'comments' ? 'show active' : ''"
+            >
+              <div class="account_setting">
+                <h4>{{l('Comments','g')}}</h4>
+                <p>Total {{comments_count}} comments.</p>
+                <div class="divider-1 mb-10"></div>
+                <div class="basic_profile">
+                     <div class="review_all120" v-for="comment in comments">
+                  <div class="review_item">
+                    
+                    <div class="rating-box mt-20">
+                      <span   :class="comment.yh_Points>=1 ? 'full-star' : ''" class="rating-star empty-star"></span>
+                      <span   :class="comment.yh_Points>=2 ? 'full-star' : ''" class="rating-star empty-star"></span>
+                      <span   :class="comment.yh_Points>=3 ? 'full-star' : ''" class="rating-star empty-star"></span>
+                      <span   :class="comment.yh_Points>=4 ? 'full-star' : ''" class="rating-star empty-star"></span>
+                      <span   :class="comment.yh_Points>=5 ? 'full-star' : ''" class="rating-star empty-star"></span>
+                    </div>
+                    <div class="rvds10">
+                      {{comment.yh_Message}}  
+                      on  {{comment.created_on | dateTime}} <br />
+                      <a class="btn btn-small btn-danger" @click="openCommentModal(comment, comment,'courses')">
+                        <i class="fa fa-edit"></i>
+                        {{l('Edit','g')}}</a>
+                      <hr />
+                    </div> 
+                  </div>
+                </div>
+              </div>
+              </div>
+            </div>
+            <div
+              class="tab-pane fade"
               :class="show == 'password' ? 'show active' : ''"
             >
               <div class="account_setting">
@@ -554,7 +593,13 @@ import axios from "axios";
  
 export default {
   mixins: [general],
-
+  watch:{
+    show(val){
+      if(val=="comments"){
+        this.getComments()
+      }
+    }
+  },
   data: () => ({
     show: "main",
     myProfile: {},
@@ -568,6 +613,10 @@ export default {
         id:null,
         uye_list_name:''
     },
+    comments: [],
+    comments_count:0,
+    comment_page:1,
+    comment_size:10,
     layout: 'basic',
     listOptions: [
       { name: "Course", value: "Course" },
@@ -755,7 +804,44 @@ export default {
     this.getMyProfile();
   },
   methods: {
+async getComments() {
+      let fields = `yh_Message,yh_MainId,yh_Group,status,yh_Points,yh_UserId,yh_Mail,yh_Surname,yh_Name,yh_PageId,id,status,created_on,created_by,prev_Id`;
+      let id=this.auth.id
+      let filters = { status: ["=", 1], yh_UserId: ["=", id], yh_Group: ["=", 'courses'] };
 
+      return new Promise((resolve, reject) => {
+        axios({
+          url: process.env.baseURL + "AllYorumlar",
+          method: "get",
+          params: {
+            limit: this.comment_size,
+            offset: (this.comment_page-1)*this.comment_size,
+            fields,
+            lang: this.$store.state.locale,
+            sort: ["sort,ASC"],
+            filter: filters
+          }
+        })
+          .then(response => {
+            if (
+              response.data &&
+              response.data.formattedData &&
+              response.data.formattedData[0]
+            ) {
+              let d = response.data.formattedData;
+              this.comments = d;
+              this.comments_count = response.data.count;
+            } else {
+              this.comments = [];
+              this.comments_count = 0;
+            }
+          })
+          .catch(e => {
+            this.comments = [];
+            console.log(e);
+          });
+      });
+    },
      onFileChange(e) {
       var files = e.target.files || e.dataTransfer.files;
       if (!files.length)

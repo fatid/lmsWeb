@@ -130,8 +130,7 @@ export default {
         method,
         data: {
           yh_Message: this.comment.content,
-          yh_MainId:this.model,
-          yh_Group:this.app, 
+          yh_Group:this.commentModal.module, 
           status: 1,
           yh_Points: this.comment.like,
           yh_UserId: this.auth.id,

@@ -5,6 +5,11 @@ Vue.filter("date", (dateX,format="DD MMM YYYY") => {
     return moment(dateX).format(format)
 })
 
+Vue.filter("dateTime", (dateX,format="DD MMM YYYY HH:mm") => {
+    return moment(dateX).format(format)
+})
+
+
 Vue.filter("onlyDay", (dateX) => {
     return moment(dateX).format("DD")
 })

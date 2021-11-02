@@ -249,119 +249,13 @@
                 <div class="reviews_left">
                   <h3>{{l('Feedback','g')}}</h3>
                   <a class="btn btn-primary"   @click="openCommentModal(data, null,'courses')">+ {{l('New Comment','g')}}</a>
-                  <!-- <div class="total_rating">
-                    <div class="_rate001">-</div>
-                    <div class="rating-box">
-                      <span class="rating-star full-star"></span>
-                      <span class="rating-star full-star"></span>
-                      <span class="rating-star full-star"></span>
-                      <span class="rating-star full-star"></span>
-                      <span class="rating-star full-star"></span>
-                    </div> 
-                  </div> -->
-                  <!-- <div class="_rate003">
-                    <div class="_rate004">
-                      <div class="progress progress1">
-                        <div
-                          class="progress-bar w-70"
-                          role="progressbar"
-                          aria-valuenow="70"
-                          aria-valuemin="0"
-                          aria-valuemax="100"
-                        ></div>
-                      </div>
-                      <div class="rating-box">
-                        <span class="rating-star full-star"></span>
-                        <span class="rating-star full-star"></span>
-                        <span class="rating-star full-star"></span>
-                        <span class="rating-star full-star"></span>
-                        <span class="rating-star full-star"></span>
-                      </div>
-                      <div class="_rate002">70%</div>
-                    </div>
-                    <div class="_rate004">
-                      <div class="progress progress1">
-                        <div
-                          class="progress-bar w-30"
-                          role="progressbar"
-                          aria-valuenow="30"
-                          aria-valuemin="0"
-                          aria-valuemax="100"
-                        ></div>
-                      </div>
-                      <div class="rating-box">
-                        <span class="rating-star full-star"></span>
-                        <span class="rating-star full-star"></span>
-                        <span class="rating-star full-star"></span>
-                        <span class="rating-star full-star"></span>
-                        <span class="rating-star empty-star"></span>
-                      </div>
-                      <div class="_rate002">40%</div>
-                    </div>
-                    <div class="_rate004">
-                      <div class="progress progress1">
-                        <div
-                          class="progress-bar w-5"
-                          role="progressbar"
-                          aria-valuenow="10"
-                          aria-valuemin="0"
-                          aria-valuemax="100"
-                        ></div>
-                      </div>
-                      <div class="rating-box">
-                        <span class="rating-star full-star"></span>
-                        <span class="rating-star full-star"></span>
-                        <span class="rating-star full-star"></span>
-                        <span class="rating-star empty-star"></span>
-                        <span class="rating-star empty-star"></span>
-                      </div>
-                      <div class="_rate002">5%</div>
-                    </div>
-                    <div class="_rate004">
-                      <div class="progress progress1">
-                        <div
-                          class="progress-bar w-2"
-                          role="progressbar"
-                          aria-valuenow="2"
-                          aria-valuemin="0"
-                          aria-valuemax="100"
-                        ></div>
-                      </div>
-                      <div class="rating-box">
-                        <span class="rating-star full-star"></span>
-                        <span class="rating-star full-star"></span>
-                        <span class="rating-star empty-star"></span>
-                        <span class="rating-star empty-star"></span>
-                        <span class="rating-star empty-star"></span>
-                      </div>
-                      <div class="_rate002">1%</div>
-                    </div>
-                    <div class="_rate004">
-                      <div class="progress progress1">
-                        <div
-                          class="progress-bar w-1"
-                          role="progressbar"
-                          aria-valuenow="0"
-                          aria-valuemin="0"
-                          aria-valuemax="100"
-                        ></div>
-                      </div>
-                      <div class="rating-box">
-                        <span class="rating-star full-star"></span>
-                        <span class="rating-star empty-star"></span>
-                        <span class="rating-star empty-star"></span>
-                        <span class="rating-star empty-star"></span>
-                        <span class="rating-star empty-star"></span>
-                      </div>
-                      <div class="_rate002">1%</div> -->
-                    <!-- </div> -->
-                  <!-- </div> -->
+                  <p class="mt-5">Total {{comments_count}} comment.</p>
                 </div>
               </div>
               <div class="col-lg-7">
                 <div class="review_right">
                   <div class="review_right_heading">
-                    <h3>Reviews</h3>
+                    <h3>{{l('Reviews','g')}} </h3>
                     <div class="review_search">
                       <input
                         class="rv_srch"
@@ -369,7 +263,7 @@
                         placeholder="Search reviews..."
                       />
                       <button class="rvsrch_btn">
-                        <i class="uil uil-search"></i>
+                        <i class="uil fa fa-search"></i>
                       </button>
                     </div>
                   </div>
@@ -383,37 +277,24 @@
                       <img src="images/left-imgs/img-1.jpg" alt="" />
                       <div class="rv1458">
                         <h4 class="tutor_name1">{{comment.yh_Name}} {{comment.yh_Surname}}</h4>
-                        <span class="time_145">2 hour ago</span>
+                        <span class="time_145">{{comment.created_on | dateTime}}</span>
                       </div>
                     </div>
                     <div class="rating-box mt-20">
-                      <span class="rating-star full-star"></span>
-                      <span class="rating-star full-star"></span>
-                      <span class="rating-star full-star"></span>
-                      <span class="rating-star full-star"></span>
-                      <span class="rating-star half-star"></span>
+                      <span   :class="comment.yh_Points>=1 ? 'full-star' : ''" class="rating-star empty-star"></span>
+                      <span   :class="comment.yh_Points>=2 ? 'full-star' : ''" class="rating-star empty-star"></span>
+                      <span   :class="comment.yh_Points>=3 ? 'full-star' : ''" class="rating-star empty-star"></span>
+                      <span   :class="comment.yh_Points>=4 ? 'full-star' : ''" class="rating-star empty-star"></span>
+                      <span   :class="comment.yh_Points>=5 ? 'full-star' : ''" class="rating-star empty-star"></span>
                     </div>
                     <p class="rvds10">
-                      {{comment.yh_Message}}
-                    </p>
-                    <div class="rpt100">
-                      <span>Was this review helpful?</span>
-                      <div class="radio--group-inline-container">
-                        <div class="radio-item">
-                          <input id="radio-1" name="radio" type="radio" />
-                          <label for="radio-1" class="radio-label">Yes</label>
-                        </div>
-                        <div class="radio-item">
-                          <input id="radio-2" name="radio" type="radio" />
-                          <label for="radio-2" class="radio-label">No</label>
-                        </div>
-                      </div>
-                      <a href="#" class="report145">Report</a>
-                    </div>
+                      {{comment.yh_Message}} 
+                     
+                    </p> 
                   </div>
                 </div>
-                  <div class="review_item">
-                    <a href="#" class="more_reviews">See More Reviews</a>
+                  <div class="review_item" v-if="comment_max<comments_count">
+                    <a href="#" class="more_reviews" >{{l('See More Reviews','g')}}</a>
                   </div>
                 </div>  
               </div>
@@ -436,13 +317,16 @@ export default {
     data:  {},
     my_lessons_formatted:  {},
     units: [],
-    comments: [],
     mylessons: [],
     lessons: [], 
     sections: [], 
     inputList: "",
     myLessonLoading:false,
     addNewComment:false,
+    comments: [],
+    comments_count:0,
+    comment_page:1,
+    comment_size:10
   }),
   async created() {
     await this.$store.dispatch("core/getOptions", {
@@ -466,10 +350,12 @@ export default {
     this.$store.dispatch("course/getAllCourseProcess", {});
     this.$store.dispatch("course/getCourseOrders", {});
     this.getCourse();
-    this.getComments();
+   
   },
   computed: {
-    
+    comment_max(){
+      return this.comment_page * this.comment_size
+    },
     courseProcess() {
       return this.$store.state.course.courseProcess;
     },
@@ -637,9 +523,9 @@ async getCourseOrders(){
      filterSections(prev) {
       return this.sections.filter ? this.sections.filter(k => k.prev_Id == prev) : [];
     },
-      async getComments() {
+      async getComments(id) {
       let fields = `yh_Message,yh_MainId,yh_Group,status,yh_Points,yh_UserId,yh_Mail,yh_Surname,yh_Name,yh_PageId,id,status,created_on,created_by,prev_Id`;
-      let id=this.data.id
+      // let id=this.data.id
       let filters = { status: ["=", 1], yh_PageId: ["=", id], yh_Group: ["=", 'courses'] };
 
       return new Promise((resolve, reject) => {
@@ -647,8 +533,8 @@ async getCourseOrders(){
           url: process.env.baseURL + "AllYorumlar",
           method: "get",
           params: {
-            limit: 100,
-            offset: 0,
+            limit: this.comment_size,
+            offset: (this.comment_page-1)*this.comment_size,
             fields,
             lang: this.$store.state.locale,
             sort: ["sort,ASC"],
@@ -663,8 +549,10 @@ async getCourseOrders(){
             ) {
               let d = response.data.formattedData;
               this.comments = d;
+              this.comments_count = response.data.count;
             } else {
               this.comments = [];
+              this.comments_count = 0;
             }
           })
           .catch(e => {
@@ -780,6 +668,7 @@ async getCourseOrders(){
                 this.getUnits(d.id);
                 this.getSections(d.id);
                 this.getLesson(d.id);
+                 this.getComments(d.id);
          
                 this.data = d;
                        this.getMyLessons();
@@ -871,5 +760,8 @@ h3.popover-header {
 .text-red{
   color: #e71146;
   width: 25px;
+}
+.review_all120 {
+  margin-bottom:8px;
 }
 </style>
