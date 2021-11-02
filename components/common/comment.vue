@@ -14,12 +14,12 @@
       
       <b-col  >
      
-        <p>
+        <!-- <p>
           <strong>{{l('Your Comment Title','g')}}</strong>
           <b-form-input module="text" class="pa-10" v-model="comment.title"
             :placeholder="l('Your Comment Title','g')"
           ></b-form-input>
-        </p>
+        </p> -->
          <p>
           <strong>{{l('Point for course','g')}} </strong>
            <div class="rating-box">
@@ -121,13 +121,13 @@ export default {
    
     async save(mp) {
       let method = "post";
-      let url = process.env.baseURL + "yh_Title";
+      let url = process.env.baseURL + "AllYorumlar";
 
+        // yh_Title: this.comment.title,
       await axios({
         url,
         method,
         data: {
-          yh_Title: this.comment.title,
           yh_Message: this.comment.content,
           yh_MainId:this.model,
           yh_Group:this.app, 
