@@ -13,14 +13,14 @@
     <b-row>
       
       <b-col  >
-     
+     <div>
         <!-- <p>
           <strong>{{l('Your Comment Title','g')}}</strong>
           <b-form-input module="text" class="pa-10" v-model="comment.title"
             :placeholder="l('Your Comment Title','g')"
           ></b-form-input>
         </p> -->
-         <p>
+         <div>
           <strong>{{l('Point for course','g')}} </strong>
            <div class="rating-box">
                       <span @click="comment.like=1" :class="comment.like>=1 ? 'full-star' : ''" class="rating-star empty-star"></span>
@@ -29,7 +29,8 @@
                       <span @click="comment.like=4" :class="comment.like>=4 ? 'full-star' : ''" class="rating-star empty-star"></span>
                       <span @click="comment.like=5" :class="comment.like>=5 ? 'full-star' : ''" class="rating-star empty-star"></span>
             </div> 
-        </p>
+            </div> 
+        
         <p>
           <strong>{{l('Your Comment','g')}}</strong>
           <b-form-textarea type="textarea" class="pa-10" v-model="comment.content" rows="3" 
@@ -45,13 +46,13 @@
               l("Cancel", "g")
           }}</b-button>
         </p>
-        <hr />
+    </div>
       </b-col>
     </b-row>
     </div><div v-else>
     <b-alert  variant="warning"><a href="#" class="alert-link">Sign in to access this feature.</a></b-alert>
   </div>
-  </div>
+ 
   </b-modal>
 </template>
 <script>
