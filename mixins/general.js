@@ -73,6 +73,18 @@ export default {
       this.likeModal.show = true;  
       
     },
+    openCommentModal(selected,topModuleData,module){
+      
+      let datax={
+        ...selected, 
+        module,
+        topModuleData:topModuleData
+      }
+      this.commentModal.data = datax;
+      this.commentModal.module = module;
+      this.commentModal.show = true;  
+      
+    },
     openLikeModalAll(selected,topModuleData,type){
       
       let datax={

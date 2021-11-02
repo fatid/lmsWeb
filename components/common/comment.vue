@@ -1,11 +1,11 @@
 <template>
   <b-modal
     hide-footer
-    id="modal-sm"
-    size="sm"
+    id="modal-xl"
+    size="xl"
     class="modal-like "
     v-model="dialogShow"
-    :title="l('Add to List', 'g')" 
+    :title="l('Send Comment','g')"
   >
  
  
@@ -13,28 +13,44 @@
     <b-row>
       
       <b-col  >
-       
-        <p>
+     
+        <!-- <p>
           <strong>{{l('Your Comment Title','g')}}</strong>
-          <b-form-input type="text" class="pa-10" v-model="comment.title"></b-form-input>
+          <b-form-input module="text" class="pa-10" v-model="comment.title"
+            :placeholder="l('Your Comment Title','g')"
+          ></b-form-input>
+        </p> -->
+         <p>
+          <strong>{{l('Point for course','g')}} </strong>
+           <div class="rating-box">
+                      <span @click="comment.like=1" :class="comment.like>=1 ? 'full-star' : ''" class="rating-star empty-star"></span>
+                      <span @click="comment.like=2" :class="comment.like>=2 ? 'full-star' : ''" class="rating-star empty-star"></span>
+                      <span @click="comment.like=3" :class="comment.like>=3 ? 'full-star' : ''" class="rating-star empty-star"></span>
+                      <span @click="comment.like=4" :class="comment.like>=4 ? 'full-star' : ''" class="rating-star empty-star"></span>
+                      <span @click="comment.like=5" :class="comment.like>=5 ? 'full-star' : ''" class="rating-star empty-star"></span>
+            </div> 
         </p>
-           <p>
-          <strong>{{l('Your Comment ','g')}}</strong>
-          <b-form-input type="textarea" class="pa-10" v-model="comment.content"></b-form-input>
+        <p>
+          <strong>{{l('Your Comment','g')}}</strong>
+          <b-form-textarea type="textarea" class="pa-10" v-model="comment.content" rows="3" 
+           :placeholder="l('Your Comment','g')" max-rows="6"
+          ></b-form-textarea> 
         </p>
+       
         <p>
           <b-button size="sm" @click="save()" variant="primary"
             ><i class="fa fa-save"></i> {{ l("Save", "g") }}</b-button
           >
-          <b-button size="sm" @click="addNew = false" variant="danger">{{
+          <b-button size="sm" @click="commentModal.show = false" variant="danger">{{
               l("Cancel", "g")
           }}</b-button>
         </p>
         <hr />
       </b-col>
     </b-row>
-  
-    <b-alert show variant="warning"><a href="#" class="alert-link">Sign in to access this feature.</a></b-alert>
+    </div><div v-else>
+    <b-alert  variant="warning"><a href="#" class="alert-link">Sign in to access this feature.</a></b-alert>
+  </div>
   </div>
   </b-modal>
 </template>
@@ -55,6 +71,7 @@ export default {
     },
     comment:{
       title:'',
+      like:0,
       content:'',
       model:'',
       app:'',
@@ -104,18 +121,23 @@ export default {
    
     async save(mp) {
       let method = "post";
-      let url = process.env.baseURL + "comments";
+      let url = process.env.baseURL + "AllYorumlar";
 
+        // yh_Title: this.comment.title,
       await axios({
         url,
         method,
         data: {
-          title: this.comment.title,
-          content: this.comment.content,
-          model:this.model,
-          app:this.app, 
+          yh_Message: this.comment.content,
+          yh_MainId:this.model,
+          yh_Group:this.app, 
           status: 1,
-          prev_id: this.auth.id
+          yh_Points: this.comment.like,
+          yh_UserId: this.auth.id,
+          yh_Mail: this.auth.U_mail,
+          yh_Surname: this.auth.surname,
+          yh_Name: this.auth.name,
+          yh_PageId: this.commentModal.data.id,
         }
       }).then(async response => {
      
@@ -133,7 +155,7 @@ export default {
     },
     getSelect() {
       return this.options["uye_Lists"].filter(
-        k => k.uye_list_cat == this.commentModal.type && !this.addedLists.includes(k.id)
+        k => k.uye_list_cat == this.commentModal.module && !this.addedLists.includes(k.id)
       );
     },
     setLikesFav() {
