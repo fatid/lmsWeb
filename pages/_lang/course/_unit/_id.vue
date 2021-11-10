@@ -111,22 +111,7 @@
  
     <div class="card" v-if="data.id && data.id != 'finish'"> 
       <div class="row" style="margin-top: 10px;">
-        <!-- <div class="col-md-12">{{ data.sort }} / {{ total }}</div> -->
- 
-            <!-- <h2>{{ data.sort }} - {{ data.lesson_name }}</h2> -->
-
-            <!-- <img class="line-title" src="/images/line.svg" alt="" /> -->
-            
-              <!-- <div class="col-2">
-                <img
-                  :src="show_image(data.lesson_photo, '150', '150', '', '90')"
-                />
-              </div>
-              <div class="col">
-                <p v-html="HtmlEncode(data.lesson_description)"></p>
-                {{ HtmlEncode(data.lesson_question) }}
-              </div> -->
-              <!-- {{data.lesson_layout}} -->
+         
                    <div class="container">
                 <div class="row">
               <div  v-if="data.lesson_content"  :class="'col-md-'+lt.size+' col-12 '"   v-for="lt in data.lesson_content">
@@ -137,14 +122,17 @@
                     </template>
                     <template v-else-if="lt.class=='text-B'">
                       
-                            <div    v-if="lt.type=='Exam'">
-                       
-                                     <question
-                                    :question="question"
-                                    :order="data.sort"
-                                    :isAnswered="isAnswered"
-                                    @answered="isAnswered = $event"
-                                  ></question>
+                            <div    v-if="lt.type=='Exam'"  style="paddingn: 10px;" >
+                             
+                                  <div v-for="qa in questions" style="border:2px solid #efefef; border-radius:5px; padding: 10px; margin: 10px;">
+                                      <question
+                                        :question="qa"
+                                        :order="data.sort"
+                                         :answerable="true"
+                                        :isAnswered="isAnswered"
+                                        @answered="isAnswered = $event"
+                                      ></question>
+                                  </div>
 
                             </div>
                             <div class="modal-form-row" v-else-if="lt.type=='Video'">
@@ -267,10 +255,11 @@ export default {
   data: () => ({
     data: {
       id: null,
-      lesson_question: ""
+      lesson_question: []
     },
     loading:false,
     totalPoints: [],
+    questions: [],
     section:{},
     course:{},
     unite:{},
@@ -332,25 +321,29 @@ export default {
         let steps = this.steps;
         let order = this.order;
         let top = steps.length<=7 ? steps.length : null;
-        console.log(steps,order,top)
-        if(top==null){
-           
-           list.push(order-2);
-           list.push(order-1);
-           list.push(order);
-           list.push(order+1);
-           list.push(order+2);
-         
-           list = list.filter((k,i)=>{
-            return  k<steps.length && k>1
-           });
-              list.unshift(1);
-             list.push(steps.length );
-        }else{
-            for(let i=1; i<=top; i++){
+         for(let i=1; i<=steps.length; i++){
                 list.push(i)
-            }
-        }
+             }
+        // if(top==null){
+           
+        //    list.push(order-3);
+        //    list.push(order-2);
+        //    list.push(order-1);
+        //    list.push(order);
+        //    list.push(order+1);
+        //    list.push(order+2);
+        //    list.push(order+3);
+         
+        //    list = list.filter((k,i)=>{
+        //     return  k<steps.length && k>1
+        //    });
+        //       list.unshift(1);
+        //      list.push(steps.length );
+        // }else{
+        //     for(let i=1; i<=top; i++){
+        //         list.push(i)
+        //     }
+        // }
 // console.log("list",list)
         return list
         // [1,2 ... 5 6 7 ... 10 11]
@@ -527,6 +520,9 @@ export default {
               if(k.lesson_content){
                   k.lesson_content = JSON.parse(k.lesson_content)
               }
+              if(k.lesson_question && (k.lesson_question.charAt(0)=="["  || k.lesson_question.charAt(0)=="{") ){
+                  k.lesson_question = JSON.parse(k.lesson_question)
+              }
               return { ...k, sort: i };
             });
             this.allLessons.push({
@@ -582,19 +578,18 @@ export default {
         });
     },
     async getQuestion() {
-      let fields =
-        "id,sort,status,exa_type,rs_Question,exa_image,exa_sound,exa_video,exa_timer,exa_ready";
-      this.getAnswers();
+      let fields =  "id,sort,status,exa_type,rs_Question,exa_image,exa_sound,exa_video,exa_timer,exa_ready";
+      // this.getAnswers();
       axios({
         url: process.env.baseURL + "exam_q",
         method: "get",
         params: {
-          limit: 1,
+          limit: 100,
           offset: 0,
           fields,
           lang: this.$store.state.locale,
           sort: ["sort,ASC"],
-          filter: { id: ["=", this.data.lesson_question] }
+          filter: { id: ["in", this.data.lesson_question] }
         }
       })
         .then(response => {
@@ -603,10 +598,19 @@ export default {
             response.data.formattedData &&
             response.data.formattedData[0]
           ) {
+            let a = response.data.formattedData;
+            let b= a.map(p=>{
+                return {
+                  q:p,
+                  a:null
+                }
+            })
+            this.questions = b;
             this.question.q = response.data.formattedData[0];
           }
         })
         .catch(e => {
+          this.questions =[]
           this.question.q = null;
         });
     },
@@ -623,7 +627,7 @@ export default {
           fields,
           lang: this.$store.state.locale,
           sort: ["sort,ASC"],
-          filter: { prev_id: ["=", this.data.lesson_question] }
+          filter: { prev_id: ["in", this.data.lesson_question] }
         }
       })
         .then(response => {
@@ -789,6 +793,9 @@ export default {
   background: #fff;
   border-radius: 10px;
   margin-top: 10px;
+     height: calc(100vh - 250px);
+    overflow: hidden;
+    overflow-y: auto;
 }
 .card-header {
   padding: 6px 10px;

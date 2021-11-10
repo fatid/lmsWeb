@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-
+{{layout}}
     <b-modal
       id="modal-xl"
       v-model="showMass.showI"
@@ -165,7 +165,7 @@
           >
             + {{ l("Add New Topic", "g") }}
           </div>
-          <div class="btn btn-primary" @click="openModal({ id: null })">
+          <div  v-if="!selectedLesson" class="btn btn-primary" @click="openModal({ id: null })">
             + {{ l("Add New Lesson", "g") }}
           </div>
         </div>
@@ -180,6 +180,9 @@
               >
                 <a @click="selectedLesson = d.id">{{ d.section_name }} </a>
                 {{ count ? count[d.id] : "" }}
+              </li>
+              <li>
+                 <a   @click="openModal({ id: null })">   + {{ l("Add New Lesson", "g") }}  </a>
               </li>
             </ul>
             <br />
@@ -201,22 +204,24 @@
                 {{   l("Create Multi Question", "g") }}
               </h3>
       <span style="width: 100%; display: block;">
-        <span style="width: 100%; display: inline-flex;"> Choose Question</span>
-        <span style="width: 100%; display: inline-flex;">
+        
+        <span style="width: 100%; display: inline-flex; justify-content: space-between; border-bottom: 1px solid #efefef; padding-bottom : 5px;">
+          <span > <input  type="checkbox"    />  Select All </span>
+          <div>
+            Choose Question
           <input
             type="text"
         
             v-model="qs.name"
             @change="getQuestions()"
              class="mini-select"
-                                    placeholder="Text"
+            placeholder="Text"
           />
-          <select
-           
+          <select 
             v-model="qs.type"
             @change="getQuestions()"
-             class="mini-select"
-                                    placeholder="Type"
+            class="mini-select"
+            placeholder="Type"
           ><option value="">-</option>
             <option
               v-for="(opt, key) in l('cat.QuestionTypes.list', 'g')"
@@ -240,14 +245,14 @@
           <select  
             v-model="qs.skills"
             @change="getQuestions()"
-             class="mini-select"  placeholder="Skillls"
+             class="mini-select"  placeholder="Skills"
           > 
             <option value="">-</option>
             <option  v-for="(u, key) in l('cat.QuestionSkills.list', 'g')" :key="key" :value="key">{{
               u.name
             }}</option>
           </select>
-          <select  
+                               <select  
             v-model="qs.category"
             @change="getQuestions()"
              class="mini-select"  placeholder="Category"
@@ -256,9 +261,12 @@
               u.cou_label_name
             }}</option>
           </select>
+          </div>
+   
         </span>
       </span>
-      <span style="width: 100%; display: block;">
+      <span style="width: 100%; display: block;      overflow: auto;
+    height: calc(100vh - 300px);">
         <span
           class="question-border"
           v-for="q in questions"
@@ -267,10 +275,12 @@
           "
           v-if="q && q.q"
         >
-          <a v-if="massQuestion.includes(q.q.id)" @click="deselect(q.q.id)"
+
+          <input  type="checkbox" :checked="massQuestion.includes(q.q.id)"  /> 
+          <!-- <a v-if="massQuestion.includes(q.q.id)" @click="deselect(q.q.id)"
             >Deselect this question</a
           >
-          <a v-else @click="massQuestion.push(q.q.id)">Select this question </a>
+          <a v-else @click="massQuestion.push(q.q.id)">Select this question </a> -->
 
           <question :question="q" :isAnswered="false"></question>
         </span>
@@ -324,14 +334,9 @@
                 {{ l("Saved", "g") }}
               </b-alert>
               <div class="modal-form" :lang="LOCALE">
-                <div class="modal-form-row">
+                <!-- <div class="modal-form-row">
                   <label>{{ l("Title", "g") }}</label>
-                  <span
-                    ><input
-                      type="text"
-                      class="modal-form-input"
-                      v-model="editedTopic.lesson_name"
-                    />
+                  <span >
                     <select
                       class="modal-form-input"
                       v-model="editedTopic.lesson_layout"
@@ -344,13 +349,13 @@
                         >{{ u.label }}</option
                       >
                     </select>
-                    <!-- <select class="modal-form-input" v-model="editedTopic.lesson_type">
+                    <select class="modal-form-input" v-model="editedTopic.lesson_type">
               <option v-for="u in lessonType" :key="u.value" :value="u.value">{{
                 u.label
               }}</option>
-          </select> -->
+          </select>
                   </span>
-                </div>
+                </div> -->
                 <div class="container">
                   <draggable
                     v-model="layout"
@@ -371,7 +376,8 @@
                         <template v-else-if="lt.class == 'text-B'">
                           <div v-if="lt.type">
                             <span class="tem-header-content">
-                              <a @click="lt.type = ''"> Change Type </a>
+
+                                {{lt.type}} - 
 
                               <select class="mini-select" v-model="lt.size">
                                 <option
@@ -393,20 +399,26 @@
                                 >
                               </select>
 
-                             
+                                <a style="margin-left: 20px;float: right;" @click="lt.type = ''"> Change Type </a>
                             </span>
+                             <div
+                                class="modal-form-row"
+                                v-show="lt.type == 'Title'"
+                              >
+                                <input
+                                type="text"
+                                class="modal-form-input width-100"
+                                v-model="editedTopic.lesson_name"
+                                />
+                            </div>
                             <div
                               class="modal-form-row"
                               v-show="lt.type == 'Exam'"
                             >
-                              <span style="width: 100%; display: block;">
+                              <span style="width: 100%; display: block; ">
+                               
                                 <span
-                                  style="width: 100%; display: inline-flex;"
-                                >
-                                  Choose Question</span
-                                >
-                                <span
-                                  style="width: 100%; display: inline-flex;"
+                                  style="width: 100%; display: inline-flex; border-bottom: 1px solid #aaa; padding-bottom: 5px; margin-bottom: 3px;"
                                 >
                                   <input
                                     type="text"
@@ -444,33 +456,48 @@
                                       >{{ u.cou_level_name }}</option
                                     >
                                   </select>
+             
+          <select  
+            v-model="qs.skills"
+            @change="getQuestions()"
+             class="mini-select"  placeholder="Skills"
+          > 
+            <option value="">-</option>
+            <option  v-for="(u, key) in l('cat.QuestionSkills.list', 'g')" :key="key" :value="key">{{
+              u.name
+            }}</option>
+          </select>
+          <select  
+            v-model="qs.category"
+            @change="getQuestions()"
+             class="mini-select"  placeholder="Category"
+          > <option value="">-</option>
+            <option  v-for="u in  options['co_labels']" :key="u.id" :value="u.id">{{
+              u.cou_label_name
+            }}</option>
+          </select>
                                 </span>
                                 <span
-                                  style="width: 100%; display: block; height: 300px; overflow:auto;"
+                                  style="width: 100%; display: block; height: 300px;     overflow: hidden;
+    overflow-y: auto;"
                                 >
                                   <span
-                                    class="question-border"
+                                    class="question-border" style="background: #fff"
                                     :class="
                                       lt.content == q.q.id ? 'green-border' : ''
                                     "
                                     v-for="q in questions"
-                                  >
-                                    <input
-                                      type="checkbox"
-                                      :checked="lt.content == q.q.id"
-                                    />
-                                    <a
-                                      v-if="lt.content == q.q.id"
-                                      @click="lt.content = 'q.q.id'"
-                                      >Deselect this question</a
-                                    >
-                                    <a v-else @click="lt.content = q.q.id"
-                                      >Select this question
-                                    </a>
+                                  > 
+                                     <input  type="checkbox" :checked="lt.questions.includes(q.q.id)"  /> 
+                                      
+                                      <a v-if="lt.questions.includes(q.q.id)" @click="deselectStd(lt.questions,q.q.id)"
+                                      >Deselect this question</a>
+                                      <a v-else @click="lt.questions.push(q.q.id)">Select this question </a> 
 
                                     <question
                                       :question="q"
                                       :isAnswered="false"
+                                     
                                     ></question>
                                   </span>
                                 </span>
@@ -604,18 +631,18 @@
                 <div class="addition_field" v-show="showAddition==true">
                     <div class="row">
                         <div class="col-2" >
-                            <div class="addition_item" @click="editedTopic.lesson_layout+='+12B';setLayout()"> 
+                            <div class="addition_item" @click="editedTopic.lesson_layout='12B';setLayout(true)"> 
                                 <div class="addition_col c12" ></div> 
                             </div>
                         </div>
                          <div class="col-2" >
-                            <div class="addition_item" @click="editedTopic.lesson_layout+='+6B+6B';setLayout()"> 
+                            <div class="addition_item" @click="editedTopic.lesson_layout='6B+6B';setLayout(true)"> 
                                 <div class="addition_col c6" ></div>
                                 <div class="addition_col c6" ></div>
                             </div>
                         </div>
                          <div class="col-2" >
-                            <div class="addition_item" @click="editedTopic.lesson_layout+='+3B+3B+3B+3B';setLayout()"> 
+                            <div class="addition_item" @click="editedTopic.lesson_layout='3B+3B+3B+3B';setLayout(true)"> 
                                 <div class="addition_col c3" ></div>
                                 <div class="addition_col c3" ></div>
                                 <div class="addition_col c3" ></div>
@@ -623,20 +650,20 @@
                             </div>
                         </div>
                         <div class="col-2" >
-                            <div class="addition_item" @click="editedTopic.lesson_layout+='+3B+6B+3B';setLayout()"> 
+                            <div class="addition_item" @click="editedTopic.lesson_layout='3B+6B+3B';setLayout(true)"> 
                                 <div class="addition_col c3" ></div>
                                 <div class="addition_col c6" ></div>
                                 <div class="addition_col c3" ></div> 
                             </div>
                         </div>
                         <div class="col-2" >
-                            <div class="addition_item" @click="editedTopic.lesson_layout+='+3B+9B';setLayout()"> 
+                            <div class="addition_item" @click="editedTopic.lesson_layout='3B+9B';setLayout(true)"> 
                                 <div class="addition_col c3" ></div>
                                 <div class="addition_col c9" ></div> 
                             </div>
                         </div>
                          <div class="col-2" >
-                            <div class="addition_item" @click="editedTopic.lesson_layout+='+4B+4B+4B';setLayout()"> 
+                            <div class="addition_item" @click="editedTopic.lesson_layout='4B+4B+4B';setLayout(true)"> 
                                 <div class="addition_col c4" ></div>
                                 <div class="addition_col c4" ></div> 
                                 <div class="addition_col c4" ></div> 
@@ -1026,12 +1053,16 @@ export default {
       r.id = "duplicate";
       this.openModalTopic(r);
     },
-    setLayout() {
-      let saved_layout = [...this.layout];
-      this.layout = [];
+    setLayout(addition=false) {
+   
+      let saved_layout =  addition ? [...this.layout] : [];
+      if(!addition){
+        this.layout = [];
+      }
       let t = this.editedTopic.lesson_layout;
       let ta = t.split("+");
-      console.log("ta", ta);
+      console.log("ta",t,ta)
+ 
       ta.forEach((k, i) => {
         let width =
           saved_layout[i] && saved_layout[i].width ? saved_layout[i].width : "";
@@ -1043,10 +1074,11 @@ export default {
           saved_layout[i] && saved_layout[i].alignment
             ? saved_layout[i].alignment
             : "";
-        let type = saved_layout[i] ? saved_layout[i].type : "";
+        let type = saved_layout[i] ? saved_layout[i].type : l=='T' ? "Title" : '';
         let content = saved_layout[i] ? saved_layout[i].content : "";
         let l = k.slice(-1);
         let t = k.slice(0, -1);
+        l='B'
         this.layout.push({
           class: "text-" + l,
           size: t,
@@ -1054,15 +1086,18 @@ export default {
           alignment: alignment,
           width: width,
           type: type,
-          content: content
+          content: content,
+          questions: []
         });
       });
 
       // console.log("this.layout",this.layout);
     },
     deselect(id) {
-      this.massQuestion = this.massQuestion.filter(k => k != id);
-      // " @click="deselect(q.q.id)
+      this.massQuestion = this.massQuestion.filter(k => k != id); 
+    },
+    deselectStd(data,id) {
+      data = data.filter(k => k != id); 
     },
     removeSelected() {
       let s = this.selected;
@@ -1154,7 +1189,7 @@ export default {
         lesson_video_url: "",
         lesson_photo: "",
         lesson_type: "",
-        lesson_question: "",
+        lesson_question: [],
         lesson_acc_type: "",
         lesson_subject: "",
         lesson_description: "",
@@ -1164,7 +1199,8 @@ export default {
         lesson_counter: "",
         status: 1,
         prev_id: this.selectedLesson,
-        sort: this.dataLesson.length + 1
+        sort: this.dataLesson.length + 1,
+        
       };
     },
     openModalMass(type) {
@@ -1277,8 +1313,9 @@ export default {
       let vg = "";
       if (this.layout && this.layout[0]) {
         this.layout.forEach(a => {
+          // console.log("a.questions",a.questions);
           if (a.type == "Exam") {
-            d.lesson_question = a.content;
+            d.lesson_question = a.questions ? JSON.stringify(a.questions) : JSON.stringify([]);
             d.lesson_type = d.lesson_type + vg + a.type;
             vg = ",";
           } else if (a.type == "Course") {
@@ -1373,10 +1410,9 @@ export default {
         "id,sort,status,exa_type,rs_Question,exa_image,exa_sound,exa_video,exa_timer,exa_ready";
       let filter = {};
       if (id) {
-        filter.id = ["=", id];
-      } else {
-
-        
+        let idp = JSON.parse(id);
+        filter.id = ["in", idp];
+      } else { 
 
         if (this.qs.skills) {
           filter.exa_skills = ["in", [this.qs.skills]];
@@ -1415,6 +1451,8 @@ export default {
             this.questions = response.data.formattedData.map(k => {
               return { a: null, q: k };
             });
+          }else{
+            this.questions = null;
           }
         })
         .catch(e => {

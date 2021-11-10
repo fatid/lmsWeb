@@ -1,5 +1,6 @@
 <template>
-  <div class="container">
+  <div class="container" v-if="auth.id">
+ 
     <b-modal
       id="modal-xl"
       v-model="show"
@@ -275,6 +276,9 @@ export default {
     tiptap
   },
   computed: {
+       auth() {
+      return this.$store.state.user.auth;
+    },
     levels() {
       return this.$store.state.core.options["co_level"];
     },

@@ -72,7 +72,7 @@
                   :question="{ q: dt, a: [] }"
                   :order="1"
                   :levels="options['co_level']"
-                  :isAnswered="false"
+                  :isAnswered="true"
                   :answerable="true"
                 ></question>
               </div>

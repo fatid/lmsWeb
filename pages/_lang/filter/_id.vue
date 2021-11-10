@@ -525,7 +525,7 @@
                                     :question="{ q: dt, a: [] }"
                                     :order="1"
                                     :levels="options['co_level']"
-                                    :isAnswered="false"
+                                    :isAnswered="true"
                                     :answerable="exam && exam.id ? false : true "
                                 ></question>
                                 </div>

@@ -14,8 +14,9 @@ export default {
         status:1
       },
       statusList:[
+        {value:0,label:'All'},
         {value:1,label:'Published'},
-        {value:2,label:'Hidden'},
+        {value:2,label:'Draft'},
         {value:3,label:'Removed'}
       ]
     };
