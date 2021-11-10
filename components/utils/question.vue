@@ -158,7 +158,7 @@
         </div>
           <div class="grouped fields">
              
-            <div class="field fltr-radio" v-for="(a, i) in question.a">
+            <div class="field fltr-radio"  style=" text-align: right; direction:rtl;  width: 100%; float: right;" v-for="(a, i) in question.a">
               <div class="ui radio checkbox toRight">
                  <label @click="answerText = a.id">{{ a.exa_q_answer }} </label>
                 <input
@@ -404,14 +404,14 @@ export default {
   },
   watch: {
     "answerText"(val){
-      console.log("answerText",val);
+      // console.log("answerText",val);
       if(!this.answerable){
           let id = this.question.q.id
           let a= this.answerText;
             // if(this.question.q.exa_type == 'ParagraphOrder'){ 
             //     a= this.answerTextReversed;
             // }
-            // console.log("answer",id,a,"x",this.trueText,"x",this.trueText==a)
+         
                 this.resultExam[id]={answer: encode(a),isTrue:this.trueText==a};
             
           // this.resultExam[id]=this.answerText.trim();
@@ -541,6 +541,7 @@ export default {
           ) {
             this.answers = response.data.formattedData.sort(() => Math.random() - 0.5);
             this.answers.forEach(k=>{
+             
                     if(k.exa_q_true=="on"){
                         this.trueText = k.id;
                     } 
@@ -555,10 +556,10 @@ export default {
       // console.log("event");
       // this.splitwords_answer_ordered =   this.splitwords_answer;
       let total = this.splitwords_answer_ordered.length;
-      console.log(
-        "this.splitwords_answer_ordered",
-        this.splitwords_answer_ordered
-      );
+      // console.log(
+      //   "this.splitwords_answer_ordered",
+      //   this.splitwords_answer_ordered
+      // );
       let answer = "";
       if (total) {
         for (let i = 0; i < total; i++) {
@@ -774,8 +775,8 @@ export default {
       this.$emit("answered", true);
     },
     setanswer() {
-      console.log("answered",this.question.q,this.trueText,this.answerText)
-      if(answerable){
+      // console.log("answered",this.question.q,'T',this.trueText,'A',this.answerText)
+      if(this.answerable){
           if (!this.isTrue) {
             let unitId = this.$route.params.unit;
             let lessonId = this.$route.params.id;
@@ -1187,6 +1188,10 @@ export default {
   position: absolute;
   left: 0px;
   top: -10px;
+}
+
+.field.fltr-radio{
+     text-align: right;
 }
 
 </style>
