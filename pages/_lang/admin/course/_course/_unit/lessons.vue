@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-{{layout}}
+<!-- {{layout}} -->
     <b-modal
       id="modal-xl"
       v-model="showMass.showI"
@@ -186,9 +186,9 @@
               </li>
             </ul>
             <br />
-            <div class="btn btn-danger"   @click="openModalMass({type:'question' })">
+            <!-- <div class="btn btn-danger"   @click="openModalMass({type:'question' })">
             + {{ l("Add Multiple Questions", "g") }}
-          </div>
+          </div> -->
               <!-- <br />
               <br />
    <div class="btn btn-danger"    @click="openModalMass({type:'image' })">
@@ -408,7 +408,7 @@
                                 <input
                                 type="text"
                                 class="modal-form-input width-100"
-                                v-model="editedTopic.lesson_name"
+                                v-model="lt.content"
                                 />
                             </div>
                             <div
@@ -531,11 +531,17 @@
                               v-show="lt.type == 'Content'"
                             >
                               <span style="width: 100%; display: block;">
-                                <!-- <tiptap    /> -->
-                                <tiptap
+                                    <tiptap
                                   v-model="lt.content"
                                   @updated="lt.content = $event"
                                 />
+                                <!-- <tiptap    /> -->
+                                 <!-- <QuillEditor theme="snow"  v-model="lt.content" /> -->
+                                  <!-- <quill-editor theme="snow"></quill-editor> -->
+                                <!-- <tiptap
+                                  v-model="lt.content"
+                                  @updated="lt.content = $event"
+                                /> -->
                               </span>
                             </div>
                             <div
@@ -566,22 +572,32 @@
                                     {{ l("Remove image", "g") }}</a
                                   >
                                 </p>
-                                <p class="margin-top-10 mt-10 g-mt-10">
-                                  Width:
+                                 <b-row> <b-col>
+                                  <p>Width:</p>
                                   <input
                                     type="text"
                                     class="modal-form-input"
                                     v-model="lt.width"
                                   />
-                                </p>
-                                <p class="margin-top-10 mt-10 g-mt-10">
-                                  Height:
+                              </b-col>    <b-col>
+                               
+                                  <p>Height:</p>
                                   <input
                                     type="text"
                                     class="modal-form-input"
                                     v-model="lt.height"
                                   />
-                                </p>
+                                    </b-col> 
+                                 </b-row>
+                                  <b-row> <b-col>
+                                  <p class="margin-top-10 mt-10 g-mt-10">
+                                  Text:  </p>
+                                  <input
+                                    type="text"
+                                    class="modal-form-input"
+                                    v-model="lt.text"
+                                  />
+                                  </b-col></b-row>
                               </div>
                             </div>
                           </div>
@@ -869,6 +885,12 @@ import "vue-good-table/dist/vue-good-table.css";
 import VueGoodTablePlugin from "vue-good-table";
 import question from "@/components/utils/question.vue";
 import draggable from "vuedraggable";
+ 
+// import { QuillEditor } from '@vueup/vue-quill'
+// import '@vueup/vue-quill/dist/vue-quill.snow.css';
+
+  // QuillEditor
+
 export default {
   mixins: [general, admin_course],
   components: {
@@ -876,7 +898,7 @@ export default {
     VueGoodTable,
     tiptap,
     draggable,
-    question
+    question, 
   },
   computed: {
     lessonId() {
@@ -890,6 +912,8 @@ export default {
     }
   },
   data: () => ({
+ 
+    
     edited: {
       id: null
     },
@@ -1042,6 +1066,7 @@ export default {
   },
 
   methods: {
+ 
     dragged(e) {
       console.log("e", e);
     },
@@ -1062,8 +1087,9 @@ export default {
       let t = this.editedTopic.lesson_layout;
       let ta = t.split("+");
       console.log("ta",t,ta)
- 
-      ta.forEach((k, i) => {
+      let total = saved_layout.length;
+      ta.forEach((k, a) => {
+        let i = a + total;
         let width =
           saved_layout[i] && saved_layout[i].width ? saved_layout[i].width : "";
         let height =
@@ -1074,6 +1100,10 @@ export default {
           saved_layout[i] && saved_layout[i].alignment
             ? saved_layout[i].alignment
             : "";
+        let text =
+          saved_layout[i] && saved_layout[i].text
+            ? saved_layout[i].text
+            : "";
         let type = saved_layout[i] ? saved_layout[i].type : l=='T' ? "Title" : '';
         let content = saved_layout[i] ? saved_layout[i].content : "";
         let l = k.slice(-1);
@@ -1083,6 +1113,7 @@ export default {
           class: "text-" + l,
           size: t,
           height: height,
+          text: text,
           alignment: alignment,
           width: width,
           type: type,
@@ -1337,24 +1368,42 @@ export default {
         });
       }
       let lesson_content = JSON.stringify(this.layout);
+      let lesson_photo = this.fileList;
+
+      var bodyFormData = new FormData();
+      bodyFormData.append('id',  d.id && d.id != "new" ? d.id : null );
+      bodyFormData.append('status',  d.status);
+      bodyFormData.append('lesson_name',  d.lesson_name);
+      bodyFormData.append('lesson_photo',  lesson_photo);
+      bodyFormData.append('lesson_content',  lesson_content);
+      bodyFormData.append('lesson_description',  d.lesson_description);
+      bodyFormData.append('lesson_type',  d.lesson_type);
+      bodyFormData.append('lesson_layout',  d.lesson_layout);
+      bodyFormData.append('lesson_question',  d.lesson_question);
+      bodyFormData.append('lesson_subject',  this.sectionId);
+      bodyFormData.append('lesson_video_url',  d.lesson_video_url);
+      bodyFormData.append('prev_id',  this.selectedLesson);
+      bodyFormData.append('sort',  d.sort);
+
+  // id: d.id && d.id != "new" ? d.id : null,
+  //         status: d.status,
+  //         lesson_name: d.lesson_name,
+  //         lesson_photo: d.lesson_photo,
+  //         lesson_content: lesson_content,
+  //         lesson_description: d.lesson_description,
+  //         lesson_type: d.lesson_type,
+  //         lesson_layout: d.lesson_layout,
+  //         lesson_question: d.lesson_question,
+  //         lesson_subject: this.sectionId,
+  //         lesson_video_url: d.lesson_video_url,
+  //         prev_id: this.selectedLesson,
+  //         sort: d.sort
+
       await axios({
         url,
         method,
-        data: {
-          id: d.id && d.id != "new" ? d.id : null,
-          status: d.status,
-          lesson_name: d.lesson_name,
-          lesson_photo: d.lesson_photo,
-          lesson_content: lesson_content,
-          lesson_description: d.lesson_description,
-          lesson_type: d.lesson_type,
-          lesson_layout: d.lesson_layout,
-          lesson_question: d.lesson_question,
-          lesson_subject: this.sectionId,
-          lesson_video_url: d.lesson_video_url,
-          prev_id: this.selectedLesson,
-          sort: d.sort
-        }
+        headers: { "Content-Type": "multipart/form-data" },
+        data: bodyFormData
       })
         .then(response => {
           if (updatePage) {
@@ -1385,6 +1434,7 @@ export default {
         method = "put";
         url = process.env.baseURL + "sections/" + d.id;
       }
+
       await axios({
         url,
         method,

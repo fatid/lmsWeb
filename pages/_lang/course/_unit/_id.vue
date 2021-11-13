@@ -114,9 +114,9 @@
          
                    <div class="container">
                 <div class="row">
-              <div  v-if="data.lesson_content"  :class="'col-md-'+lt.size+' col-12 '"   v-for="lt in data.lesson_content">
+              <div    :class="'col-md-'+lt.size+' col-12 text-right align-right'"   v-for="lt in data.lesson_content">
            
-                   <div class="layout-container"   :class="lt.class+' '+lt.alignment"  > 
+                   <div class="layout-container"   :class="lt.class+' '+lt.alignment"  >  
                      <template v-if="lt.class=='text-T'">
                          {{data.lesson_name}} 
                     </template>
@@ -141,11 +141,13 @@
                             <div class="modal-form-row" v-else-if="lt.type=='Content'">
                                 <p v-html="HtmlEncode(lt.content)"></p>
                             </div>
+                              <div class="modal-form-row" v-else-if="lt.type=='Title'">
+                                <h3>{{data.lesson_name}}</h3>
+                            </div>
                             <div class="modal-form-row" v-else-if="lt.type=='Image'">
-                                  <img :style="{'width':lt.width,'height':lt.height}"
-                  :src="show_image(data.lesson_photo, '750', '750', '', '90')"
-                />
-
+                                  <img :style="{'width':lt.width,'height':lt.height}"  
+                                  :src="show_image(data.lesson_photo, '750', '750', '', '90')"  />
+                                  <p>{{lt.text}}</p>
                             </div>
                     </template>
                   </div>
@@ -886,4 +888,13 @@ a.download_btn2 {
 
 }
 
+.align-center{
+  text-align: center;
+}
+.align-left{
+  text-align: left;
+}
+.align-right{
+  text-align: right;
+}
 </style>
