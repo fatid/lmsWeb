@@ -253,7 +253,7 @@
 
         </a>
 
-        <!-- <b-popover target="popover-3" triggers="hover focus">
+        <b-popover target="popover-3" triggers="hover focus">
           <compact-picker
             @input="color.highlight = $event"
             :value="color.highlight"
@@ -273,7 +273,7 @@
         </b-popover>
           <a class="last group single" id="popover-4" variant="primary"
             ><svg-icon icon="fa-palette" class="fas"></svg-icon
-          ></a> -->
+          ></a>
       </bubble-menu>
       <floating-menu
         class="floating-menu"
@@ -414,10 +414,9 @@
         </a> 
         
 
-        <b-dropdown :hide-on-click="false" >
-          <template #button-content><span class="el-dropdown-link single-button">
-              <i class="fas fa-info-circle"></i>
-            <i class="fas fa-chevron-down el-icon--right"></i>
+        <b-dropdown :hide-on-click="false" class="el-dropdown-link single-button single-button-dropdown">
+          <template #button-content><span >
+              <i class="fas fa-info-circle"></i> 
           </span> </template>
         
             <b-dropdown-item v-for="size in infoBoxes" :key="size.value" :value="size.value"
@@ -675,6 +674,9 @@
       @close="imageDilaog=false;"
       @setImage="imageDilaog=false; editor.chain().focus().setImage({ src:  $event }).run();"
     ></image-upload>
+    <div style="display:none">
+      <div class="kv-pages-info-box"></div>
+    </div>
   </div>
 </template>
 
@@ -713,7 +715,7 @@ import { Compact } from "vue-color";
 import Image from '@tiptap/extension-image'
 import Dropcursor from '@tiptap/extension-dropcursor'
 //   import { allowedMimeTypes } from '@/constants/allowedMimeTypes'
-
+// import TextDirection from '@tiptap/tiptap-text-direction-extension';
 const CustomTableCell = TableCell.extend({
   addAttributes() {
     return {
@@ -887,8 +889,7 @@ export default {
       }
     },
     "data.info"(val) {
-     this.addContent(val);
-
+         this.addContent(val); 
     },
     value(value) {
       // HTML
@@ -921,7 +922,7 @@ export default {
         Table.configure({ 
           resizable: true,
         }),
-        
+   
         TableRow,
         TableHeader,
         Image,
@@ -948,6 +949,7 @@ export default {
 /* Basic editor styles */
 .btn.dropdown-toggle{
     padding:0!important;
+    background: none;
 }
 
 .ProseMirror {
@@ -956,6 +958,7 @@ export default {
   border:0!important;
   line-height: 1.1;
   overflow: auto;
+  background: #fff;
   > * + * {
     margin-top: 0.75em;
   }
@@ -1170,6 +1173,14 @@ table {
       margin-top: 7px;
       text-align: center;
     }
+    &.single-button-dropdown{
+        svg{ 
+          line-height: 20px!important; 
+        }
+        i{ 
+          line-height: 20px!important; 
+        }
+    }
     i{
       font-size: 17px;
       height: 17px;
@@ -1233,4 +1244,28 @@ table {
 
 }
 
+.kv-pages-info-box {
+    margin: 1rem 0;
+    position: relative;
+    .content {
+      border-radius: 0.5rem;
+      margin: 0rem;
+      padding: 1rem;
+      &.success {
+        background: rgba(246, 248, 252, 0.25);
+        border: 1px solid rgba(27, 197, 189, 0.3);
+        color: #1bc5bd;
+      }
+      &.warning {
+        background: rgba(246, 248, 252, 0.25);
+        border: 1px solid rgba(255, 168, 0, 0.3);
+        color: #ffa800;
+      }
+      &.info {
+        background: rgba(246, 248, 252, 0.25);
+        border: 1px solid #cdd7e2;
+        color: #465670;
+      }
+    }
+  }
 </style>
