@@ -4,7 +4,7 @@ export default {
             link: [
               {
                 rel: 'canonical',
-                href: 'https://buhuth.org' + this.$route.path,
+                href: 'https://lmsw.fatihd.org' + this.$route.path,
               }
             ],
           }

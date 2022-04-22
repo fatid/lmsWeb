@@ -7,7 +7,7 @@ const cookieparser = require('cookieparser')
 
 const state = () => ({
     uId:'',
-    auth:{},
+    auth:{}, 
     uDetail: {},
     signupSuccess:false
 })
@@ -51,11 +51,31 @@ const actions = {
                 auth = auth && auth.token ? auth : a;    
                 try { 
                     console.log("2",auth,a);
-                    auth = JSON.parse(auth)
-                    commit('setAuth', { v: auth, callback: resolve });
+                    auth = JSON.parse(auth);
+					if(auth && auth.U_mail){
+							 axios({
+								url: process.env.baseURL+"uye",
+								method: "get",
+								params: {
+								  limit: 1,
+								  lang: 'NONE',
+								  filter: { U_mail: ["=",auth.U_mail]},
+								  fields: "U_mail,U_rname,U_surname,U_Role,U_Timezone,U_Photo,U_aboutme,id,U_Status,U_likedPages,U_BirthDate,U_why_you_learn", 
+								} 
+							  })
+							.then(response => {  
+								 if( response.data && response.data.formattedData[0]){ 
+									auth.U_Photo = response.data.formattedData[0].U_Photo; 
+									auth.U_Timezone = response.data.formattedData[0].U_Timezone; 
+									commit('setAuth', { v: auth, callback: resolve });
+								}
+							});
+					}else{
+						 localStorage.getItem('removeAuth',{v:"",c:resolve})
+					}
                 } catch (err) { 
-                    this.$router.push("/login");
-                    console.log("3");
+                    //this.$router.push("/login");
+                    console.log("3",err);
                     localStorage.getItem('removeAuth',{v:"",c:resolve})
                     
                 }
@@ -88,7 +108,7 @@ const actions = {
     }
     },
     formSignUp({commit,state},{ form,pageData}){
-        console.log("uye girişi")
+        console.log("uye girişi",form)
         let sendobj = form;
         let sended={
           name:"",
@@ -148,9 +168,16 @@ const actions = {
           status: false,
           show: false
        };
-
-
-        return new Promise((resolve, reject) => {
+	   console.log("sendobj",sendobj);
+	   let filter = {}
+		if(sendobj.password){
+				filter =  { U_mail: ["=",sendobj.email], U_Password: ["=",sendobj.password] };
+		}else if(sendobj.U_GoogleId){ 
+				filter =  { U_mail: ["=",sendobj.email], U_GoogleId: ["=",sendobj.U_GoogleId] };
+		}
+		
+		if(filter.U_mail){
+			return new Promise((resolve, reject) => {
 
             axios({
                 url: process.env.baseURL+"uye",
@@ -158,8 +185,8 @@ const actions = {
                 params: {
                   limit: 1,
                   lang: 'NONE',
-                  filter: { U_mail: ["=",sendobj.email], U_Password: ["=",sendobj.password] },
-                  fields: "U_mail,U_rname,U_surname,U_Timezone,U_Photo,U_aboutme,id,U_Status,U_likedPages,U_BirthDate,U_why_you_learn",
+                  filter,
+                  fields: "U_mail,U_rname,U_surname,U_Role,U_Timezone,U_Photo,U_aboutme,id,U_Status,U_likedPages,U_BirthDate,U_why_you_learn",
                   sort: ["created_on,DESC"]
                 } 
               })
@@ -170,7 +197,7 @@ const actions = {
                       let a = response.data.formattedData[0]; 
                       console.log("localStorage",token,response,a);
                       if (token) { 
-                            let authData=JSON.stringify({U_BirthDate:a.U_BirthDate,U_Timezone:a.U_Timezone,U_Photo:a.U_Photo,token,U_mail: a.U_mail,id:a.id,name:a.U_rname,surname:a.U_surname,fullName:`${a.U_rname} ${a.U_surname}`});
+                            let authData=JSON.stringify({U_BirthDate:a.U_BirthDate,U_Timezone:a.U_Timezone,U_Role:a.U_Role,U_Photo:a.U_Photo,token,U_mail: a.U_mail,id:a.id,name:a.U_rname,surname:a.U_surname,fullName:`${a.U_rname} ${a.U_surname}`});
                             localStorage.setItem('auth', authData);
                             Cookies.set('auth', authData); 
                         }
@@ -196,6 +223,7 @@ const actions = {
                    commit("form/setForm", { v: sended,  callback: resolve  }, {root: true })
                 });
              }); 
+		}
     },
 
 }

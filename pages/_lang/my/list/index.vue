@@ -1,7 +1,10 @@
 <template>
-  <div class="container">  
-    <div class="row">
-      <div class="col-12 ">
+  <div class="page-content">  
+
+      <div class="page-header ">
+	  <div class="container">  
+	  <div class="row">  
+ <div class="col-12 ">
         <div class="search-header">
             <div class="title-field">{{l('My Lists','g')}}</div>
             <div class="search-field" v-if="!listId">
@@ -15,7 +18,12 @@
                                         :placeholder="l('Search keyword','g')"  /> 
              </div>
              </div>
-      </div>
+             </div>
+             </div>
+             </div>
+      </div> 
+<div class="container">  
+<div class="row no-gutters">  
  <div class="col-9 ">
  
     <div v-if="listId && viewType && getListData(listId,'data')">
@@ -43,7 +51,16 @@
     </div>
     <div v-else>  
       <div class="colsRow"> 
-    <b-list-group> 
+    <div v-if="loading" class="pa-10 text-center"> 
+	<img src="/img/loading.gif" style="height: 150px;" />
+		<br />	
+		<br />	
+		Loading
+	
+	</div>
+    <b-list-group v-else-if="my_lists && my_lists[0]"> 
+	<!-- my_lists<br /> -->
+	<!-- {{my_lists}} -->
       <b-list-group-item
         v-for="(list, i) in my_lists"
         :key="'l' + i"
@@ -64,7 +81,7 @@
           >
           <b-button
             v-if="list.view == 'read'"
-            variant="primary"
+            variant="warning"
             :title="'Copy Link'"
             @click="copyText('my/list?id='+list.id+'&view=1')"
             pill
@@ -72,14 +89,14 @@
           >
           <b-button
             v-if="list.view == 'read'"
-            variant="danger"
+            variant="warning"
             @click="editList(list)"
             pill
             ><i class="fa fa-pen"></i> </b-button
           >
           <b-button
             v-if="list.view == 'edit'"
-            variant="danger"
+            variant="warning"
             @click="list.view = 'read'"
             pill
             >Close</b-button
@@ -95,6 +112,12 @@
         </span>
       </b-list-group-item>
     </b-list-group> 
+    <div v-else class="pa-10 text-center">
+			<img src="/img/search-no-found.png" style="height: 250px;" />
+			<br />
+			<h2>{{l('No Items Added','g')}}</h2>
+
+	</div>
     </div>
  
     </div>
@@ -117,6 +140,10 @@
 								<input type="radio" tabindex="2" value="Exam"  :checked="search.module=='Exam' ? 'checked' : '' "   />
 								<label :lang="$store.state.locale"> {{(l('Question','g'))}}  </label>
 							</div>
+							  <div class="search-box" :lang="$store.state.locale"  @click="search.module='Quiz'">
+								<input type="radio" tabindex="2" value="Quiz"  :checked="search.module=='Quiz' ? 'checked' : '' "   />
+								<label :lang="$store.state.locale"> {{(l('Quiz','g'))}}  </label>
+							</div>
 							</div>
         <div class="fcrse_3 frc123">
 
@@ -135,9 +162,18 @@
         <a 
           class="tt_item active"
           @click.prevent="
-            goPath('courses/all_courses')
+            goPath('my/courses')
           " 
-        > {{l('Courses','g')}}</a
+        > {{l('My Courses','g')}}</a
+        >
+      </li>
+	    <li  >
+        <a 
+          class="tt_item active"
+          @click.prevent="
+            goPath('my/exams')
+          " 
+        > {{l('My Exams','g')}}</a
         >
       </li>
     </ul>
@@ -273,6 +309,7 @@ export default {
       my_lists: [],
       selectedList: {},
       isVisible:false,
+      loading:false,
       isSuccess:false,
       uyeListItem: {
         id: null,
@@ -285,7 +322,8 @@ export default {
       listOptions: [
         { name: "Course", value: "Course" },
         { name: "Exam", value: "Exam" },
-        { name: "Word", value: "Word" }
+        { name: "Word", value: "Word" },
+        { name: "Quiz ", value: "Quiz " },
       ]
     };
   },
@@ -377,7 +415,7 @@ export default {
       }else if(this.listId){
         filters.id= ['=',this.listId];
       }
- 
+	   this.loading = true;
       return new Promise((resolve, reject) => {
         axios({
           url: process.env.baseURL + "uye_Lists",
@@ -412,9 +450,17 @@ export default {
          
 
             this.isVisible = false;
-            
-          }
-        }).catch(err=> console.log("err",err));
+            this.loading = false;
+          }else{
+		  
+			this.my_lists =[]
+		  }
+		  
+		  this.loading = false;
+        }).catch(err=> {
+				console.log("err",err)
+			this.loading = false;
+		});
       });
     },
      
@@ -422,11 +468,26 @@ export default {
 };
 </script>
 <style scoped>
+.list-group{
+
+
+}
+
 .list-group-item{
+ margin-top: 15px;
     margin-bottom: 15px;
+    border-bottom: 0.1em solid #aaa;
+	border-top: 0.1em solid #fff; 
+	border-left: 0.1em solid #fff; 
+	border-right: 0.1em solid #fff; 
+    padding: 10px 0px;
+    border-radius: 0;
  }
- .list-group-item:hover { 
-    border: 0em solid #000; 
+ .list-group-item:hover {
+	border-top: 0.1em solid #fff; 
+	border-left: 0.1em solid #fff; 
+	border-right: 0.1em solid #fff; 
+    border-bottom: .1em solid #aaa;  
 } 
 .swdh19 textarea{ 
   padding: 5px;
@@ -451,19 +512,21 @@ export default {
   width:100%;
   padding: 10px 0px;
   justify-content: space-between;
-  border-bottom: 1px solid #d0d0d0;
+  border-bottom: 1px solid #f9f9f9;
   margin-bottom: 10px;
-  .title-field{
-
+  .title-field{ 
     font-size: 18px;
     font-weight: 500;
-    line-height: 1.6;
+    line-height: 2.3;
+	color: #706969;
   }
-  .search-field{
+  .search-field{ 
+  
     .input-std{
-      border: 1px solid #d0d0d0;
-      border-radius: 10px;
-      padding: 7px 10px;
+          border: 1px solid #f6ecec;
+    border-radius: 4px;
+    height: 35px;
+    padding: 4px 10px;
     }
   }
 

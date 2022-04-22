@@ -24,7 +24,8 @@ export default {
             return this.$route.query.device
               ? this.$route.query.device
               : this.$device.isMobile;
-        } 
+        },
+	 
     },
 
     methods:{

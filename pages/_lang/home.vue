@@ -1,92 +1,63 @@
 <template>
-  <div class="container">
-    <div class="row">
-      <div class="col-12 ">
-        <div class="search-header">
-          <div class="title-field">{{l('My Active Courses','g')}}</div>
-          <div class="search-field"> 
-          </div>
-        </div>
-      </div>
-      <div class="col-9 col-md-9 col-sm-12  col-xs-12">
-        <div class="fcrse_1 my_crse_1" v-for="d in courseOrders">
-          <a
-            @click="goPath('course/' + d.from_corder_course.cou_link)"
-            class="hf_img"
-          >
-            <img
-              :src="
-                show_image(
-                  d.from_corder_course.cou_image,
-                  '150',
-                  '150',
-                  'c',
-                  ''
-                )
-              "
-              alt=""
-            />
-            <div class="course-overlay">
-              <div class="badge_seller">
-                {{
-                  getOptName(
-                    d.from_corder_course.cou_level,
-                    "co_level",
-                    "cou_level_name"
-                  )
-                }}
-              </div>
-            </div>
-          </a>
-          <div class="hs_content">
-            <div class="vdtodt">
-              <span class="vdt14"
-                >{{ d.from_corder_course.cou_total_view }}
-                {{ l("views", "g") }}</span
-              >
-            </div>
-            <a
-              @click="goPath('course/' + d.from_corder_course.cou_link)"
-              class="crse14s title900"
-              >{{ d.from_corder_course.cou_name }}</a
-            >
-            <a href="#" class="crse-cate">{{
-              d.from_corder_course.cou_short
-            }}</a>
-            <div class="crse-cate mt-1">
-              <a href="#"
-                >{{
-                  getOptName(
-                    d.from_corder_course.cou_category,
-                    "co_labels",
-                    "cou_label_name"
-                  )
-                }}
-              </a> 
-              <br />
-              <b>Your last unite:</b>
-              <!-- {{d.from_corder_course.corder_text}} -->
-              {{ d.from_corder_last_unite ? d.from_corder_last_unite.unite_name +" >": '' }} 
-              {{ d.from_corder_last_lesson ? d.from_corder_last_lesson.section_name+" >": '' }}
-              {{ d.from_corder_last_topic ?  d.from_corder_last_topic.lesson_name+" >": '' }}
-              <a v-if="d.corder_last_lesson"
-                @click="
-                  goPath(
-                    '/course/' +
-                      d.corder_last_lesson +
-                      '/' +
-                      d.corder_last_lesson
-                  )
-                "
-              >
-                {{ l("Continue") }}</a
-              >
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+    	
+				<div class="row"  :class="reverseClass">
+					<div class="col-xl-9 col-lg-8">
+						
+						<div class="mt-50">
+							<h4 class="item_title">{{l('Start search')}}</h4>
+							 
+							<div class="la5lo1 search_keyword">
+								<i class="search_icon fa fa-search"></i>
+								<input type="text" v-model="search"  class="" :placeholder="l('Search','g')" />
+							</div>
+						</div>
+					</div>	 	 
+					<div class="col-xl-3 col-lg-4">
+						<div class="right_side">
+							 
+							<div class="fcrse_3">
+								<div class="cater_ttle">
+									<h4>{{l('Become a member','g')}}</h4>
+								</div>
+								<div class="live_text">
+									<div class="live_icon"><i class="uil uil-kayak"></i></div>
+									<div class="live-content">
+										<p>Set up your account and start to learn Arabic.</p>
+										<button class="live_link" @click="goPath('/form/login')">Get Started</button>
+										<span class="livinfo">Info : This feature only for 'Instructors'.</span>
+									</div>
+								</div>
+							</div>
+							<div class="get1452">
+								<h4>Get personalized recommendations</h4>
+								<p>Answer a few questions for your top picks</p>
+								<button class="Get_btn" onclick="window.location.href = '#';">Get Started</button>
+							</div>
+							<div class="fcrse_3">
+								<div class="cater_ttle">
+									<h4>Top Categories</h4>
+								</div>
+								<ul class="allcate15">
+									<li><a href="#" class="ct_item"><i class="uil uil-arrow"></i>Development</a></li>
+									<li><a href="#" class="ct_item"><i class="uil uil-graph-bar"></i>Business</a></li>
+									<li><a href="#" class="ct_item"><i class="uil uil-monitor"></i>IT and Software</a></li>
+									<li><a href="#" class="ct_item"><i class="uil uil-ruler"></i>Design</a></li>
+									<li><a href="#" class="ct_item"><i class="uil uil-chart-line"></i>Marketing</a></li>
+									<li><a href="#" class="ct_item"><i class="uil uil-book-open"></i>Personal Development</a></li>
+									<li><a href="#" class="ct_item"><i class="uil uil-camera"></i>Photography</a></li>
+									<li><a href="#" class="ct_item"><i class="uil uil-music"></i>Music</a></li>
+								</ul>
+							</div>
+							<div class="strttech120">
+								<h4>Become an Instructor</h4>
+								<p>Top instructors from around the world teach millions of students on Cursus. We provide the tools and skills to teach what you love.</p>
+								<button class="Get_btn" onclick="window.location.href = '#';">Start Teaching</button>
+							</div>
+						</div>
+					</div>
+				 
+				<input type="checkbox" class="ui checkbox" />
+			</div>
 </template>
 <script>
 import general from "@/mixins/general";
@@ -94,14 +65,23 @@ import axios from "axios";
 
 export default {
   mixins: [general],
-
+layout: 'default',
   data: () => ({
     data: []
   }),
   computed: {
     courseOrders() {
       return this.$store.state.course.orders;
-    }
+    },
+    LOCALE() {
+      return this.$store.state.locale;
+    },
+    auth() {
+      return this.$store.state.user.auth;
+    },
+	reverseClass(){
+	 return this.LOCALE=='ar' ? ' flex-row-reverse' : ''
+	}
   },
   async created() {
     await this.$store.dispatch("core/getOptions", {
@@ -142,6 +122,23 @@ export default {
 	margin-bottom: 15px
 }
 
+.search_keyword{
+position: relative;
+	input{
+		padding: 20px 20px 20px 50px;
+		border-radius: 30px;
+		border: 1px solid #f9f9f9;
+		width: 100%;
+		
+	}
+	i.search_icon{
+		position: absolute;
+		left: 20px;
+		top: 20px;
+		font-size: 20px;
+		color:#aaa;
+	}
+}
 .search-header{
   display:inline-flex;
   width:100%;

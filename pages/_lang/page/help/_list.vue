@@ -95,7 +95,7 @@ import axios from "axios";
 
 export default {
 	mixins:[general],
-    layout: 'basic',
+    layout: 'default',
 	data(){
 		return{ 
             searchText: '',

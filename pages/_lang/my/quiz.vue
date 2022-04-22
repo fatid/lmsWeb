@@ -2,24 +2,25 @@
   <div class="container">
  
     
-<div class="row">
+<div class="row" :class="reverseClass">
       <div class="col-12 ">
-        <div class="search-header">
+        <div class="search-header" :class="reverseClass">
             <div class="title-field">{{l('Quizs','g')}}</div>
             <div class="search-field">
         			<input type="text" class="input-std" 
                                         @change="getData()"
+										:class="customClass.textDir + ' ' + customClass.dir"
                                         v-model="search.keyword" :placeholder="l('Search keyword','g')"  /> 
              </div>
              </div>
       </div>
-      <div class="col-9 col-md-9 col-sm-12">
+      <div class="col-9 col-md-9 col-sm-12"  :lang="LOCALE">
         <div class="fcrse_1" v-for="d in data"> 
 									 
-										<div class="hs_content" v-if="d && d.from_er_List ">
+										<div class="hs_content"  :lang="LOCALE" :class="customClass.textDir + ' ' + customClass.dir" v-if="d && d.from_er_List ">
 										 
-											<a @click="goPath('filter/result/'+d.id)" @click.middle="goPathBlank('filter/result/'+d.id)" class="crse14s title900">{{d.from_er_List.uye_list_name}}</a>
-											<a href="#" class="crse-cate">{{d.er_true}} true in {{d.er_total}} on {{d.created_on | date("DD MMM YYYY HH:mm")}}</a>
+											<a @click="goPath('filter/result/'+d.id)" @click.middle="goPathBlank('filter/result/'+d.id)" class="crse14s title900" :lang="LOCALE">{{d.from_er_List.uye_list_name}}</a>
+											<a href="#" class="crse-cate" :lang="LOCALE">{{d.er_true}} true in {{d.er_total}} on {{d.created_on | date("DD MMM YYYY HH:mm")}}</a>
 											<!-- <div class="crse-cate mt-1">
 												<a href="javascript:;"  >{{getOptName(d.cou_category,'co_labels','cou_label_name')}} </a> 
 												<span class="  ml-1">|</span> 
@@ -200,6 +201,15 @@ export default {
     }
   }
 
+}
+ .hs_content:lang(ar){
+	direction:rtl;
+	text-align: right;
+	float: right!important;
+}
+.crse-cate:lang(ar) ,  .crse14s:lang(ar){
+	direction:rtl;
+	text-align: right;
 }
 
 

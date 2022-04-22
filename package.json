@@ -8,7 +8,8 @@
   "scripts": {
     "dev": "nuxt",
     "build": "nuxt build",
-    "start": "cross-env HOST=144.91.120.37 PORT=4208 NODE_ENV=production nuxt start",
+    "start": "cross-env HOST=144.91.120.37 PORT=4209 NODE_ENV=production nuxt start",
+    "start2": "cross-env HOST=144.91.120.37 PORT=4208 NODE_ENV=production nuxt start",
     "dev2": "cross-env HOST=144.91.120.37 PORT=4208 NODE_ENV=production nuxt",
     "dev3": "nuxt PORT=4208 NODE_ENV=development ",
     "startWeb": "nuxt start",
@@ -54,10 +55,12 @@
     "nuxt-device-detect": "^1.1.5",
     "tiptap-text-direction-extension": "^1.0.2",
     "uglifyjs-webpack-plugin": "^2.2.0",
+    "vue-click-outside": "^1.1.0",
     "vue-color": "^2.8.1",
     "vue-cookie-law": "^1.13.3",
     "vue-draggable-resizable": "^2.3.0",
     "vue-good-table": "^2.21.11",
+    "vue-google-oauth2": "^1.5.8",
     "vue-multiselect": "^2.1.6",
     "vue-pagination-2": "^3.0.91",
     "vue-scrollto": "^2.20.0",
@@ -66,7 +69,8 @@
     "vue-step": "^1.3.0",
     "vue-table-draggable": "^1.0.1",
     "vue2-datepicker": "^3.10.1",
-    "vuedraggable": "^2.24.3"
+    "vuedraggable": "^2.24.3",
+    "vuelidate": "^0.7.7"
   },
   "devDependencies": {
     "@aceforth/nuxt-optimized-images": "^1.3.0",

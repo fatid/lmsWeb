@@ -2,6 +2,7 @@
     <div
             :class="'more-info-panel'"
             class="item-panel" v-if="dt"
+			:lang="LOCALE"
           >
             <div class="item-row" v-if="dt.dict_w_similar_arr">
               <div class="item-row-title">
@@ -162,6 +163,7 @@ export default {
       transition: 0.5s all;
       cursor: pointer;
     }
+	 
     .item-row {
       width: 100%;
       display: inline-flex;
@@ -170,6 +172,9 @@ export default {
       font-size: 16px;
       margin-bottom: 5px;
       padding-bottom: 5px;
+		 &:lang(ar) {  
+				  flex-flow: row;
+		 }
       .item-row-title {
         width: 100px;
         font-weight: 500;

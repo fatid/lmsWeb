@@ -73,14 +73,20 @@
       }}</b-button>
     </div>
   </div><div v-else>
-    <b-alert show variant="warning"><a href="#" class="alert-link">Sign in to access this feature.</a></b-alert>
+    <!--<b-alert show variant="warning"><a href="#" class="alert-link">
+	{{l('Sign in to access this feature.','g')}}</a></b-alert>!-->
+	<login></login>
   </div>
   </b-modal>
 </template>
 <script>
 import general from "@/mixins/general";
 import axios from "axios";
+import login from  "@/components/common/login";
 export default {
+  components:{
+  	login
+  },
   mixins: [general],
   data: () => ({
     data: [],

@@ -1,21 +1,21 @@
 <template>
-  <div class="sa4d25">
-    <div class="container mt-10">
+  <div class="sa4d25" :lang="LOCALE">
+    <div class="container mt-10" :lang="LOCALE">
 
       <div class="div-container">
-      <div class="row">
+      <div class="row" :class="reverseClass">
         <div class="col-lg-12">
-          <h2 class="st_title">
-            <i class="uil uil-cog"></i> {{ l("My Profile", "general") }}
+          <h2 class="st_title" :class="customClass.textDir + ' ' + customClass.dir">
+            <i class="fa fa-user"></i> {{ l("My Profile", "g") }}
           </h2>
           <div class="setting_tabs">
-            <ul class="nav nav-pills mb-4" id="pills-tab" role="tablist">
+            <ul class="nav nav-pills mb-4" id="pills-tab" role="tablist" :class="customClass.textDir + ' ' + customClass.dir">
               <li class="nav-item">
                 <a
                   class="nav-link "
                   @click="show = 'main'"
                   :class="show == 'main' ? 'active' : ''"
-                  >{{ l("Account", "general") }}</a
+                  >{{ l("Account", "g") }}</a
                 >
               </li>
               <li class="nav-item">
@@ -23,7 +23,7 @@
                   class="nav-link"
                   @click="show = 'notification'"
                   :class="show == 'notification' ? 'active' : ''"
-                  >{{ l("Notification", "general") }}
+                  >{{ l("Notification", "g") }}
                 </a>
               </li>
                <li class="nav-item">
@@ -31,7 +31,7 @@
                   class="nav-link"
                   @click="show = 'comments'"
                   :class="show == 'comments' ? 'active' : ''"
-                  >{{ l("My Comments", "general") }}
+                  >{{ l("My Comments", "g") }}
                 </a>
               </li>
               <li class="nav-item">
@@ -40,7 +40,7 @@
                   id="pills-password-tab"
                   @click="show = 'password'"
                   :class="show == 'password' ? 'active' : ''"
-                  >{{ l("Change Password", "general") }}
+                  >{{ l("Change Password", "g") }}
                 </a>
               </li>
               
@@ -50,7 +50,25 @@
                   id="pills-bllingpayment-tab"
                   @click="show = 'bllingpayment'"
                   :class="show == 'bllingpayment' ? 'active' : ''"
-                  >{{ l("Plan and Billing", "general") }}
+                  >{{ l("Plan and Billing", "g") }}
+                </a>
+              </li>
+			   <li class="nav-item">
+                <a
+                  class="nav-link"
+                  id="pills-invite-tab"
+                  @click="show = 'invite'"
+                  :class="show == 'invite' ? 'active' : ''"
+                  >{{ l("Invite & Referrals", "g") }}
+                </a>
+              </li>
+			    <li class="nav-item">
+                <a
+                  class="nav-link"
+                  id="pills-invite-tab"
+                  @click="show = 'referrals'"
+                  :class="show == 'referrals' ? 'active' : ''"
+                  >{{ l("My Referrals", "g") }}
                 </a>
               </li>
             </ul>
@@ -70,11 +88,12 @@
 
               <div class="account_setting">
                 <div class="basic_profile">
-                  <div class="basic_ptitle">
-                    <h4>Profile Details</h4> 
+                  <div class="basic_ptitle"  >
+                    <h4 :class="customClass.textDir + ' ' + customClass.dir">{{l('Profile Details','g')}}</h4> 
+					<h5 :class="customClass.textDir + ' ' + customClass.dir">{{l('Your profile is','g')}}: <strong>{{myProfile.U_Role ?  myProfile.U_Role : l('Student','g')}}</strong></h5>
                   </div>
-                  <div class="basic_form">
-                    <div class="row">
+                  <div class="basic_form" :lang="LOCALE">
+                    <div class="row"  :lang="LOCALE">
                       <div class="col-lg-8">
                         <div class="row">
                           <div class="col-lg-6">
@@ -82,6 +101,7 @@
                                  <p>{{l('Name','g')}}</p> 
                               <div class="ui left icon input swdh11 swdh19">
                                 <input
+								  :lang="LOCALE"
                                   class="prompt srch_explore"
                                   type="text"
                                   name="name"
@@ -96,6 +116,7 @@
                                  <p>{{l('Surname','g')}}</p> 
                               <div class="ui left icon input swdh11 swdh19">
                                 <input
+								  :lang="LOCALE"
                                   class="prompt srch_explore"
                                   type="text"
                                   name="surname"
@@ -111,6 +132,7 @@
                               <div class="ui left icon input swdh11 swdh19">
                                 <input
                                   class="prompt srch_explore"
+								  :lang="LOCALE"
                                   type="text"
                                   v-model="myProfile.U_Mobil"
                                   :placeholder="l('Mobile', 'g')"
@@ -142,6 +164,7 @@
                                 <select
                                   class="prompt srch_explore pa-10 w-100"
                                   v-model="myProfile.U_degree"
+								  :lang="LOCALE"
                                 >
                                   <option
                                     v-for="u in levels"
@@ -173,7 +196,7 @@
                           </div> 
                           <div class="col-lg-6">
                             <div class="ui search focus mt-30">
-                                     <p>{{l('BirthDate','g')}}</p> 
+                                     <p>{{l('Birth Date','g')}}</p> 
                               <div class="ui left icon input swdh11 swdh19">
                                   <input
                                   class="prompt srch_explore"
@@ -317,7 +340,8 @@
                               <div class="ui left icon input swdh11 swdh19">
                                  <div v-if="!myProfile.U_Photo">
                                    <p><a>{{l('Upload avatar','g')}}</a></p>
-                                  <input type="file" name="changeFile" @change="onFileChange"/>
+                                  <input type="file" name="changeFile" @change="onFileChange($event)"/>
+								 
                                  </div>
                                  <div v-else>
                                   <img :src="myProfile.U_Photo" class="g-width-200 imageUpload"/>
@@ -331,7 +355,7 @@
                 </div>
 
                 <button class="save_btn" type="submit" @click="saveProfile()">
-                  {{ l("Save Changes", "general") }}
+                  {{ l("Save Changes", "g") }}
                 </button>
               </div>
             </div>
@@ -421,7 +445,7 @@
                       <div class="basic_ptitle">
                         <h4>Email notifications</h4>
                         <p>
-                          Your emails are sent to gambol943@gmail.com. To
+                          Your emails are sent to {{auth.U_mail}}. To
                           unsubscribe from an email, click the "Unsubscribe"
                           link at the bottom of it.
                           <a href="#">Learn more</a> about emails from Edututs+.
@@ -431,16 +455,19 @@
                         <input
                           type="checkbox"
                           name="stream_ss5"
-                          checked=""
+                         
                           tabindex="0"
                           class="hidden"
+						  :checked="myProfile.notify_mail"
+						  v-model="myProfile.notify_mail"
+						  @click="myProfile.notify_mail=!myProfile.notify_mail"
                         />
                         <label
-                          >Send me emails about my Cursus activity and updates I
+                          >Send me emails about my Daleel activity and updates I
                           requested</label
                         >
                         <p class="ml5">
-                          If this setting is turned off, Cursus may still send
+                          If this setting is turned off, Daleel may still send
                           you messages regarding your account, required service
                           announcements, legal notifications, and password
                           matters
@@ -452,10 +479,12 @@
                           name="stream_ss6"
                           tabindex="0"
                           class="hidden"
+						  :checked="myProfile.notify_promotion"
+						   v-model="myProfile.notify_promotion"
                         />
                         <label
                           >Promotions, course recommendations, and helpful
-                          resources from Cursus.</label
+                          resources from Daleel.</label
                         >
                       </div>
                       <div class="ui toggle checkbox _1457s2">
@@ -464,6 +493,8 @@
                           name="stream_ss7"
                           tabindex="0"
                           class="hidden"
+						  :checked="myProfile.notify_instractor"
+						   v-model="myProfile.notify_instractor"
                         />
                         <label
                           >Announcements from instructors whose course(s) I’m
@@ -478,7 +509,8 @@
                     </div>
                   </div>
                 </div>
-                <button class="save_btn" type="submit">Save Changes</button>
+                <button class="save_btn" type="submit" @click="saveProfile()">
+                  {{ l("Save Changes", "g") }}</button>
               </div>
             </div>
             <div
@@ -487,13 +519,13 @@
             >
               <div class="account_setting">
                 <h4>{{l('Comments','g')}}</h4>
-                <p>Total {{comments_count}} comments.</p>
-                <div class="divider-1 mb-10"></div>
+                <p>{{l('Total','g')}} {{comments_count}} {{l('comments','g')}} .</p>
+              
                 <div class="basic_profile">
                      <div class="review_all120" v-for="comment in comments">
                   <div class="review_item">
                     
-                    <div class="rating-box mt-20">
+                    <div class="rating-box  star_button">
                       <span   :class="comment.yh_Points>=1 ? 'full-star' : ''" class="rating-star empty-star"></span>
                       <span   :class="comment.yh_Points>=2 ? 'full-star' : ''" class="rating-star empty-star"></span>
                       <span   :class="comment.yh_Points>=3 ? 'full-star' : ''" class="rating-star empty-star"></span>
@@ -501,12 +533,20 @@
                       <span   :class="comment.yh_Points>=5 ? 'full-star' : ''" class="rating-star empty-star"></span>
                     </div>
                     <div class="rvds10">
-                      {{comment.yh_Message}}  
-                      on  {{comment.created_on | dateTime}} <br />
-                      <a class="btn btn-small btn-danger" @click="openCommentModal(comment, comment,'courses')">
-                        <i class="fa fa-edit"></i>
-                        {{l('Edit','g')}}</a>
-                      <hr />
+                      <p>{{comment.yh_Message}}</p>
+					   <!--{ "yh_Message": "test 1", "yh_MainId": null, "yh_Group": "courses", "status": 1, "yh_Points": "3", "yh_UserId": "uye_1619304065854", "yh_Mail": "aa@bb.com", "yh_Surname": "Demir6", "yh_Name": "Fatih", "yh_PageId": "Y291cnNlczE2MTQ2MDMyMzkq", "id": "AllYorumlar_1635877024775", "created_on": "2021-11-02T18:17:04.000Z", "created_by": null, "prev_Id": "0", "created_on__TEXT": "02-11-2021" } !-->
+					<a v-if="comment.from_yh_courseId && comment.from_yh_courseId.cou_name" @click="goPath('course/'+comment.from_yh_courseId.cou_link)">  {{comment.from_yh_courseId.cou_name}} -  
+					 {{l('View Course','g')}}</a>
+                     for {{comment.yh_Group=='courses' ? 'Courses' : ''}} on  {{comment.created_on | dateTime}} <br />
+                      <a  class="edit_button"  @click="openCommentModal(comment, comment,'courses')">
+                        <i class="fa fa-pen"></i>
+                        {{l('Edit','g')}}</a> 
+						<a  class="activate_button"  @click="deactivate(comment)" v-if="comment.status==1">
+                        <i class="fa fa-dot-circle"></i>
+                        {{l('Deactivate','g')}}</a> 
+						<a  class="activate_button"  @click="activate(comment)" v-if="comment.status==2">
+                        <i class="fa fa-dot-circle"></i>
+                        {{l('Activate','g')}}</a> 
                     </div> 
                   </div>
                 </div>
@@ -521,8 +561,9 @@
                 <h4>Change Password</h4> 
                 <div class="basic_profile">
                   <div class="basic_form">
-                    <div class="nstting_content">
-                       <div class="col-lg-6">
+                    <div class="nstting_content" :lang="LOCALE">
+					 <div class="row"   >
+                       <div class="col-12 col-md-6 col-lg-4">
                             <div class="ui search focus mt-30">
                               <div class="ui left icon input swdh11 swdh19">
                                 <input
@@ -534,7 +575,7 @@
                                 />
                               </div>
                             </div>
-                    </div>   <div class="col-lg-6">
+                    </div>   <div class="col-12 col-md-6 col-lg-4">
                             <div class="ui search focus mt-30">
                               <div class="ui left icon input swdh11 swdh19">
                                 <input
@@ -547,7 +588,9 @@
                               </div>
                             </div>
                             </div>
-                            <div class="col-lg-12">
+                            </div>
+							 <div class="row"   >
+                            <div class="col-12 col-md-6 col-lg-4">
                             <div class="ui search focus mt-30">
                               <div class="ui left icon input swdh11 swdh19">
                                 <input
@@ -562,11 +605,12 @@
                     </div>
                     </div>
                     </div>
+                    </div>
                   </div>
                 </div>
                 <button class="save_btn" type="submit" @click="changePasswordAction">{{l('Change Password','g')}}</button>
               </div>
-            </div>
+           
     
              <div
               class="tab-pane fade"
@@ -581,7 +625,106 @@
                 <div class="divider-1 mb-50"></div>  
               </div>
             </div>
+			
+			       <div
+              class="tab-pane fade"  :lang="LOCALE"
+              :class="show == 'invite' ? 'show active' : ''"
+            >
+              <div class="account_setting" :lang="LOCALE">
+                <h2>{{l('Invite','g')}}</h2>
+			
+                <h4>
+                   {{l('Invite your friends or students')}}
+                </h4>
+                <p>
+                   {{l('Your referral code is','g')}}: <strong>{{getRefCode()}}</strong>  
+				   <a @click="copyText(getRefCode())" > <i class="far fa-copy"></i> </a>
+                </p>
+				<p>
+                   {{l('Your referral link is','g')}}: <strong>{{'https://lmsw.fatihd.com/en/form/login?ref='+getRefCode()}}</strong>
+				    <a @click="copyText('https://lmsw.fatihd.com/en/form/login?ref='+getRefCode())" ><i class="far fa-copy"></i></a>
+                </p>
+				<div style="width: auto;  display: flex;">
+				
+						<ShareNetwork
+											v-for="network in networks"
+											:network="network.network"
+											:key="network.network"
+											:style="{ backgroundColor: network.color }"
+											:url="
+											  'https://lmsw.fatihd.com/en/form/login?ref='+getRefCode()
+											"
+											:title="l('Join','g')"
+											:description="l('Join','g')"
+											:quote="''"
+											:hashtags="''"
+										  >
+											<i :class="network.icon"></i>
+											<!-- <span>{{ network.name }}</span> -->
+										  </ShareNetwork>
+				
+				</div>
+                <div class="divider-1 mb-50">
+						
+
+				
+				</div>  
+              </div>
+            </div>
+			
+			       <div
+              class="tab-pane fade"  :lang="LOCALE"
+              :class="show == 'referrals' ? 'show active' : ''"
+            >
+              <div class="account_setting" :lang="LOCALE">
+                <h2>{{l('My Referalls','g')}}</h2>
+			
+               
+				 
+                <div class="divider-1 mb-50" v-if="columns && data">
+						
+ <vue-good-table
+          :columns="columns"
+          :rows="data"
+          :search-options="{
+            enabled: true,
+            trigger: 'enter'
+          }"
+          :sort-options="{
+            enabled: true,
+            initialSortBy: { field: 'cou_name', type: 'asc' }
+          }"
+          :rtl="LOCALE == 'ar' ? true : false"
+        >
+          <template slot="table-row" slot-scope="props">
+            <span v-if="props.column.field == 'action'">
+              <a class="table-buttons" @click="openModal(props.row)"
+                ><i class="fa fa-pen"></i
+              ></a>
+              <a
+                class="table-buttons"
+                @click="goPath(`admin/course/${props.row.id}/units`)"
+                @click.middle="
+                  goPathBlank(`admin/course/${props.row.id}/units`)
+                "
+                ><i class="fas fa-list-alt"></i
+              ></a>
+              <a
+                class="table-buttons"
+                @click="goPath('course/' + props.row.cou_link)"
+                @click.middle="goPathBlank('course/' + props.row.cou_link)"
+                ><i class="fa fa-eye"></i
+              ></a>
+            </span>
+				</template>
+				</vue-good-table>
+				</div>
+				</div>  
+              </div>
+            </div>
+			
           </div>
+		   </div>
         </div>
       </div>
     </div>
@@ -590,15 +733,22 @@
 <script>
 import general from "@/mixins/general";
 import axios from "axios";
- 
+ import { VueGoodTable } from "vue-good-table";
+import "vue-good-table/dist/vue-good-table.css";
 export default {
   mixins: [general],
+   components: { 
+    VueGoodTable 
+  },
   watch:{
     show(val){
       if(val=="comments"){
         this.getComments()
       }
-    }
+    },
+	doWhat(val){ 
+		this.show = val; 
+	}
   },
   data: () => ({
     show: "main",
@@ -613,11 +763,20 @@ export default {
         id:null,
         uye_list_name:''
     },
+	profile_photo:null,
     comments: [],
     comments_count:0,
     comment_page:1,
     comment_size:10,
     layout: 'basic',
+	 networks: [  
+        {
+          network: "whatsapp",
+          name: "Whatsapp",
+          icon: "fab fah fa-lg fa-whatsapp",
+          color: "#25d366"
+        }
+      ],
     listOptions: [
       { name: "Course", value: "Course" },
       { name: "Exam", value: "Exam" },
@@ -757,7 +916,10 @@ export default {
         ]
   }),
   computed: {
-    auth() {
+    doWhat() {
+      return this.$route.query.do;
+    },
+	auth() {
       return this.$store.state.user.auth;
     },
     levels() {
@@ -797,15 +959,77 @@ export default {
       prev_id: this.myProfile.id,
       fields: "id,uye_language,uye_language_degree,status"
     });
-
+	if(this.doWhat){ 
+		this.show = this.doWhat; 
+	}
     // this.genders = this.l("cat.Membership.list.M_Gender.list",'g');
     this.getUyeLanguages(); 
     this.getUyeLists();
     this.getMyProfile();
   },
   methods: {
+  
+    async deactivate(c){
+		let url = process.env.baseURL + "AllYorumlar"+"/"+c.id;
+					let method = "put"
+					
+					await axios({
+					url,
+					method:'update',
+					data: {
+					  id: c.id,
+					  token: auth.token, 
+					  status:1
+					}
+				  }).then(response => {
+					this.saveStatus = { show: true, stataus: "success" }; 
+				  });
+  },
+  
+  async deactivate(c){
+		let url = process.env.baseURL + "AllYorumlar"+"/"+c.id;
+					let method = "put"
+					
+					await axios({
+					url,
+					method:'update',
+					data: {
+					  id: c.id,
+					  token: auth.token, 
+					  status:2
+					}
+				  }).then(response => {
+					this.saveStatus = { show: true, stataus: "success" }; 
+				  });
+  },
+  
+ copyText(text) {
+ 
+    if (window.clipboardData && window.clipboardData.setData) {
+        // Internet Explorer-specific code path to prevent textarea being shown while dialog is visible.
+        return window.clipboardData.setData("Text", text);
+
+    }
+    else if (document.queryCommandSupported && document.queryCommandSupported("copy")) {
+        var textarea = document.createElement("textarea");
+        textarea.textContent = text;
+        textarea.style.position = "fixed";  // Prevent scrolling to bottom of page in Microsoft Edge.
+        document.body.appendChild(textarea);
+        textarea.select();
+        try {
+            return document.execCommand("copy");  // Security exception may be thrown by some browsers.
+        }
+        catch (ex) {
+            console.warn("Copy to clipboard failed.", ex);
+            return prompt("Copy to clipboard: Ctrl+C, Enter", text);
+        }
+        finally {
+            document.body.removeChild(textarea);
+        }
+    }
+},
 async getComments() {
-      let fields = `yh_Message,yh_MainId,yh_Group,status,yh_Points,yh_UserId,yh_Mail,yh_Surname,yh_Name,yh_PageId,id,status,created_on,created_by,prev_Id`;
+      let fields = `yh_Message,yh_MainId,yh_Group,status,yh_Points,yh_UserId,yh_Mail,yh_Surname,yh_Name,yh_PageId,id,status,created_on,created_by,prev_Id,yh_courseId.cou_name,yh_courseId.cou_link`;
       let id=this.auth.id
       let filters = { status: ["=", 1], yh_UserId: ["=", id], yh_Group: ["=", 'courses'] };
 
@@ -842,9 +1066,12 @@ async getComments() {
           });
       });
     },
+	
+ 
+	
      onFileChange(e) {
       var files = e.target.files || e.dataTransfer.files;
-      if (!files.length)
+      if (!files || !files.length)
         return;
       this.createImage(files[0]);
     },
@@ -852,9 +1079,15 @@ async getComments() {
       var image = new Image();
       var reader = new FileReader();
       var vm = this;
-
+ 
+      const blob = new Blob([file],{type: file.type})
+		 
+	  //this.profile_photo=blob;
+	  
       reader.onload = (e) => {
+	    this.profile_photo = e.target.result;
         this.myProfile.U_Photo = e.target.result;
+		
       };
       reader.readAsDataURL(file);
     },
@@ -907,12 +1140,34 @@ async getComments() {
         uye_list_name: ""
       });
     },
-    changePasswordAction() {
-        this.changePassword={
-                password:'',
-                password_confirm:'',
-                new_password:'',
-        }
+    async changePasswordAction() {
+	let auth = this.auth
+		if(this.changePassword.password_confirm && this.changePassword.password && 
+			this.changePassword.password_confirm==this.changePassword.new_password){
+					let url = process.env.baseURL + "changePassword"+"/"+auth.id;
+					let method = "put"
+					
+					await axios({
+					url,
+					method,
+					data: {
+					  id: auth.id,
+					  token: auth.token,
+					  password:this.changePassword.password,
+					  password_confirm:this.changePassword.password_confirm,
+					  new_password:this.changePassword.new_password 
+					}
+				  }).then(response => {
+					this.saveStatus = { show: true, stataus: "success" };
+					
+						 this.changePassword={
+							password:'',
+							password_confirm:'',
+							new_password:'',
+					}
+				  });
+			}
+	  
     },
     async saveUyeList(mp) { 
       let url = process.env.baseURL + "uye_Lists";
@@ -946,9 +1201,30 @@ async getComments() {
         }, 500);
       });
     },
+	
     async saveProfile() {
       let mp = this.myProfile;
-      await axios({
+	  
+	  var bodyFormData = new FormData();
+ 
+      bodyFormData.append('U_rname',  mp.U_rname);
+      bodyFormData.append('U_surname',  mp.U_surname);
+      bodyFormData.append('U_Mobil',  mp.U_Mobil);
+      bodyFormData.append('U_aboutme',  mp.U_aboutme);
+      bodyFormData.append('U_why_you_learn',  mp.U_why_you_learn);
+      bodyFormData.append('U_degree',  mp.U_degree);
+      bodyFormData.append('U_Gender',  mp.U_Gender);
+      bodyFormData.append('U_Country',  mp.U_Country);
+      bodyFormData.append('U_Timezone',  mp.U_Timezone);
+      bodyFormData.append('U_BirthDate',  mp.U_BirthDate);
+      bodyFormData.append('notify_promotion',  mp.notify_promotion);
+      bodyFormData.append('notify_instractor',  mp.notify_instractor);
+      bodyFormData.append('notify_mail',  mp.notify_mail);
+      bodyFormData.append('U_Photo',  this.profile_photo);
+ 
+	  
+	  
+     /* await axios({
         url: process.env.baseURL + "uye/" + this.auth.id,
         method: "put",
         data: {
@@ -962,15 +1238,26 @@ async getComments() {
           U_Country: mp.U_Country,
           U_Timezone: mp.U_Timezone,
           U_BirthDate: mp.U_BirthDate,
-          U_Photo: mp.U_Photo,
+          U_Photo: this.profile_photo 
         }
+      }).then(response => {  */
+	  
+	  
+	   await axios({
+			url: process.env.baseURL + "uye/" + this.auth.id,
+			method: "put",
+			headers: { "Content-Type": "multipart/form-data" },
+			data: bodyFormData
+		 
+			
       }).then(response => {
-        this.saveStatus = { show: true, stataus: "success" };
-
-   //// save Languages
-   console.log("this.uye_languages",this.uye_languages)
-    this.uye_languages = this.uye_languages.filter((k,i)=>  k.uye_language!='' )
-   this.uye_languages.filter(async k=>{ 
+	  
+			//// save Languages
+			//console.log("this.uye_languages",this.uye_languages)
+			
+			this.$store.dispatch('user/findAuth',{headers:null}) 
+			this.uye_languages = this.uye_languages.filter((k,i)=>  k.uye_language!='' )
+			this.uye_languages.filter(async k=>{ 
       
       if(k.id){ 
           await axios({
@@ -1030,7 +1317,7 @@ async getComments() {
             limit: 100,
             offset: 0,
             fields:
-              "U_mail,U_rname,U_surname,id,U_Status,U_likedPages,U_degree,U_Timezone,U_BirthDate,U_Mtype,U_Photo,U_Gender,U_Mobil,U_aboutme,U_why_you_learn",
+              "U_mail,U_rname,U_surname,id,U_Status,U_likedPages,U_degree,U_Timezone,U_BirthDate,U_Mtype,U_Photo,U_Gender,U_Mobil,U_aboutme,U_why_you_learn,notify_instractor,notify_mail,notify_promotion,U_role",
             lang: this.$store.state.locale,
             sort: ["sort,ASC"],
             filter: filters
@@ -1101,6 +1388,10 @@ async getComments() {
   
             },
 };
+
+
+
+ 
 </script>
 <style>
 .imageUpload{
@@ -1142,5 +1433,52 @@ header.modal-header{
 }
 .ml-10{
   margin-left: 10px;
+}
+.basic_profile{
+margin-top: 0;
+}
+.review_item{
+	border-radius: 10px;
+    border: 1px solid #efefef;
+	position: relative;
+	margin-bottom: 10px;
+	border-bottom: 1px solid #efefef!important;
+}
+.edit_button{
+	position: absolute;
+	top: 10px; 
+	right: 10px;
+}
+.activate_button{
+	position: absolute;
+	top: 30px; 
+	right: 10px;
+}
+.star_button{
+	position: absolute;
+	bottom: 10px; 
+	right: 10px;
+}
+.account_setting p{
+padding-left: 0;
+}
+.basic_form:lang(ar) p{
+direction: rtl !important;
+    text-align: right!important;
+}
+.basic_form:lang(ar) input, .basic_form:lang(ar) select{
+direction: rtl !important;
+    text-align: right!important;
+    padding-left: 2.67142857em!important;
+    padding-right: 2.67142857em!important;
+
+}
+.sa4d25:lang(ar) h2, .sa4d25:lang(ar) h3, .sa4d25:lang(ar) h4, .sa4d25:lang(ar) h5, .sa4d25:lang(ar) p{
+direction: rtl !important;
+    text-align: right!important;
+}
+.sa4d25:lang(ar) .tab-pane {
+direction: rtl !important;
+    text-align: right!important;
 }
 </style>

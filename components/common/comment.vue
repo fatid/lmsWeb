@@ -49,9 +49,11 @@
     </div>
       </b-col>
     </b-row>
-    </div><div v-else>
+    </div>
+	<div  v-if="!auth || auth==null || !auth.token">
     <b-alert  variant="warning"><a href="#" class="alert-link">Sign in to access this feature.</a></b-alert>
-  </div>
+	<h2>{{l('Sign in to access this feature.','g')}}</h2>
+ </div>
  
   </b-modal>
 </template>
@@ -138,6 +140,7 @@ export default {
           yh_Surname: this.auth.surname,
           yh_Name: this.auth.name,
           yh_PageId: this.commentModal.data.id,
+          yh_courseId: this.commentModal.data.id,
         }
       }).then(async response => {
      
@@ -146,10 +149,20 @@ export default {
           ) {
             // console.log("response",response)
             this.inputList = response.data.id;
+				this.dialogShow = false;
                 this.addNew = false;
                 this.newAdd = {
                   uye_list_name: ""
                 };
+				this.comment={
+				  title:'',
+				  like:0,
+				  content:'',
+				  model:'',
+				  app:'',
+				  status:1,
+				  user:''
+				};
           }
       });
     },

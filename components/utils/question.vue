@@ -23,7 +23,7 @@
             </div>
           </div>
           
-          <div class="words">
+          <div class="words" :lang="LOCALE">
             <div style="width: 100%;float: right;" v-if="!isTrue">
            
               <draggable
@@ -44,7 +44,7 @@
               </draggable>
 
                 <p :class="customClass.float">
-                      <i>Please set answer drag and drop words.</i>
+                      <i>{{l('Please set answer drag and drop words.','g')}}</i>
                 </p>
             </div>
             <div v-else>
@@ -67,14 +67,10 @@
         >
           <!-- {{splitwords_answer_original}} {{splitwords_answer}} {{splitwords_answer_ordered}} -->
           <!-- {{trueText}} = {{answerText}}  --  {{splitwords_answer_ordered}} -->
-
+			 <div class="words" :lang="LOCALE">
           <div
             :key="setKeywordKey"
-            style="margin: 10px 0 ; justify-content: flex-end;
-                                display: inline-flex
-                                flex-wrap: wrap;
-                                align-items: end;
-                                width: 100%;"
+            class="draggable-centences-correct"
           >
          
             <span
@@ -86,19 +82,18 @@
               >{{ dd }}</span
             >
           </div>
+          </div>
           <br />
 
-          <div class="words">
+          <div class="words" :lang="LOCALE">
+		 
             <draggable
               v-model="splitwords_answer_ordered"
               @end="splitwords_setanswer"
-              style=" justify-content: flex-end;
-                                display: inline-flex;
-                                flex-wrap: wrap;
-                                align-items: end;
-                                width: 100%;"
+              class="draggable-centences-correct"
               tag="div"
               :id="'allAnswers' + question.q.id"
+			  :lang="LOCALE"
             >
               <div
                 class="answerbox unselectable "
@@ -227,10 +222,12 @@
               class="download_btn"
               v-if="!answerable && chance == 1"
           >{{  l("Answer", "g")   }}</a> -->
+		  
+		
         <a 
           @click="setanswer()"
           class="download_btn"
-          v-else-if="answerable && !isTimeOut && !isTrue"
+          v-if="answerable && !isTimeOut && !isTrue"
           >{{
             chance == 1
               ? l("Answer", "g")
@@ -240,7 +237,7 @@
           }}</a
         >
         <a @click="nextQuestion()" class="download_btn" v-else-if="answerable && isTimeOut"
-          >Timeout. Just Answer to learn</a
+          >{{l('Timeout. Just Answer to learn','g')}}</a
         >
         <a
           class="download_reset"
@@ -1006,8 +1003,8 @@ export default {
 }
 .question {
   font-size: 15px;
-  font-weight: bold;
-  font-family: "Cairo";
+  font-weight: 600;
+  font-family: Cairo,sans-serif;
 }
 .download_btn {
   color: #fff !important;
@@ -1053,8 +1050,8 @@ export default {
 }
 
 .words {
-  width: 100%;
-  float: right;
+  width: 100%; 
+  margin: 5px 0px;
 }
 .paragraph_item {
   width: auto;
@@ -1188,10 +1185,22 @@ export default {
   position: absolute;
   left: 0px;
   top: -10px;
+  font-weight: 600;
 }
 
 .field.fltr-radio{
      text-align: right;
 }
 
+.draggable-centences-correct{
+justify-content: flex-start;
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: end;
+    width: 100%;
+    flex-direction: row-reverse;
+}
+.words:lang(ar) .draggable-centences-correct{ 
+  flex-direction: row;
+}
 </style>

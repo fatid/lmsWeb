@@ -52,6 +52,9 @@ export default {
         this.$store.state.commentModal=val;
       }
     },
+	reverseClass(){
+	 return this.LOCALE=='ar' ? ' flex-row-reverse' : ''
+	}
   },
   methods:{
     removeLikeModal(selected,topModuleData,type){
@@ -85,6 +88,12 @@ export default {
       this.commentModal.show = true;  
       
     },
+	
+	getRefCode(){
+		let  u =  this.$store.state.user.auth;
+		let ref = u && u.id ? u.id.replace('uye_','DRF') : ''; 
+		return ref;
+	},
     openLikeModalAll(selected,topModuleData,type){
       
       let datax={
@@ -270,7 +279,8 @@ export default {
     HtmlEncode(s)
     {
       // var el = document.createElement("div");
-      if(s){
+	  console.log("s",s);
+      if(s &&  s!='' && s!=null && typeof s == 'string'){
           s = s.replaceAll("&lt;", "<");
           s = s.replaceAll("&gt;", ">");
           s = s.replaceAll("&quot;", "\"");

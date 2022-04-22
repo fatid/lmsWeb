@@ -25,8 +25,8 @@ export default {
   
             let v = validation ? validation : this.validation;
             let f = form ? form : this.form;
-            let e = errors ? errors : this.errors;
-          
+             let e = errors ? errors : this.errors;
+      
             v.forEach(k=>{
                 if(k.check.includes("required")){
                     if (!f[k.name]) {

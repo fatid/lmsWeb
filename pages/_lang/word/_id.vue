@@ -245,7 +245,7 @@ export default {
   computed: {},
   methods: {
     getWord() {
-      this.goPath("/filter/Word", { word: this.keyword });
+      this.goPath("/filter/Word");
     },
 
     async getSentenceBank() {

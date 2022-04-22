@@ -1,32 +1,43 @@
 <template>
+<div>
+
+
   <div class="container">
     <div class="row">
       <div class="col-12">
-        <div class="view-filter">
-          <div
-            class="drawer"
-            @click="closeDrawer()"
-            :class="selectedItem.show ? 'visible' : 'hidden'"
-          >
-            <div class="content" @click.stop="">
-              <h3>{{ selectedItem.data.dict_word }}</h3>
-              <div v-html="HtmlEncode(selectedItem.data.dict_mean)"></div>
+	 
+	 
+	 
+	     <div class="filter_header">
 
-              <span class="pull-right" v-if="selectedItem.data.dict_image">
-                <img
-                  :src="
-                    show_image(selectedItem.data.dict_image, '100', '100', true)
-                  "
-              /></span>
-            </div>
-          </div>
-          <div
-            class="side-bar"
-            data-simplebar
-            :class="customClass.textDir + ' ' + customClass.dir"
-            :lang="$store.state.locale"
-          >
-            <div class="input-std-search">
+            <div class="row" >
+              <div
+                class="col-12 full-flex"
+                :class="customClass.textDir + ' ' + customClass.dir"
+              >
+                <div :lang="LOCALE" class="tootal_results" v-if="search.module == 'Exam' ">
+                    {{ l("Total question", "g") }} {{ pagination.total }}
+                </div>
+                <div :lang="LOCALE"  class="tootal_results" v-else>
+                    {{ l("Total results", "g") }} {{ pagination.total }}
+                </div>
+                <div class="filter_header_item">
+                <b-dropdown size="sm" variant="outline-success" v-if="!selected_list" >
+                  <template #button-content>
+                    <a>
+                    {{l('Order by')}}:    {{ orderByList[orderBy].label }}
+                    <!-- <i class="fas fa-chevron-down"></i> !-->
+                    </a>
+                  </template>
+                  <b-dropdown-item
+                    @click="orderBy = i"
+                    v-for="(order, i) in orderByList"
+                    >{{ order.label }}
+                  </b-dropdown-item>
+                </b-dropdown>
+                </div>
+				<div class="filter_header_item">
+				     <div class="input-std-search">
               <i class="fa fa-search input-icon"></i>
               <input
                 type="text"
@@ -35,23 +46,17 @@
                 :placeholder="l('Search keyword', 'g')"
               />
             </div>
-            <!-- <div class="serach-item">
-                           
-                            <div class="search-box"  :lang="$store.state.locale" @click="search.module='Course'">
-								<input type="radio" tabindex="0" :checked="search.module=='Course' ? 'checked' : '' " value="Course"   />
-								<label :lang="$store.state.locale"> {{(l('Lessons','g'))}}  </label>
-							</div>
-                              <div class="search-box" :lang="$store.state.locale"  @click="search.module='Word'">
-								<input type="radio" tabindex="1"  :checked="search.module=='Word' ? 'checked' : '' " value="Word"   />
-								<label :lang="$store.state.locale"> {{(l('Words','g'))}}  </label>
-							</div>
-                              <div class="search-box" :lang="$store.state.locale"  @click="search.module='Exam'">
-								<input type="radio" tabindex="2" value="Exam"  :checked="search.module=='Exam' ? 'checked' : '' "   />
-								<label :lang="$store.state.locale"> {{(l('Question','g'))}}  </label>
-							</div>
-                </div> -->
-
-            <div class="serach-item">
+            </div>
+			
+			
+			
+			
+			<div class="search-top"    :class=" search.level.length > 0 ? 'active-search':'not-active-search'" >
+			
+			<a class="search-a" :title="l('Level', 'g')">
+					Level {{search.level.length > 0 ? `(${search.level.length})` : ''}} <i class="fa fa-chevron-down"></i> 
+			</a>
+			<div class="search-item">
               <div class="search-title">
                 {{ l("Level", "g") }}
               </div>
@@ -75,18 +80,73 @@
                 </label>
               </div>
             </div>
-            <!-- <div class="serach-item">
-                            <div class="search-title">
-                                {{l('Search keyword','g')}} 
-                            </div>
-                            <div class="search-box"   >
-								<input type="text" class="input-std" 
-                                        @change="getResults()"
-                                        v-model="search.keyword" :placeholder="l('Type keyword','g')"  /> 
-							</div>
-				</div>     -->
-
-            <div class="serach-item" v-if="search.module == 'Exam'">
+			</div>
+			
+				<div class="search-top" v-if="search.module == 'Exam'"  :class=" search.qtype.length > 0 ? 'active-search':'not-active-search'" >
+			
+			<a class="search-a" :title="l('Questition Type', 'g')">
+					Type {{search.qtype.length > 0 ? `(${search.qtype.length})` : ''}} <i class="fa fa-chevron-down"></i> 
+			</a>
+			<div class="search-item">
+              <div class="search-title">
+                {{ l("Questition Type", "g") }}
+              </div>
+              <div class="search-checkbox">
+                <div
+                  class="search-box"
+                  :lang="$store.state.locale"
+                  v-for="(opt, key) in l('cat.QuestionTypes.list', 'g')"
+                  @click="addSearch('qtype', key)"
+                >
+                  <input
+                    type="checkbox"
+                    :checked="search.qtype.includes(key) ? 'checked' : false"
+                  />
+                  <label>
+                    {{ opt.name }} {{ counts["exa_type"][key] ? '('+counts["exa_type"][key]+')' : '' }}
+                  </label>
+                </div>
+              </div>
+            </div>
+			</div>
+			  
+			  
+			  	<div class="search-top" v-if="search.module == 'Word'"  :class=" search.dict_type.length > 0 ? 'active-search':'not-active-search'" >
+			
+			<a class="search-a" :title="l('Word Type', 'g')">
+					Type <i class="fa fa-chevron-down"></i>  {{search.dict_type.length > 0 ? `(${search.dict_type.length})` : ''}}
+			</a>
+			   <div class="search-item" v-if="search.module == 'Word'">
+              <div class="search-title">
+                {{ l("Word Type", "g") }}
+              </div>
+              <div class="search-checkbox">
+                  <!-- {{l('cat.WordTypes.list', 'g')}} -->
+                <div
+                  class="search-box"
+                  :lang="$store.state.locale"
+                  v-for="(opt, key) in l('cat.WordTypes.list', 'g')"
+                  @click="addSearch('dict_type', key)"
+                >
+                  <input
+                    type="checkbox"
+                    :checked="search.dict_type.includes(key) ? 'checked' : false"
+                  /> 
+                  <label>
+                    {{ opt.name }} {{ counts["dict_type"][key] ? '('+counts["dict_type"][key]+')' : '' }}
+                  </label>
+                </div>
+              </div>
+            </div>
+			</div>
+			 
+			
+			<div class="search-top" v-if="search.module == 'Exam'"  :class=" search.skills.length > 0 ? 'active-search':'not-active-search'" >
+			
+			<a class="search-a" :title="l('Questition Skills', 'g')">
+					Skills <i class="fa fa-chevron-down"></i> {{search.skills.length > 0 ? `(${search.skills.length})` : ''}} 
+			</a>
+			<div class="search-item" >
               <div class="search-title">
                 {{ l("Questition Skills", "g") }}
               </div>
@@ -111,21 +171,14 @@
                   </label>
                 </div>
               </div>
-            </div>
-            <!-- <div class="serach-item" v-if="search.module=='Exam'"> 
-                
-                            <div class="search-title">
-                                {{l('Questition Media','g')}}  
-                            </div> 
-                             <div class="search-checkbox">
-                                <div class="search-box"  v-for="(opt,key) in mediaTypes"    
-                                @click="addSearch('media',opt.value)" >
-                                    <input type="checkbox"      :checked="search.media.includes(opt.value) ? 'checked' : false "  />
-                                    <label> {{opt.name}} </label>
-                                </div>
-							</div>
-				</div> -->
-            <div class="serach-item">
+            </div> 
+			</div>
+			<div class="search-top" :class=" search.category.length > 0 ? +'active-search':'not-active-search'" >
+			
+			<a class="search-a" :title="l('Categories', 'g')">
+					Cat {{search.category.length > 0 ? `(${search.category.length})` : ''}} <i class="fa fa-chevron-down"></i> 
+			</a>
+			          <div class="search-item">
               <div class="search-title">
                 {{ l("Categories", "g") }}
               </div>
@@ -154,7 +207,210 @@
                 </div>
               </div>
             </div>
-            <div class="serach-item" v-if="search.module == 'Exam'">
+			</div>
+			
+			 <b-dropdown
+                v-if="search.module == 'Word'"
+                size="sm"
+                variant="outline-success" 
+              >
+                <template #button-content>
+                  <a>
+                    {{ "View Type" }} : {{ viewType.label }} 
+                  </a>
+                </template>
+                <b-dropdown-item
+                  @click="viewType = order"
+                  :key="'viewTypes'+i"
+                  v-for="(order, i) in viewTypes"
+                  >{{ order.label }}
+                </b-dropdown-item>
+              </b-dropdown>
+                <div class="filter_header_item" v-if="selected_list && selected_list_data">
+
+                        {{l('You are in','g')}} :  <b> {{selected_list_data ? selected_list_data.uye_list_name : ''}}</b>
+
+                </div>
+                 
+              </div>
+           
+              <div class="col-12   ">
+                <div  v-if="search.module == 'Exam' && selected_list && data && data[0]" >
+                <div v-if="exam && exam.id" >
+                            <div class="timer">  {{timeShow}} </div>
+                            <a class="btn btn-primary btn-small" 
+                                    @click="finishExam()"
+                                >{{l('Finish Exam','g')}} 
+                            </a>
+                            <a class="btn btn-danger btn-small" 
+                                    @click="removeExam(exam.id)"
+                                >{{l('X','g')}} 
+                            </a>
+                </div>
+                <div v-else-if="uf_exam &&  uf_exam.id" >
+                        <a class="btn btn-primary btn-small"  
+                                @click="continueExam()"
+                            >{{l('Continue','g')}} 
+                        </a>
+                         <a class="btn btn-danger btn-small"  
+                                @click="removeExam(uf_exam.id)"
+                            >{{l('Restart','g')}} 
+                        </a>
+                </div>
+                <a class="btn btn-primary btn-small" v-else-if="!exam || !exam.id" 
+                        @click="startExam()"
+                       >{{l('Start Exam','g')}} 
+                </a>
+             
+                </div>
+             
+			  
+            </div>
+              </div>
+              </div>
+			  
+         <div class="view-filter" :class="reverseClass">
+	 
+ 
+          <div
+            class="drawer"
+            @click="closeDrawer()"
+            :class="selectedItem.show ? 'visible' : 'hidden'"
+          >
+            <div class="content" @click.stop="">
+              <h3>{{ selectedItem.data.dict_word }}</h3>
+              <div v-html="HtmlEncode(selectedItem.data.dict_mean)"></div>
+
+              <span class="pull-right" v-if="selectedItem.data.dict_image">
+                <img
+                  :src="
+                    show_image(selectedItem.data.dict_image, '100', '100', true)
+                  "
+              /></span>
+            </div>
+          </div>
+          <div
+		  v-if="1==2"
+            class="side-bar"
+            data-simplebar
+			v-show="drawer"
+            :class="[customClass.textDir + ' ' + customClass.dir, openDetails ? 'openDetails':'']"
+            :lang="$store.state.locale"
+          >
+		  <div   class="side-bar-inside" :lang="LOCALE">
+
+			
+
+          
+            <!-- <div class="search-item">
+                           
+                            <div class="search-box"  :lang="$store.state.locale" @click="search.module='Course'">
+								<input type="radio" tabindex="0" :checked="search.module=='Course' ? 'checked' : '' " value="Course"   />
+								<label :lang="$store.state.locale"> {{(l('Lessons','g'))}}  </label>
+							</div>
+                              <div class="search-box" :lang="$store.state.locale"  @click="search.module='Word'">
+								<input type="radio" tabindex="1"  :checked="search.module=='Word' ? 'checked' : '' " value="Word"   />
+								<label :lang="$store.state.locale"> {{(l('Words','g'))}}  </label>
+							</div>
+                              <div class="search-box" :lang="$store.state.locale"  @click="search.module='Exam'">
+								<input type="radio" tabindex="2" value="Exam"  :checked="search.module=='Exam' ? 'checked' : '' "   />
+								<label :lang="$store.state.locale"> {{(l('Question','g'))}}  </label>
+							</div>
+                </div> -->
+			<div class="search-item-more">
+					<a @click="openDetails=!openDetails">{{ openDetails ? ' x Close Detail Search' :  'Search more details' }}</a>
+			</div>
+            <div class="search-item">
+              <div class="search-title">
+                {{ l("Level", "g") }}
+              </div>
+              <div
+                class="search-box inline"
+                :lang="$store.state.locale"
+                v-for="(opt, key) in op_co_level"
+                @click="addSearch('level', opt.id)"
+              >
+                <input
+                  type="checkbox"
+                  :checked="search.level.includes(opt.id) ? 'checked' : false"
+                />
+                <label :lang="$store.state.locale">
+                  {{ opt.cou_level_name }}
+                  {{
+                    counts["degree"][opt.id]
+                      ? "(" + counts["degree"][opt.id] + ")"
+                      : ""
+                  }}
+                </label>
+              </div>
+            </div>
+            <!-- <div class="search-item">
+                            <div class="search-title">
+                                {{l('Search keyword','g')}} 
+                            </div>
+                            <div class="search-box"   >
+								<input type="text" class="input-std" 
+                                        @change="getResults()"
+                                        v-model="search.keyword" :placeholder="l('Type keyword','g')"  /> 
+							</div>
+				</div>     -->
+
+            <div class="search-item" v-if="search.module == 'Exam'">
+              <div class="search-title">
+                {{ l("Questition Skills", "g") }}
+              </div>
+              <div class="search-checkbox">
+                <div
+                  class="search-box"
+                  :lang="$store.state.locale"
+                  v-for="(opt, key) in l('cat.QuestionSkills.list', 'g')"
+                  @click="addSearch('skills', key)"
+                >
+                  <input
+                    type="checkbox"
+                    :checked="search.skills.includes(key) ? 'checked' : false"
+                  />
+                  <label :lang="$store.state.locale">
+                    {{ opt.name }}
+                    {{
+                      counts["skills"] && counts["skills"][key]
+                        ? "(" + counts["skills"][key] + ")"
+                        : ""
+                    }}
+                  </label>
+                </div>
+              </div>
+            </div> 
+            <div class="search-item">
+              <div class="search-title">
+                {{ l("Categories", "g") }}
+              </div>
+              <div class="search-checkbox">
+                <div
+                  class="search-box"
+                  :lang="$store.state.locale"
+                  v-for="(opt, key) in options['co_labels']"
+                  v-show="counts['categories'][opt.id]"
+                  @click="addSearch('category', opt.id)"
+                >
+                  <input
+                    type="checkbox"
+                    :checked="
+                      search.category.includes(opt.id) ? 'checked' : false
+                    "
+                  />
+                  <label :lang="$store.state.locale">
+                    {{ opt.cou_label_name }}
+                    {{
+                      counts["categories"][opt.id]
+                        ? "(" + counts["categories"][opt.id] + ")"
+                        : ""
+                    }}
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div class="search-item" v-if="search.module == 'Exam'">
               <div class="search-title">
                 {{ l("Questition Type", "g") }}
               </div>
@@ -175,7 +431,7 @@
                 </div>
               </div>
             </div>
-             <div class="serach-item" v-if="search.module == 'Word'">
+             <div class="search-item" v-if="search.module == 'Word'">
               <div class="search-title">
                 {{ l("Word Type", "g") }}
               </div>
@@ -198,48 +454,16 @@
               </div>
             </div>
           </div>
+          </div>
           <div class="content-loading" v-show="loading">
 
 <img class="not-found-image" src="/img/loading.gif" /> 
 
           </div>
-          <div class="content" :class="search.module == 'Exam' && exam.id ? 'exam-mode' :''" v-show="!loading">
-              <div class="filter_header">
-
-            <div class="row">
-              <div
-                class="col-6 "
-                :class="customClass.textDir + ' ' + customClass.dir"
-              >
-                <div class="tootal_results" v-if="search.module == 'Exam' ">
-                    {{ l("Total question", "g") }} {{ pagination.total }}
-                </div>
-                <div class="tootal_results" v-else>
-                    {{ l("Total results", "g") }} {{ pagination.total }}
-                </div>
-                <div class="filter_header_item">
-                <b-dropdown size="sm" variant="outline-success" v-if="!selected_list" >
-                  <template #button-content>
-                    <a>
-                    {{l('Order by:')}}    {{ orderByList[orderBy].label }}
-                      <i class="fas fa-chevron-down"></i>
-                    </a>
-                  </template>
-                  <b-dropdown-item
-                    @click="orderBy = i"
-                    v-for="(order, i) in orderByList"
-                    >{{ order.label }}
-                  </b-dropdown-item>
-                </b-dropdown>
-                </div>
-                <div class="filter_header_item" v-if="selected_list && selected_list_data">
-
-                        {{l('You are in','g')}} :  <b> {{selected_list_data ? selected_list_data.uye_list_name : ''}}</b>
-
-                </div>
-                 
-              </div>
-              <div class="col-3 ">
+      
+          <div class="content" :class="search.module == 'Quiz' && exam.id ? 'exam-mode' :''" v-show="!loading">
+           
+		      <div class="col-12">
                 <template
                   v-if="
                     search.module == 'Exam' &&
@@ -267,7 +491,7 @@
                   <a
                     @click="addSelectionAll('selectionC', 'Course')"
                     class="addListLink"
-                    >Add to list
+                    >l("Add to list", "g")
                     {{
                       selection.selectionC.length + " " + l("selected", "g")
                     }}</a
@@ -290,67 +514,45 @@
                   >
                 </template>
               </div>
-              <div class="col-3 ">
-                <div  v-if="search.module == 'Exam' && selected_list && data && data[0]" >
-                <div v-if="exam && exam.id" >
-                            <div class="timer">  {{timeShow}} </div>
-                            <a class="btn btn-primary btn-small" 
-                                    @click="finishExam()"
-                                >{{l('Finish Exam','g')}} 
-                            </a>
-                            <a class="btn btn-danger btn-small" 
-                                    @click="removeExam(exam.id)"
-                                >{{l('X','g')}} 
-                            </a>
-                </div>
-                <div v-else-if="uf_exam &&  uf_exam.id" >
-                        <a class="btn btn-primary btn-small"  
-                                @click="continueExam()"
-                            >{{l('Continue','g')}} 
-                        </a>
-                         <a class="btn btn-danger btn-small"  
-                                @click="removeExam(uf_exam.id)"
-                            >{{l('Restart','g')}} 
-                        </a>
-                </div>
-                <a class="btn btn-primary btn-small" v-else-if="!exam || !exam.id" 
-                        @click="startExam()"
-                       >{{l('Start Exam','g')}} 
-                </a>
-                
-                </div>
-              <b-dropdown
-                v-if="search.module == 'Word'"
-                size="sm"
-                variant="outline-success" 
-              >
-                <template #button-content>
-                  <a>
-                    {{ "View Type" }} : {{ viewType.label }}
-                    <i class="fas fa-chevron-down"></i>
-                  </a>
-                </template>
-                <b-dropdown-item
-                  @click="viewType = order"
-                  :key="'viewTypes'+i"
-                  v-for="(order, i) in viewTypes"
-                  >{{ order.label }}
-                </b-dropdown-item>
-              </b-dropdown>
-            </div>
-              </div>
-              </div>
 
             <div class="content-table">
-                 <div v-if="!data[0]" class="not-found">
+			
+			
+                 <div v-if="!data[0] && search.module != 'Quiz'" class="not-found">
           <img class="not-found-image" src="/img/not-found.gif" />
           <h5>
               <span>{{ l("can not found.", "g") }}</span>
           </h5>
           <div class="not-found-suggestion">
-            <a  @click="$router.push({path:'',query:{}})">{{ l("Reset Search", "g") }}</a>
+            <a  @click="$router.push({path:'',query:{}});resetSearch()">{{ l("Reset Search", "g") }}</a>
           </div>
         </div> 
+		   <div v-else-if="search.module == 'Quiz'" class="text-left">
+		  
+			
+			<h3>Quizes by Teacher</h3>
+			<p>You've not any quiz yet. <a @click="goPath('my/teachers')">Check you teachers.</a> </p>
+			
+			<h3>Your Quizes</h3>
+			<p>You've not any quiz yet. <a @click="goPath('filter/Exam')">Create New Quiz</a></p>
+			
+			<h3>Quiz by Machine</h3>
+			<p>You've not any quiz yet. </p>
+			{{my_lists}}
+			<div v-if="auth && auth.id"> 
+				<ul class="my_lists"  >
+                <li 
+                        @click="$router.push({path:'',query:{list:list.id==selected_list?'':list.id}})"
+                        :class="selected_list==list.id ? 'selected' : ''"
+                        v-for="list in ulists">
+                                    <span>{{list.uye_list_name}}  </span>
+                                    <a @click.stop="$store.state.listModal= { show:true,data: list}"> <i class="fas fa-pen"></i></a>
+                        </li>
+                </ul>
+			</div>	
+		  
+		  
+		  </div>
               <div v-else-if="search.module == 'Word'">
                 <div
                   v-for="dt in data"
@@ -389,28 +591,34 @@
                       <div class="detail-button-abs">
                         <div class="share-network-list-2" v-if="data[0]">
                           <!-- {{sharing}} -->
-                          <ShareNetwork
-                            v-for="network in networks"
-                            :network="network.network"
-                            :key="network.network"
-                            :style="{ backgroundColor: network.color }"
-                            :url="
-                              'https://daleel-ar.com/' +
-                                LOCALE +
-                                '/word/' +
-                                dt.dict_word
-                            "
-                            :title="dt.dict_word"
-                            :description="replaceWord(dt.dict_mean)"
-                            :quote="''"
-                            :hashtags="''"
-                          >
-                            <i :class="network.icon"></i>
-                            <!-- <span>{{ network.name }}</span> -->
-                          </ShareNetwork>
-
+						    <a 
+                            class="share-network-others" 
+                            style="background-color: #2529d8;"
+                            ><i class="fas fah fa-lg fa-share-alt"></i>
+									<div class="more-network">
+										  <ShareNetwork
+											v-for="network in networks"
+											:network="network.network"
+											:key="network.network"
+											:style="{ backgroundColor: network.color }"
+											:url="
+											  'https://daleel-ar.com/' +
+												LOCALE +
+												'/word/' +
+												dt.dict_word
+											"
+											:title="dt.dict_word"
+											:description="replaceWord(dt.dict_mean)"
+											:quote="''"
+											:hashtags="''"
+										  >
+											<i :class="network.icon"></i>
+											<!-- <span>{{ network.name }}</span> -->
+										  </ShareNetwork>
+								  </div>
+						  </a>
                           <a
-                            @click="goPath('word/' + dt.dict_word)"
+                             @click="openDrawer('word', dt)"
                             class="share-network-paw"
                             style="background-color: #2529d8;"
                             ><i class="fas fah fa-lg fa-search"></i
@@ -640,20 +848,22 @@
                     </div>
                   </div>
                 </div>
+
+              </div>
+			  
+			  <div
+                class="col-12 text-center load-button-container"
+                :class="customClass.textDir + ' ' + customClass.dir"
+				v-show="pagination.page*pagination.limit<pagination.total"
+              >
+			  
+				<a class="btn-primary" @click="pagination.page=(pagination.page*1)+1">
+					{{l('Load more','G')}}
+				</a> 
               </div>
             </div>
             <div class="row">
-              <div
-                class="col-12 text-center"
-                :class="customClass.textDir + ' ' + customClass.dir"
-              >
-                <b-pagination
-                  v-model="pagination.page"
-                  :total-rows="pagination.total"
-                  :per-page="pagination.limit"
-                  aria-controls="my-table"
-                ></b-pagination>
-              </div>
+             
             </div>
           </div>
 
@@ -661,12 +871,16 @@
             <banners area="Filter"></banners>
             <h4>{{l('Your Lists','g')}} 
 
-                    <a v-show="selected_list" @click="$router.push({path:'',query:{}})">
-                       X
-                    </a>
+                   
                 
             </h4>
-            <ul class="my_lists">
+			
+			 <a v-if="selected_list" @click="$router.push({path:'',query:{}})">
+						{{l('Selected List:','g')}} {{selected_list.uye_list_name}} X
+             </a>
+
+			<div v-if="auth && auth.id"> 
+				<ul class="my_lists"  >
                 <li 
                         @click="$router.push({path:'',query:{list:list.id==selected_list?'':list.id}})"
                         :class="selected_list==list.id ? 'selected' : ''"
@@ -675,6 +889,15 @@
                                     <a @click.stop="$store.state.listModal= { show:true,data: list}"> <i class="fas fa-pen"></i></a>
                         </li>
                 </ul>
+			</div>	
+			<div v-else>
+					{{l('Please','g')}} <a class="text-link" @click="goPath('form/login')">{{l('Login','g')}}</a> {{l('or','g')}} 
+					 <a class="text-link" @click="goPath('form/login')">{{l('Sign up','g')}}</a>  
+					 
+					 {{l('to use this feature','g')}}
+			</div>
+		 
+				
                 <h4>{{l('Ready Searches','g')}} 
 
                     <a v-show="selected_list" @click="$router.push({path:'',query:{}})">
@@ -683,17 +906,18 @@
                 
             </h4>
 
-            Not found
-            <!-- <ul class="my_lists">
+            {{l('Not found','g')}} 
+             <ul class="my_lists">
                 <li 
                         @click="$router.push({path:'',query:{list:list.id==selected_list?'':list.id}})"
                         :class="selected_list==list.id ? 'selected' : ''"
                         v-for="list in uxlists">{{list.uye_list_name}}  </li>
-                </ul> -->
+                </ul>  
           </div>
         </div>
       </div>
     </div>
+  </div>
   </div>
 </template>
 <script>
@@ -751,7 +975,7 @@ export default {
       }
     },
     "pagination.page"(val) {
-      this.getResults();
+      this.getResults(true);
     }
   },
   computed: {
@@ -824,11 +1048,25 @@ export default {
       );
     }
   },
+  mounted(){
+		var topLimit = $('.side-bar-inside').height();
+		console.log("topLimit",topLimit)
+		$(window).scroll(function() {
+		  //console.log(topLimit <= $(window).scrollTop())
+		  if (topLimit <= $(window).scrollTop()) {
+			$('.side-bar-inside').addClass('stickIt')
+		  } else {
+			$('.side-bar-inside').removeClass('stickIt')
+		  }
+		})
+  
+  },
   data() {
     return {
       time:0,
       timeShow:'00:00',
       timer:null,
+	  openDetails:false,
       networks: [
         // { network: 'baidu', name: 'Baidu', icon: 'fas fah fa-lg fa-paw', color: '#2529d8' },
         // { network: 'buffer', name: 'Buffer', icon: 'fab fah fa-lg fa-buffer', color: '#323b43' },
@@ -896,6 +1134,7 @@ export default {
         label: "Line",
         value: "line"
       },
+	  drawer: true,
       selectedItem: {
         show: false,
         type: "",
@@ -927,7 +1166,18 @@ export default {
         data: {}
       };
     },
-
+	resetSearch(){
+		  this.search.keyword = '';
+          this.search.qtype=[];
+          this.search.dict_type=[];
+          this.search.media=[];
+          this.search.skills=[];
+          this.search.category=[]; 
+          this.search.level=[];
+		  this.pagination.page = 0;
+		  this.getResults();
+	
+	},
     backToList(){
             this.examResults = {show:false}
     },
@@ -1084,13 +1334,13 @@ export default {
         this.selection[field].push(key);
       }
     },
-    getResults() {
+    getResults(loadMore=false) {
       if (this.search.module == "Course") {
-        this.getSections();
+        this.getSections(loadMore);
       } else if (this.search.module == "Word") {
-        this.getWords();
+        this.getWords(loadMore);
       } else if (this.search.module == "Exam") {
-        this.getQuestition();
+        this.getQuestition(loadMore);
       }
       //   let filters = { prev_id: ["=", this.auth.id] };
       // uye_languages
@@ -1099,6 +1349,101 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+
+  @media only screen and (max-width: 960px) {
+  
+  
+			.filter_header {
+				  height:  auto!important;
+				  background: #fff;
+				  border-radius: 5px;
+				  margin-bottom: 10px;
+				  padding: 0px 10px;
+
+			}
+			
+			
+		 .view-filter { 
+			flex: 100% auto;
+			  font-family: Cairo;
+			display: block!important;
+			width: 100%!important;
+			.search-item-more{
+				display: block!important;
+				width: 100%;
+				text-align:center;
+				font-weight: 600;
+				padding: 5px;
+
+			}
+			
+	
+		   .side-bar {
+				width: 100%!important;
+				min-width: 100%!important;
+				height: auto!important;
+				.search-item{ 
+						
+						display: none;
+				} 
+				&.openDetails{  
+					
+					.search-item{ 
+							display: block;
+					} 
+				}
+				
+				  .right_side {
+ 
+    width: 100%!important; 
+    height: auto!important;
+    overflow: auto;
+    overflow-x: visible;
+  }
+			} 
+			 .content {
+				width: 100%;
+				font-family: Cairo;
+				height: auto!important;
+				padding: 0px!important;
+				margin-top: 30px;
+			}
+			
+			
+		}
+  }
+  
+  
+   .filter_header {
+          height: 33px;
+		background: #fff;
+		border-radius: 5px;
+		 margin-bottom: 0px; 
+		padding: 0px 10px;
+		width: 100%;
+		margin-top: 5px;
+
+    }
+    .filter_header_item{
+          display: inline-flex;
+    }
+    .tootal_results{
+        margin-right: 5px;
+        padding-right: 5px;
+        border-right: 1px solid #efefef;
+        display: inline-flex;
+        padding-top: 5px;
+        height: 30px;
+    }
+	.tootal_results:lang(ar){ 
+        border-right: 0px solid #efefef; 
+        border-left: 1px solid #efefef; 
+		  margin-left: 5px;
+        padding-left: 5px;
+		text-align: right;
+    }
+	
+	
 .view-filter {
   margin-bottom: 0px;
   margin-top: 10px;
@@ -1107,6 +1452,9 @@ export default {
   flex: 190px auto;
   display: inline-flex;
   width: 100%;
+  .search-item-more{
+				display: none;
+  }
   .degree-show {
     padding: 5px;
     border-radius: 10px;
@@ -1134,30 +1482,49 @@ export default {
     background: none;
     width: 190px !important;
     min-width: 190px !important;
-    height: calc(100vh - 100px);
+   // height: calc(100vh - 100px);
     overflow: auto;
     overflow-x: visible;
   }
+  
+  
+
+  
   .side-bar {
     background: #fff;
     width: 190px;
-    height: calc(100vh - 100px);
+    //height: calc(100vh - 100px);
     min-width: 190px;
     padding: 10px;
-    border-radius: 5px;
+    border-radius: 3px;
     box-shadow: 1px -1px 0px 0px rgba(186, 186, 186, 0.19);
     -webkit-box-shadow: 1px -1px 0px 0px rgba(186, 186, 186, 0.19);
     -moz-box-shadow: 1px -1px 0px 0px rgba(186, 186, 186, 0.19);
+ 
+	   font-weight: 400;
+	 
     overflow: auto;
-    .serach-item {
+	.stickIt{
+	 background: #fff;
+		 border-radius: 3px;
+		  padding: 10px;
+		  border-radius: 3px;
+		box-shadow: 1px -1px 0px 0px rgba(186, 186, 186, 0.19);
+		-webkit-box-shadow: 1px -1px 0px 0px rgba(186, 186, 186, 0.19);
+		-moz-box-shadow: 1px -1px 0px 0px rgba(186, 186, 186, 0.19);
+		width: 180px;
+		position: fixed;
+		top: 50px;
+	
+	}
+    .search-item {
     }
     .search-title {
       font-weight: 600;
       border-bottom: 1px solid rgb(240, 240, 240);
       padding-bottom: 5px;
       margin-bottom: 5px;
-      margin-top: 7px;
-      font-family: Cairo;
+      margin-top: 7px; 
     }
     .search-checkbox {
       width: 100%;
@@ -1204,44 +1571,29 @@ export default {
   }
   .content-loading {
     width: 100%;
-    font-family: Cairo; 
+	
+    font-family: Cairo,system-ui; 
     height: calc(100vh - 100px);
     padding: 20px 10px;
     text-align:center;
   }
+  
+  
   .content {
-    width: 100%;
-    font-family: Cairo; 
+    width: 100%; 
     height: calc(100vh - 100px);
     padding: 0px 10px;
+	font-weight: 500;
     &.exam-mode{
             position: absolute!important;
             background: #fff!important;
             z-index: 999!important;
             padding: 10px!important;
     }
-    .filter_header {
-      height:  33px;
-      background: #fff;
-      border-radius: 5px;
-      margin-bottom: 10px;
-      padding: 0px 10px;
-
-    }
-    .filter_header_item{
-          display: inline-flex;
-    }
-    .tootal_results{
-        margin-right: 5px;
-        padding-right: 5px;
-        border-right: 1px solid #efefef;
-        display: inline-flex;
-        padding-top: 5px;
-        height: 30px;
-    }
+   
     .content-table {
-      height: calc(100vh - 195px);
-      overflow: auto;
+      //height: calc(100vh - 195px);
+      //overflow: auto;
       margin-bottom: 10px;
       padding-right: 20px;
     }
@@ -1269,15 +1621,7 @@ export default {
     left: 7px;
     top: 7px;
   }
-  .input-std-search {
-    position: relative;
-    input {
-      padding: 5px 5px 5px 26px;
-      border-radius: 4px;
-      border: 0.1em solid #f9f9f9;
-      width: 100%;
-    }
-  }
+
 
   .questition-container {
     padding: 10px;
@@ -1340,6 +1684,28 @@ export default {
           padding: 5px;
           flex: 0 1 auto;
         }
+		
+		a.share-network-others{
+		
+			div{ display: none; }
+			
+			&:hover{
+					height: 25px;
+					div{  
+						    display: inline-flex;
+							position: absolute;
+							top: 60px;
+							margin-left: -30px;
+							border-radius: 5px;
+							background: #fff;
+							padding: 5px;
+							box-shadow: rgb(100 100 111 / 20%) 0px 7px 29px 0px;
+
+					}
+			}
+		
+		}
+		
       }
     }
     .word-content {
@@ -1430,7 +1796,7 @@ export default {
   }
 }
 </style>
-<style>
+<style lang="scss">
 .text-black:hover {
   color: #3283e0;
 }
@@ -1485,6 +1851,12 @@ ul.my_lists li {
     justify-content: space-between;
     width: 100%;
 }
+ul.my_lists li a{
+	display: none!important;
+}
+ul.my_lists li:hover a {
+	display: block!important;
+}
 ul.my_lists li.selected {
     color: #b3c3f7;
     font-weight:600;
@@ -1504,4 +1876,128 @@ ul.my_lists li.selected {
     display: inline-flex;
     margin: 0;
 }
+a.text-link{
+	color: #1da1f2;
+	text-decoration: underline!important;
+}
+.btn-primary{
+
+	padding: 5px 10px;
+	border-radius: 8px;
+	background: #357fee;
+	color: #fff;
+	margin-bottom: 50px;
+
+}
+.load-button-container{
+    height: 100px;
+    display: block;
+    padding-top: 30px;
+}
+ 
+.side-bar-inside{:lang(ar)
+.a-std-search{ 
+border-radius: 5px;
+margin-left: 5px;
+padding: 5px;
+background: #f9f9f9;
+z-index:10;
+color: #000;
+	i{
+		margin-left:5px;
+		margin-right:0px;
+	}
+}
+}
+
+.filter_header_item{
+		.input-std-search {
+				position: relative;
+				i{
+					position: absolute;
+					left: 5px;
+					top: 5px;
+				
+				}
+				input {
+				  padding: 5px 5px 5px 26px;
+				  border-radius: 4px;
+				  border: 0.1em solid #f9f9f9;
+				  width: 100px;
+				}
+			  }
+			  }
+.search-top{
+		display:inline-block;
+		z-index:10;
+		width: auto;
+		min-width: 25px;
+		height: 25px;
+		border-radius: 5px;
+		margin-left: 5px;
+		padding: 4px 5px;
+		
+		color: #fff;
+		text-align:center;
+		position: relative;
+		
+			  
+			  
+		&.active-search{ 
+			background: orange;
+			.search-a{ 
+				svg,i{
+					margin-left: 5px;
+					margin-right: 5px;
+				}
+			}
+		} 
+		&.not-active-search{ 
+			background: #fff; 
+		}
+	.search-a{ 
+		cursor: pointer;
+		display:inline-flex;
+		line-height: 1; 
+		color: #000!important;
+		svg,i{
+					margin-left: 5px;
+					margin-right: 5px;
+					color: #000!important;
+				}
+	}
+	.search-item{ 
+		display: none;
+		position: absolute;
+		width: 170px;
+		border-radius: 5px;
+		height: 250px;
+		overflow:auto;
+		z-index:10;
+		background: #fff;
+		color: #000;
+		  box-shadow: 1px -1px 0px 0px rgba(186, 186, 186, 0.19);
+		-webkit-box-shadow: 1px -1px 0px 0px rgba(186, 186, 186, 0.19);
+		-moz-box-shadow: 1px -1px 0px 0px rgba(186, 186, 186, 0.19);
+		border: 1px solid #aaa;
+		padding: 10px;
+		
+	}
+	&:hover{ 
+		.search-item{ 
+			text-align:left;
+			display: block;
+			  .input-std-search {
+				position: relative;
+				input {
+				  padding: 5px 5px 5px 26px;
+				  border-radius: 4px;
+				  border: 0.1em solid #f9f9f9;
+				  width: 100%;
+				}
+			  }
+		}
+	}
+}
+
 </style>

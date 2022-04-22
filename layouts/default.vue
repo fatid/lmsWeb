@@ -1,14 +1,19 @@
 <template>
   <div>
     <header class="header clearfix main-header"  >
-      <div class="container">
-        <button type="button" id="toggleMenu" v-if="isMobile" class="toggle_menu">
-        <i class="fas fa-bars"></i>
-      </button>
-      <button id="collapse_menu" class="collapse_menu" v-if="isMobile">
-        <i class="uil uil-bars collapse_menu--icon "></i>
-        <span class="collapse_menu--label"></span>
-      </button>
+      <div :class="isMobile ? 'container-full '+reverseClass :'container '+reverseClass ">
+	  
+	       
+		  <a   v-if="isMobile" 
+              @click="isVisible = !isVisible;"
+              style="width: 40px; color: rgb(118 117 117);"
+			  class="mobile-bars"
+              ><i class="fas fa-bars fa-2x" v-if="!isVisible"></i>
+              <i class="fas fa-times fa-2x" v-else></i>
+            </a>
+		 
+     
+  
       <div class="main_logo" id="logo">
         <a @click="goPath('home')"  @click.middle="goPathBlank('home')" 
           ><img :src="'http://lms.fatihd.com/yonetim/images/resimler/normal/logo.png'" alt="logo"
@@ -19,30 +24,66 @@
       </div>  
       <div class="search120">
         <div class="ui search">
-          <div class="ui left icon input swdh10">
+          <div class="ui left icon input swdh10 menu-search">
             <input
-              class="prompt srch10"
+              class=""
               type="text"
               v-model="searchText"
               @keydown.enter="goPath('search', { keyword: searchText })"
               :placeholder="l('Search for  Courses, Tests and more..', 'g')"
             />
-            <i class="uil   icon fa fa-search"></i>
+            <i class="uil   icon far fa-search"></i>
           </div>
         </div>
           
       </div>  
-       <div class="menu-select" v-if="!isMobile">
+       <!-- <div class="menu-select" v-if="!isMobile"  :class="LOCALE=='ar' ? 'd-flex flex-row-reverse' : ''" > -->
             
-
-             <!-- <a  @click.middle="goPathBlank('filter')"                @click="goPath('filter')"><b-button pill variant="outline-danger"  >{{ l("Filter", "g") }}</b-button></a> -->
-            <a  @click.middle="goPathBlank('courses/all_courses')"    @click="goPath('courses/all_courses')"><b-button pill :variant="pagePath=='Course' ? 'danger':'outline-danger'"  >{{ l("Courses", "g") }}</b-button></a>
-            <a  @click.middle="goPathBlank('filter/Word')"            @click="goPath('filter/Word')" > <b-button pill  :variant="pagePath=='Word' ? 'danger':'outline-danger'"       >{{ l("Words", "g") }}</b-button> </a>
-            <a  @click.middle="goPathBlank('filter/Exam')"           @click="goPath('filter/Exam')" > <b-button pill    :variant="pagePath=='Exam' ? 'primary':'outline-primary'"   >{{ l("Questions", "g") }}</b-button> </a>
-            <a  @click.middle="goPathBlank('filter/Games')"           @click="goPath('filter/Game')" > <b-button pill  :variant="pagePath=='Game' ? 'primary':'outline-primary'"   >{{ l("Games", "g") }}</b-button> </a>
-     
-      </div>  
-      <div class="header_right">
+				<!-- <div   -->
+					<!-- class="menu-select-item" @click.middle="goPathBlank('courses/all_courses')"    @click="goPath('courses/all_courses')"   -->
+					<!-- :class="pagePath=='Course' ? 'danger':'outline-danger'"  >{{ l("Courses", "g") }} -->
+				<!-- </div> -->
+				<!-- <div   -->
+					<!-- class="menu-select-item" @click.middle="goPathBlank('filter/Word')"            @click="goPath('filter/Word')" -->
+					<!-- :class="pagePath=='Word' ? 'danger':'outline-danger'"  >{{ l("Words", "g") }} -->
+				<!-- </div> -->
+           <!-- <div   -->
+					<!-- class="menu-select-item" @click.middle="goPathBlank('filter/Exam')"           @click="goPath('filter/Exam')" -->
+					<!-- :class="pagePath=='Exam' ? 'danger':'outline-danger'"  >{{ l("Questions", "g") }} -->
+				<!-- </div> -->
+             <!-- <div   -->
+					<!-- class="menu-select-item" @click.middle="goPathBlank('filter/Games')"           @click="goPath('filter/Game')" -->
+					<!-- :class="pagePath=='Game' ? 'danger':'outline-danger'"  >{{ l("Games", "g") }} -->
+				<!-- </div> -->
+         
+ 
+      <!-- </div>   -->
+	 <div :lang="LOCALE"  class="header_right" v-if="isMobile">
+		<div class="menu-select-mobile">
+		
+				<div  
+					class="menu-select-item" 
+					@click.middle="goPath('form/login')"           
+					@click="loginPopupVisible=true" 
+				><i class="far fa-user"></i>
+				</div>
+				<div  
+					class="menu-select-item" 
+					@click="localeShow=!localeShow;"  
+				> {{$store.state.locale}}
+				</div>
+		</div>
+		<div class="choose-lang" v-show="localeShow" 
+		v-click-outside="hide"  
+		>
+					<ul> 
+						<li><a  @click="changeLanguage('ar')" > <img   src="/img/ar.svg" style="width:20px" title="Arabic"  />  Arabic </a></li> 
+						<li><a  @click="changeLanguage('en')" >  <img   src="/img/en.svg" style="width:20px"  title="English" /> English</a></li>  
+					</ul>
+		
+		</div>
+	   </div>  
+      <div :lang="LOCALE" class="header_right" v-else-if="!isMobile">
        
         <ul>
           <!-- <li v-show="!auth || !auth.token"  ><a>Test</a></li> -->
@@ -65,8 +106,9 @@
             <li v-show="!auth || !auth.token" class="list-inline-item g-mx-4 ">
             <a
               class="g-color-black g-color-primary--hover g-text-underline--none--hover"
-              @click="goPath('form/login')"
-              >{{ l("LOGIN", "g") }}</a
+              @click="loginPopupVisible=true"
+			  @click.middle="goPath('form/login')"   
+              ><i class="far fa-user"></i> {{ l("LOGIN", "g") }}</a
             >
           </li> 
          
@@ -107,6 +149,8 @@
                   <b-dropdown-item  @click.middle="goPathBlank('my/profile')"          @click="goPath('my/profile')"           >  {{l('Profile','g')}}</b-dropdown-item>
                   <b-dropdown-item  @click.middle="goPathBlank('my/courses')"         @click="goPath('my/courses')" >             {{l('My Courses','g')}}</b-dropdown-item>
                   <b-dropdown-item  @click.middle="goPathBlank('my/list')"             @click="goPath('my/list')"             >   {{l('My List','g')}}</b-dropdown-item>
+				    <b-dropdown-item v-if="auth.U_Role=='Teacher'" @click.middle="goPathBlank('my/students')"         @click="goPath('my/students')" >             {{l('My Students','g')}}</b-dropdown-item>
+					   <b-dropdown-item v-if="auth.U_Role=='Student' || auth.U_Role==''" @click.middle="goPathBlank('my/teachers')"         @click="goPath('my/teachers')" >             {{l('My Teachers','g')}}</b-dropdown-item>
                   <b-dropdown-item  @click.middle="goPathBlank('my/quiz')"             @click="goPath('my/quiz')"             >   {{l('My Exams','g')}}</b-dropdown-item>
                   <!-- <b-dropdown-text    >  
                     
@@ -122,160 +166,187 @@
       </div>
     </header>
  
-   
-    <!-- Header End -->
-    <!-- Left Sidebar Start -->
-    <!-- <nav class="vertical_nav" v-if="isMobile">
-      <div class="left_section menu_left" id="js-menu">
-        <div class="left_section">
-          <ul>
-            <li class="menu--item">
-              <a
-                @click="goPath('home')"
-                class="menu--link active"
-                :title="l('Home', 'g')"
-              >
-                <i class="uil uil-home-alt menu--icon"></i>
-                <span class="menu--label">{{ l("Home", "g") }}</span>
-              </a>
-            </li>
-  <li class="menu--item">
-              <a
-                @click="goPath('filter')"
-                class="menu--link"
-                :title="l('Filter', 'g')"
-              >
-                <i class="uil uil-search menu--icon"></i>
-                <span class="menu--label">{{ l("Filter", "g") }}</span>
-              </a>
-            </li>
-            <li class="menu--item">
-              <a
-                @click="goPath('courses/all_courses')"
-                class="menu--link"
-                :title="l('Courses', 'g')"
-              >
-                <i class="uil uil-search menu--icon"></i>
-                <span class="menu--label">{{ l("Courses", "g") }}</span>
-              </a>
-            </li>
-            <li class="menu--item">
-              <a
-                @click="goPath('filter/Word')"
-                class="menu--link"
-                :title="l('Words', 'g')"
-              >
-                <i class="uil uil-search menu--icon"></i>
-                <span class="menu--label">{{ l("Words", "g") }}</span>
-              </a>
-            </li>
-            <li class="menu--item  menu--item__has_sub_menu">
-              <label class="menu--link" title="Tests">
-                <i class="uil uil-clipboard-alt menu--icon"></i>
-                <span class="menu--label">{{ l("Tests", "g") }}</span>
-              </label>
-              <ul class="sub_menu">
-                <li class="sub_menu--item">
-                  <a
-                    @click="goPath('tests/all_tests')"
-                    class="sub_menu--link"
-                    >{{ l("Tests") }}</a
-                  >
-                </li>
-                <li class="sub_menu--item">
-                  <a href="#" class="sub_menu--link">Test Results</a>
-                </li>
-                
-              </ul>
-            </li>
-            
-          </ul>
-        </div>
-        <div class="left_section pt-2">
-          <ul>
-            <li class="menu--item">
-              <a
-                @click="goPath('my/profile')"
-                class="menu--link"
-                title="Setting"
-              >
-                <i class="uil uil-cog menu--icon"></i>
-                <span class="menu--label">Setting</span>
-              </a>
-            </li>
-            <li class="menu--item">
-              <a @click="goPath('page/help')" class="menu--link" title="Help">
-                <i class="uil uil-question-circle menu--icon"></i>
-                <span class="menu--label">Help</span>
-              </a>
-            </li>
-            <li class="menu--item"> 
-              <a
-                @click="goPath('reports/all')"
-                class="menu--link"
-                title="Report History"
-              >
-                <i class="uil uil-windsock menu--icon"></i>
-                <span class="menu--label">Report History</span>
-              </a>
-            </li>
-            <li class="menu--item">
-              <a @click="isErrorReportVisible=true" class="menu--link" title="Send Feedback">
-                <i class="uil uil-comment-alt-exclamation menu--icon"></i>
-                <span class="menu--label">Send Feedback</span>
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div class="left_footer">
-          <ul>
-            <li>
-              <a @click="goPath('page/about')">{{ l("About", "g") }}</a>
-            </li>
-            <li>
-              <a @click="goPath('page/contact')">{{ l("Contact Us", "g") }}</a>
-            </li>
-            <li>
-              <a @click="goPath('page/copyright')"
-                >{{ l("Copyright", "g") }}
-              </a>
-            </li>
-            <li>
-              <a @click="goPath('page/privacy_policy')"
-                >{{ l("Privacy Policy", "g") }}
-              </a>
-            </li>
-            <li>
-              <a @click="goPath('page/terms_of_use')"
-                >{{ l("Terms of Use", "g") }}
-              </a>
-            </li>
-          </ul>
-          <div class="left_footer_content">
-            <p>
-              © {{ year }} <strong>{{ l("Daleel", "g") }}</strong
-              >. {{ l("All Rights Reserved.", "g") }}
-            </p>
-          </div>
-        </div>
-      </div>
-    </nav> -->
+ 
     <div class="wrapper wrapper__minify">
-      <div class="sa4d25">
+	
+	
+	    <div class="menu-select" v-if="!isMobile && (pagePath=='Course' || pagePath=='Word' || pagePath=='Exam' || pagePath=='Game' || pagePath=='Quiz' )">
+		<div class="container"> 
+				<a  @click="drawer=!drawer" class="mobile-bars">
+						<i class="fas fa-bars fa-lg" v-if="!drawer"></i>
+						<i class="fas fa-times fa-lg" v-else></i>
+				</a> 
+				<div  
+					class="menu-select-item" @click.middle="goPathBlank('courses/all_courses')"    @click="goPath('courses/all_courses')"  
+					:class="pagePath=='Course' ? 'selected':''"  >{{ l("Courses", "g") }}
+				</div>
+				<div  
+					class="menu-select-item" @click.middle="goPathBlank('filter/Word')"            @click="goPath('filter/Word')"
+					:class="pagePath=='Word' ? 'selected':''"  >{{ l("Words", "g") }}
+				</div>
+           <div  
+					class="menu-select-item" @click.middle="goPathBlank('filter/Exam')"           @click="goPath('filter/Exam')"
+					:class="pagePath=='Exam' ? 'selected':''"  >{{ l("Questions", "g") }}
+				</div>
+				<div  
+					class="menu-select-item" @click.middle="goPathBlank('filter/Quiz')"           @click="goPath('filter/Quiz')"
+					:class="pagePath=='Quiz' ? 'selected':''"  >{{ l("Quiz", "g") }}
+				</div>
+             <div  
+					class="menu-select-item" @click.middle="goPathBlank('filter/Games')"           @click="goPath('filter/Game')"
+					:class="pagePath=='Game' ? 'selected':''"  >{{ l("Games", "g") }}
+				</div> 
+				</div> 
+      </div> 
+	  <div class="container">
+	  <div  class="main-content" >
+	  <div class="side-bar" 
+			v-show="drawer"
+            :class="[customClass.textDir + ' ' + customClass.dir, openDetails ? 'openDetails':'']"
+            :lang="$store.state.locale"
+	  >
+			<div class="a-std-search">
+              <a @click="goPath('home')"><i class="fas fa-th-large"></i>Dashboard</a>
+            </div>	
+			<div class="a-std-search" :class="pagePath=='Course' || pagePath=='Word' || pagePath=='Exam' || pagePath=='Game' ? 'a-std-active' : '' ">
+              <a @click="goPath('filter/Word')"><i class="fa fa-search "></i> {{l('Explore','g')}} </a>
+            </div>
+			<div class="a-std-search">
+              <a @click="goPath('my/list')"><i class="fas fa-book"></i> {{l('My Library','g')}}</a>
+            </div>
+			<div class="a-std-search">
+              <a @click="goPath()"><i class="fas fa-chart-bar"></i> Reports</a>
+            </div>
+			<div class="a-std-search">
+              <a @click="goPath('my/profile?do=comments')"><i class="fa fa-comments"></i> Messages</a>
+            </div>
+			<div class="a-std-search">
+              <a @click="goPath()"><i class="fas fa-bell"></i> Notification</a>
+            </div>
+			<div class="a-std-search">
+              <a @click="goPath('my/profile?do=comments')"><i class="fas fa-comment"></i> Reviews</a>
+            </div>
+			<div class="a-std-search">
+              <a @click="goPath('my/profile')"><i class="fas fa-cog"></i> Settings</a>
+            </div>
+			<div class="a-std-search">
+              <a @click="goPath('page/help')"><i class="fas fa-question-circle"></i> Help</a>
+            </div>
+			<div class="a-std-search">
+			<a @click="goPath()"><i class="fas fa-history"></i> Report History</a>
+            </div>
+			</div>
+		 <div class="side-content"  >
+      <div class="sa4d25"  :lang="LOCALE">
      
-              <nuxt v-if="LANG_PACK.main" :key="$route.fullPath" />
+              <nuxt :key="$route.fullPath" />
              
+      </div>
+      </div>
+      </div>
       </div>
 
      
-        <errorReport></errorReport>
+   
+
+ <div
+      v-if="isMobile"
+      class="bottomField"
+      :class="isVisible ? 'visible-menu' : ''"
+    >
+      <div class="container pa-10 g-mt-50">
+        <div class="row pa-10">
+          <a
+            class="exit-button"
+            @click="
+              isVisible = !isVisible; 
+            "
+          >
+            <i class="fas fa-times fa-2x"></i>
+          </a>
+          <div class="col-6 col-sm-6 col-lg g-mb-30 g-mb-0--lg">
+            <h2
+              class="h6 g-color-black text-uppercase font_4 g-font-weight-600 g-mb-20"
+            >
+              Daleel
+            </h2>
+            <ul class="shortcuts-links">
+           
+              <li>
+                <a @click="$router.push('/')">
+                  {{l('Home','g')}}
+                </a>
+              </li>
+              
+            </ul>
+          </div>
+          <div class="col-6 col-sm-6 col-lg g-mb-30 g-mb-0--lg">
+            <h2
+              class="h6 g-color-black text-uppercase font_4 g-font-weight-600 g-mb-20"
+            >
+              {{ l("Courses", "g") }}
+            </h2>
+            <ul class="shortcuts-links">
+             	<li  
+					  @click.middle="goPathBlank('courses/all_courses')"    @click="goPath('courses/all_courses')"  
+					:class="pagePath=='Course' ? 'danger':'outline-danger'"  >{{ l("Courses", "g") }}
+				</li>
+				<li  
+					  @click.middle="goPathBlank('filter/Word')"            @click="goPath('filter/Word')"
+					:class="pagePath=='Word' ? 'danger':'outline-danger'"  >{{ l("Words", "g") }}
+				</li>
+           <li  
+					  @click.middle="goPathBlank('filter/Exam')"           @click="goPath('filter/Exam')"
+					:class="pagePath=='Exam' ? 'danger':'outline-danger'"  >{{ l("Questions", "g") }}
+				</li>       <li  
+					  @click.middle="goPathBlank('filter/Quiz')"           @click="goPath('filter/Quiz')"
+					:class="pagePath=='Exam' ? 'danger':'outline-danger'"  >{{ l("Quiz", "g") }}
+				</li>
+             <li  
+					  @click.middle="goPathBlank('filter/Games')"           @click="goPath('filter/Game')"
+					:class="pagePath=='Game' ? 'danger':'outline-danger'"  >{{ l("Games", "g") }}
+				</li>
+            
+            </ul>
+          </div>
+          <div class="col-6 col-sm-6 col-lg g-mb-30 g-mb-0--lg">
+            <h2
+              class="h6 g-color-black text-uppercase font_4 g-font-weight-600 g-mb-20"
+            >
+              {{ l("Contact", "g") }}
+            </h2>
+            <ul class="shortcuts-links">
+              
+              <li>
+                      <a href="javascript:;" @click="goPath('form/login')">
+                 {{ l("Sign Up", "g") }}
+                </a>
+              </li>
+              <li>
+                <a href="javascript:;" @click="goPath('form/login')">
+                  {{ l("Sign In", "g") }}
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <div class="col-6 col-sm-6 col-lg g-mb-30 g-mb-0--lg">
+           
+          </div>
+        </div>
+      </div>
+    </div>
+ 
+	        <errorReport></errorReport>
         <likeModal></likeModal>
         <wordModal></wordModal>
           <suggestWord></suggestWord>
          <listEdit></listEdit>
-        <commentModal></commentModal>
+        <commentModal></commentModal>  
+	<div class="login-popup" :lang="LOCALE"
 
-
+	v-if="loginPopupVisible">	<login :isPopup="true" 	@close="loginPopupVisible=$event"></login>
+			</div> 
     </div>
   </div>
 </template>
@@ -293,8 +364,8 @@ import likeModal from "@/components/common/like";
 import suggestWord from "@/components/common/suggestWord";
 import listEdit from "@/components/common/listEdit";
 import commentModal from "@/components/common/comment";
-
-
+import ClickOutside from 'vue-click-outside'
+import login from "@/components/common/login"; 
 export default {
   mixins: [basicMixin, canoicalMixin, general],
   components:{
@@ -303,7 +374,11 @@ export default {
     wordModal,
     suggestWord,
     commentModal,
-listEdit
+	listEdit,
+	login
+  },
+  directives: {
+    ClickOutside
   },
   watch: {
     async $route(to, from) {
@@ -314,6 +389,9 @@ listEdit
           behavior: "smooth"
         });
       }, 500);
+	  this.isVisible=false;
+	  
+		
       await this.$store.dispatch("pages/getPageInfo", {});
      
        if(this.$store.state.pages.pageData.wa_content_id &&  this.$store.state.pages.pageData.id){
@@ -376,12 +454,16 @@ listEdit
     ],
     year: new Date().getFullYear(),
     collapse: false,
+    drawer: true,
     searchText: "",
     keyMenu: "keyMenu",
     topBar: {},
     topIsVisible: false,
+	localeShow:false,
+	isVisible:false,
     // link: this.$route.query.link,
-    rootKey: "rootKey"
+    rootKey: "rootKey",
+	loginPopupVisible:false
   }),
   computed: {
     LOCALE() {
@@ -412,20 +494,34 @@ listEdit
       },set(val){
           this.$store.state.isErrorReportVisible = val;
       }
-    }
+    },
+	reverseClass(){
+	 return this.LOCALE=='ar' ? 'd-flex flex-row-reverse' : ''
+	}
   },
- async beforeMount(){
-      await this.$store.dispatch('user/findAuth',{headers:null})
-
+  async beforeMount(){
+       this.$store.dispatch('user/findAuth',{headers:null}) 
   },
   created() {
     this.getLikes();
     this.$store.dispatch("course/getCourseCategories");
      this.$store.dispatch("core/getBanners", {});
+	 	
   },
-  methods: {},
+  methods: {
+		
+	hide () {
+      this.localeShow = false
+    }
+  
+  },
 
   async mounted() {
+  	let language = this.$route.params.lang;
+	let set_lang = language=='ar' ? 'ar' : 'en';
+    document.body.classList.add("family_"+set_lang);
+
+  await this.lf(["main", "g"]);
     this.$nextTick(() => {
       this.$nuxt.$loading.start();
       let language = this.$route.params.lang;
@@ -435,7 +531,7 @@ listEdit
       this.$nuxt.$loading.finish();
     });
 
-    await this.lf(["main", "g"]);
+ 
 
     var tid = setInterval(function() {
       if (document.readyState !== "complete") return;
@@ -504,8 +600,20 @@ a {
   direction: rtl;
 }
 
+:lang(ar) .row {
+  flex-direction: row-reverse!important;
+}
 @media only screen and (max-width: 700px) {
-  .rowMobile {
+  .rowMobile.login-popup{
+	width: 600px;
+	top: 40px;
+	position: absolute; 
+	background:#fff;
+	padding: 10px;
+	z-index:99;
+	right: 100px;
+	border-radius: 10px;
+} {
     margin-left: 0px;
     margin-right: 0px;
   }
@@ -611,6 +719,41 @@ a {
 }
 </style>
 <style lang="scss">
+body.family_ar{
+	div, span, applet, object, iframe,
+	h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+	a, abbr, acronym, address, big, cite, code,
+	del, dfn, em, img, ins, kbd, q, s, samp,
+	small, strike, strong, sub, sup, tt, var,
+	b, u, 
+	dl, dt, dd, ol, ul, li,
+	fieldset, form, label, legend,
+	table, caption, tbody, tfoot, thead, tr, th, td,
+	article, aside, canvas, details, embed, 
+	figure, figcaption, footer, header, hgroup, 
+	menu, nav, output, ruby, section, summary,
+	time, mark, audio, video { 
+		font-family: 'Scheherazade New', serif; 
+	}
+}
+
+body.family_en{
+	html, body, div, span, applet, object, iframe,
+	h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+	a, abbr, acronym, address, big, cite, code,
+	del, dfn, em, img, ins, kbd, q, s, samp,
+	small, strike, strong, sub, sup, tt, var,
+	b, u,  
+	dl, dt, dd, ol, ul, li,
+	fieldset, form, label, legend,
+	table, caption, tbody, tfoot, thead, tr, th, td,
+	article, aside, canvas, details, embed, 
+	figure, figcaption, footer, header, hgroup, 
+	menu, nav, output, ruby, section, summary,
+	time, mark, audio, video { 
+		font-family: 'Cairo', serif; 
+	}
+}
 .btn-primary, .btn-primary:hover,.btn-danger, .btn-danger:hover,.btn-success, .btn-success:hover  {
   color: #fff !important;
 }
@@ -720,9 +863,13 @@ a {
   color: #fff!important;
 }
 
-.header_right{
+ .header_right{
   display: inline-flex;
      margin-top: 6px;
+}
+.header_right:lang(ar) {
+	float: left!important; 
+    width: 100%; 
 }
 .language-select{
     display: block;
@@ -754,13 +901,240 @@ header.modal-header{
         height: auto;
 }
 .search120{
-  margin-top: 10px; 
+  margin-top: 0px; 
 }
 
-.menu-select{
-    display: inline-block;
-    margin-right: 20px;
-    margin-top: 10px;
-    margin-left: 10px;
+.mobile-bars{
+    float: left;
+    padding: 15px 10px;
+    display: block;
+    margin-right: 30px;
+    height: 45px;
 }
+.menu-select {
+background: #fff9f9;
+    border-bottom: 1px solid #fcf5f5;
+	width: 100%;
+}
+.menu-select, .menu-select-mobile{
+    display: inline-block;
+    margin-right: 0px;
+    margin-top: -5px;
+    margin-left: 0px;
+}
+.menu-select-item{
+
+    border-left: 1px solid #f2f2f2;
+     height: 45px;
+    padding: 15px 15px;
+    cursor: pointer;
+    display: inline-flex; 
+	cursor: pointer;
+	&.selected{
+	
+			font-weight: 600;
+	
+	}
+}
+.menu-select-item:hover{ 
+	    background: #fbf8f8; 
+}
+
+.menu-search input{
+
+	border:0!important; 
+	height: 60px;
+    padding: 20px 15px;
+}
+@media only screen and (min-width: 700px) {
+
+.main_logo img {
+    height: 50px;
+}
+
+}
+@media only screen and (max-width: 700px) {
+.menu-select{ display: none; }
+.menu-select-mobile{ display:  inline-block;}
+.header_right{padding-right: 0;}
+.main_logo img {
+    height: auto;
+}
+.main_logo { 
+    margin-top: 17px;
+}
+.choose-lang{
+
+	position: absolute;
+	top: 60px;
+	right:0px;
+	background: #fff;
+	padding: 10px;
+	height: 120px;
+	width: 100px;
+	box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+}
+.container-full{
+	width: 100%;
+    padding-right: 0px;
+    padding-left: 0px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+
+.bottomField {
+  height: calc(100vh - 55px);
+  width: 100%;
+  position: fixed;
+  left: -1800px;
+  z-index: 9999999999999999999999;
+  background: #ffffffeb;
+  top: inherit;
+  margin-top: 0px;
+  transition: 0.4s all;
+  .container {
+    margin-top: 20px;
+  }
+  .exit-button {
+    position: absolute;
+    bottom: 15px;
+    right: 10px;
+  }
+  .card {
+    box-shadow: 0px 0px 0px #00000029;
+  }
+  &.visible-menu {
+    top: inherit;
+    left: 0;
+    transition: 0.4s all;
+    position: fixed;
+    top: 61px;
+  }
+
+  .pa-10 {
+    padding: 10px;
+  }
+  .shortcuts-links {
+    list-style: none;
+    padding: 0;
+    margin-top: 0.6875rem;
+  }
+  .shortcuts-links li a {
+    font-family: Rubik;
+    font-size: 0.875rem;
+    font-weight: 400;
+    padding: 8px 0px;
+    color: rgb(51, 51, 51);
+  }
+  .shortcuts-links li a:active,
+  .shortcuts-links li a:focus,
+  .shortcuts-links li a:hover {
+    color: #e8ba60;
+  }
+  .shortcuts-links li a:active .fas,
+  .shortcuts-links li a:focus .fas,
+  .shortcuts-links li a:hover .fas {
+    color: #e8ba60;
+  }
+  .shortcuts-links li a:active svg path,
+  .shortcuts-links li a:focus svg path,
+  .shortcuts-links li a:hover svg path {
+    fill: #e8ba60;
+  }
+}
+
+
+.modal-dialog {
+    left: auto!important;
+    right: auto!important;
+    position: absolute!important; 
+    width: 100%!important;
+    margin-right: 0!important;
+    max-width: 100%!important;
+	margin-right: 0px!important;
+}
+.login-popup{
+	width: 600px;
+	top: 40px;
+	position: absolute; 
+	background:#fff;
+	padding: 10px;
+	z-index:99;
+	right: 100px;
+	border-radius: 10px;
+}
+.login-popup:lang(ar){
+ 
+	right: auto; 
+	left: 100px;
+}
+.overlayout{
+	background: #252222a3;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+}
+.opts_account img{
+	    max-height: 36px;
+}
+
+@media only screen and (max-width: 700px) {
+	.login-popup{
+		width: 90%;
+		top: 40px;
+		position: absolute; 
+		background:#fff;
+		padding: 10px;
+		z-index:99;
+		right: 5%;
+		border-radius: 10px;
+	}
+}
+</style>
+<style lang="scss">
+.main-content{
+
+	display:inline-flex; 
+	width: 100%;
+
+}
+.side-bar{  min-width: 190px;
+		background: #fff;
+		border-radius: 10px;
+		box-shadow: rgb(0 0 0 / 10%) 0px 2px 4px;
+		max-height: calc(100vh - 150px);
+		padding: 10px 0px;
+
+  }
+.side-content{  width: 100%;  }
+		
+.side-bar{
+margin-top:10px;
+	.a-std-search{
+		    height: 40px;
+    width: 100%;
+    font-size: 15px;
+    line-height: 1.2;
+    border-bottom: 1px solid #f2f2f2;
+    padding: 10px;
+	cursor:pointer;
+			&:hover{
+				color: #1db6f1;
+				background: #f9f9f9;
+			}
+			&.a-std-active{
+				color: #1db6f1;
+				background: #f9f9f9;
+			}
+	i{
+		margin-right:5px;
+		margin-left:0px;
+	}
+	}
+}			  
 </style>

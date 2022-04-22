@@ -1,11 +1,11 @@
 <template>
-  <div class="container">
+  <div class="container" :lang="LOCALE">
  
     
-<div class="row">
+<div class="row" :class="reverseClass">
       <div class="col-12 ">
-        <div class="search-header">
-            <div class="title-field">Courses</div>
+        <div class="search-header" :class="reverseClass">
+            <div class="title-field">{{l('Courses','g')}}</div>
             <div class="search-field">
         			<input type="text" class="input-std" 
                                         @change="getCourse()"
@@ -13,8 +13,8 @@
              </div>
              </div>
       </div>
-      <div class="col-9 col-md-9 col-sm-12">
-        <div class="fcrse_1" v-for="d in data"> 
+      <div class="col-9 col-md-9 col-sm-12" :lang="LOCALE">
+        <div class="fcrse_1"  :class="reverseClass" v-for="d in data"> 
 										<div><a @click="goPath('course/'+d.cou_link)" @click.middle="goPathBlank('course/'+d.cou_link)"  class="hf_img">
 											<img v-if="d.cou_image" :src="show_image(d.cou_image,'150','150','','90')" alt="">
 											<img v-else-if="options['cou_settings']" :src="show_image(options['cou_settings'][0].cou_setting_image,'150','150','c','')" alt="">
@@ -25,9 +25,9 @@
 											</div>
 										<div class="hs_content">
 										 
-											<a @click="goPath('course/'+d.cou_link)" @click.middle="goPathBlank('course/'+d.cou_link)" class="crse14s title900">{{d.cou_name}}</a>
-											<a href="#" class="crse-cate">{{d.cou_short}}</a>
-											<div class="crse-cate mt-1">
+											<a @click="goPath('course/'+d.cou_link)" @click.middle="goPathBlank('course/'+d.cou_link)" class="crse14s title900" :lang="LOCALE">{{d.cou_name}}</a>
+											<a href="#" class="crse-cate" :lang="LOCALE">{{d.cou_short}}</a>
+											<div class="crse-cate mt-1" :lang="LOCALE">
 												<a href="javascript:;"  >{{getOptName(d.cou_category,'co_labels','cou_label_name')}} </a> 
 												<span class="  ml-1">|</span> 
 												<a href="javascript:;"  v-if="d.cou_tags" :class="'ml-2'" :key="'tg'+tag"  v-for="tag in d.cou_tags.split(',')">{{tag}} </a>
@@ -148,7 +148,33 @@ export default {
 }
 .fcrse_1{
   margin-bottom: 10px;
+      margin-bottom: 10px;
+    display: flex;
+    width: 100%;
+    height: 130px;
 }
+.hf_img img{
+    height: 105px;
+    width: auto;
+	display: block;
+}
+.hf_img {
+    height: 105px;
+    width: 100%;
+    display: flex;
+    max-width: 120px;
+    overflow: hidden;
+    min-width: 120px;
+}
+:lang(ar) .hs_content{
+	direction:rtl;
+	text-align: right;
+}
+.crse-cate:lang(ar) ,  .crse14s:lang(ar){
+	direction:rtl;
+	text-align: right;
+}
+
 </style>
 <style lang="scss">
 
@@ -159,6 +185,8 @@ export default {
   justify-content: space-between;
   border-bottom: 1px solid #d0d0d0;
   margin-bottom: 10px;
+   font-family: Cairo;
+	  font-weight: 700;
   .title-field{
 
     font-size: 18px;
@@ -170,6 +198,8 @@ export default {
       border: 1px solid #d0d0d0;
       border-radius: 10px;
       padding: 7px 10px;
+	  font-family: Cairo;
+	  font-weight: 700;
     }
   }
 

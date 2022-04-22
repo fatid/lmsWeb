@@ -1,7 +1,4 @@
 <template>
-
-
-
  <b-modal 
       :title="l('Report Error','g')"
       v-model="isVisible" 

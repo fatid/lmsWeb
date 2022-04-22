@@ -26,19 +26,21 @@ export default {
       { charset: 'utf-8' },
       { content: "text/html;charset=UTF-8" },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: pkg.description }
+      { hid: 'description', name: 'description', content: pkg.description },
+      { name: 'google-signin-client_id', content: '889947283690-puv0dhqq6taumpd5k455lt8lh4hkg625.apps.googleusercontent.com' }
     ],
     link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.png' }
+      { rel: 'icon', type: 'image/x-icon', href: '/favicon.png' },
+	  { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Scheherazade+New:wght@400;700|Markazi+Text:wght@400;500,600|Cairo:wght@300;400;600;700;900|Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i|Cairo:100,100i,300,300i,400,400i,500,500i,600,700,700i,900,900i&display=swap' }
     ],
     script: [
       { src: '/js/jquery-3.3.1.min.js' },
-      { src: '/vendor/bootstrap/js/bootstrap.bundle.min.js' },
-  
+      { src: '/vendor/bootstrap/js/bootstrap.bundle.min.js' }, 
+	  { src: 'https://apis.google.com/js/platform.js?onload=init' },
       { src: '/vendor/OwlCarousel/owl.carousel.js' },
-      { src: '/vendor/semantic/semantic.min.js' },
+      //{ src: '/vendor/semantic/semantic.min.js' },
       { src: '/js/custom.js' },
-      { src: '/js/night-mode.js' },
+      //{ src: '/js/night-mode.js' },
   
     ], 
   },
@@ -51,22 +53,24 @@ export default {
   */
  css: [ 
    '~/static/vendor/unicons-2.0.1/css/unicons.css', 
-   '~/static/css/vertical-responsive-menu.min.css', 
+   //'~/static/css/vertical-responsive-menu.min.css', 
    '~/static/css/style.css', 
    '~/static/css/responsive.css', 
    '~/static/css/night-mode.css', 
-    'vue-good-table/dist/vue-good-table.css',
+   // 'vue-good-table/dist/vue-good-table.css',
    '@fortawesome/fontawesome-free/css/all.css',
    '~/static/vendor/OwlCarousel/assets/owl.carousel.css', 
    '~/static/vendor/OwlCarousel/assets/owl.theme.default.min.css', 
    '~/static/vendor/bootstrap/css/bootstrap.min.css', 
    '~/static/vendor/semantic/semantic.min.css', 
-  '~/static/vendor/simple-line-icons/css/simple-line-icons.min.css'
+   '~/static/vendor/simple-line-icons/css/simple-line-icons.min.css'
 ],
 plugins: [
-  { src: '~/plugins/pageInfo' },
-  {  src:  "~/filters/index.js"  },
-  { src: '~plugins/ga.js', ssr: false }, 
+  { src: './plugins/pageInfo' },
+  {  src:  "./filters/index.js"  },  
+ // {  src:  './plugins/vue-google-oauth2' },
+  
+  // { src: '~plugins/ga.js', ssr: false }, 
   // { src: '~/plugins/vue-lazyload', ssr: false },
   // { src: '~plugins/ga.js', ssr: false }
 ],
@@ -129,25 +133,25 @@ optimizedImages: {
   '~/middleware/routing.js'
 ],
  build: { 
-  // collapseBooleanAttributes: true,
-  // decodeEntities: true,
-  // minifyCSS: true,
-  // minifyJS: true,
-  // processConditionalComments: true,
-  // removeEmptyAttributes: true,
-  // removeRedundantAttributes: true,
-  // trimCustomFragments: true,
-  // useShortDoctype: true,
-  // postcss: {
-    // plugins: [
-    //   purgecss({
-    //     content: ['./pages/**/*.vue',  './layouts/**/*.vue', './components/**/*.vue',  './pages/**/*.scss', './components/**/*.scss', '~/static/vendor/bootstrap/css/bootstrap.min.css','~/static/vendor/semantic/semantic.min.css', '@/vue-good-table/dist/vue-good-table.css', '@/vue2-datepicker/index.css'],
-    //     css: ['**/*.css','**/*.scss'], 
-    //     whitelist: ['mx-table','fa-list-ul','fa-list-ol','fa-indent','fa-outdent','fa-trash','fa-align-center','fa-align-left','fa-align-right','mx-table-date','','mx-datepicker-main','mx-datepicker-popup','mx-datepicker',' mx-datepicker-range','mx-input-wrapper','mx-icon-calendar','fa-pen','share-network-email','fah','fa-envelope','fa-search','fa-link','fa-evernote','fa-facebook','fa-linkedin','fa-pinterest','fa-quora','fa-reddit','fa-comment','fa-telegram','fa-tumblr','fa-twitter','fa-whatsapp','fa-list-alt',
-    //       'html','uil','fa-language','fa-bars','fa-headphones-alt','fa-book-reader','fa-comments','fa-keyboard','fa-heart','srch10','uil-envelope-alt','uil','uil-search-alt','icon','icon1','uil-bell', 'btn','btn-danger','btn-outline-danger','btn-outline-danger','btn-outline-primary','rounded-pill','body','table', 'dropdown','b-dropdown', 'ui','dropdown','pagination', 'b-pagination','page-item',  'b-dropdown','btn-group','dropdown-menu','page-link','dropdown-item','table-striped','fa-whatsapp','fa-whatsapp-square','fa-youtube','flex-row','flex-row-reverse','fa-twiter','fa-instagram','fa_youtube','fa-youtube','owl-stage-outer','owl-stage','owl-theme','owl-carousel','owl-stage-outer','owl-stage','owl-theme','stage-margin','nav-style-1','owl-loaded','owl-dot','owl-prev','owl-next','owl-nav', 'owl-dot active','owl-dots','owl-drag','owl-carousel-init'],
-    //   })
-    // ]
-  // }, 
+     collapseBooleanAttributes: true,
+     decodeEntities: true,
+     minifyCSS: true,
+     minifyJS: true,
+     processConditionalComments: true,
+     removeEmptyAttributes: true,
+     removeRedundantAttributes: true,
+     trimCustomFragments: true,
+     useShortDoctype: true,
+     postcss: {
+     plugins: [
+        purgecss({
+          content: ['./pages/**/*.vue',  './layouts/**/*.vue', './components/**/*.vue',  './pages/**/*.scss', './components/**/*.scss', '~/static/vendor/bootstrap/css/bootstrap.min.css','~/static/vendor/semantic/semantic.min.css', '@/vue-good-table/dist/vue-good-table.css', '@/vue2-datepicker/index.css'],
+          css: ['**/*.css','**/*.scss'], 
+         whitelist: ['mx-table','fa-list-ul','fa-list-ol','fa-indent','fa-outdent','fa-trash','fa-align-center','fa-align-left','fa-align-right','mx-table-date','','mx-datepicker-main','mx-datepicker-popup','mx-datepicker',' mx-datepicker-range','mx-input-wrapper','mx-icon-calendar','fa-pen','share-network-email','fah','fa-envelope','fa-search','fa-link','fa-evernote','fa-facebook','fa-linkedin','fa-pinterest','fa-quora','fa-reddit','fa-comment','fa-share-alt','fa-telegram','fa-tumblr','fa-twitter','fa-whatsapp','fa-list-alt',
+           'html','uil','fa-language','fa-bars','fa-headphones-alt','fa-book-reader','fa-comments','fa-keyboard','fa-heart','srch10','uil-envelope-alt','uil','uil-search-alt','icon','icon1','uil-bell', 'btn','btn-danger','btn-outline-danger','btn-outline-danger','btn-outline-primary','rounded-pill','body','table', 'dropdown','b-dropdown', 'ui','dropdown','pagination', 'b-pagination','page-item',  'b-dropdown','btn-group','dropdown-menu','page-link','dropdown-item','table-striped','fa-whatsapp','fa-whatsapp-square','fa-youtube','flex-row','flex-row-reverse','fa-twiter','fa-instagram','fa_youtube','fa-youtube','owl-stage-outer','owl-stage','owl-theme','owl-carousel','owl-stage-outer','owl-stage','owl-theme','stage-margin','nav-style-1','owl-loaded','owl-dot','owl-prev','owl-next','owl-nav', 'owl-dot active','owl-dots','owl-drag','owl-carousel-init','fa-th-large','fa-book','fa-chart-bar','fa-comments-alt','fa-bell','fa-cog','fa-comment-lines','fa-question-circle','fa-history','fa-comments','fa-comment','fa-books'],
+        })
+      ]
+    }, 
   extractCSS: false,
   optimization: {
     minimizer: [

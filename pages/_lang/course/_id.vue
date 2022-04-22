@@ -1,10 +1,10 @@
 <template>
-  <div class="width-100">
+  <div class="width-100" :lang="LOCALE">
  <div class="_215b01">
      <div class="section3125">
        <div class="container">
     
-              <div class="row justify-content-center">
+              <div class="row justify-content-center" :class="reverseClass">
                 <div  style="width:170px;">
                   <div class="preview_video">
                     <a
@@ -12,6 +12,7 @@
                       class="fcrse_img"
                       data-toggle="modal"
                       data-target="#videoModal"
+					  v-if="data.cou_image"
                     >
                       <img
                         :src="show_image(data.cou_image, '150', '150', 'c', '')"
@@ -41,12 +42,16 @@
                 </div>
                
          
-                <div class="col-xl-8 col-lg-auto">
+                <div class="col-xl-8 col-lg-auto" :class="customClass.textDir + ' ' + customClass.dir">
                   <div class="_215b03">
-                    <h2>{{ data.cou_name }}</h2>
+                    <h2  :class="customClass.textDir + ' ' + customClass.dir">{{ data.cou_name }}</h2>
                     <span class="_215b04">{{ data.cou_short }} </span>
                     <div class="width-100 margin-top-10 mt-10 g-mt-10"> 
-                          <a v-if="!isCourseSelected" href="#"  @click="joinCourse(data)" class="btn btn-primary">
+					 <a v-if="!auth || !auth.id" href="#"  @click="goPath('form/login')" class="btn btn-primary">
+                          <span><i class="fas fa-sign-in-alt"></i></span>
+                          {{ l("Login or Sign Up to join this course", "g") }}
+                        </a>
+                          <a v-else-if="!isCourseSelected" href="#"  @click="joinCourse(data)" class="btn btn-primary">
                           <span><i class="fas fa-sign-in-alt"></i></span>
                           {{ l("Join Course", "g") }}
                         </a>
@@ -73,7 +78,7 @@
 										<li><button class="btn_adcart">Add to Cart</button></li>
 										<li><button class="btn_buy">Buy Now</button></li>
 									</ul> -->
-                  <div class="_215fgt1">
+                  <div class="_215fgt1" :class="customClass.textDir + ' ' + customClass.dir">
                     {{ data.cou_campaign_text }}
                   </div>
                 </div>
@@ -138,8 +143,8 @@
             class="tab-height"
           ></div>
 
-          <div class="crse_content " id="crse_content">
-            <h3>{{ l("Course content", "g") }}</h3>
+          <div class="crse_content " id="crse_content" :class="customClass.textDir + ' ' + customClass.dir">
+            <h3  :class="customClass.textDir + ' ' + customClass.dir">{{ l("Course content", "g") }}</h3>
             <div class="_112456">
               <ul class="accordion-expand-holder">
                 <!-- <li>
@@ -150,7 +155,7 @@
               </ul>
             </div>
             <div id="accordion" class="ui-accordion ui-widget ui-helper-reset">
-              <div v-for="unit in units">
+              <div v-for="unit in units" :class="reverseClass">
                 <a
                   href="javascript:void(0)"
                   @click="unit.accordion = !unit.accordion"
@@ -243,13 +248,13 @@
             </div>
           </div>
 
-          <div class="student_reviews" id="crse_comment"  >
-            <div class="row">
+          <div class="student_reviews" id="crse_comment" :class="reverseClass"  >
+            <div class="row" :class="reverseClass">
               <div class="col-lg-5">
                 <div class="reviews_left">
-                  <h3>{{l('Feedback','g')}}</h3>
-                  <a class="btn btn-primary"   @click="openCommentModal(data, null,'courses')">+ {{l('New Comment','g')}}</a>
-                  <p class="mt-5">Total {{comments_count}} comment.</p>
+                  <h3  :class="customClass.textDir + ' ' + customClass.dir">{{l('Feedback','g')}}</h3>
+                  <a  :class="customClass.textDir + ' ' + customClass.dir" class="btn btn-primary"   @click="openCommentModal(data, null,'courses')">+ {{l('New Comment','g')}}</a>
+                  <p  :class="customClass.textDir + ' ' + customClass.dir" class="mt-5">Total {{comments_count}} comment.</p>
                 </div>
               </div>
               <div class="col-lg-7">
@@ -494,28 +499,33 @@ async getMyLessons(){
 async getCourseOrders(){
         let slang =  "ar";
         let user = this.$store.state.user.auth;
-        await axios({
-        url: process.env.baseURL+'Course_Order',
-        method: "get",
-        params: {
-          limit: 100,
-          lang: slang,
-          filter: { corder_course: ["=",1], status: ["=",1],corder_user:["=",user.id]  },
-          fields: "id,"+
-          "corder_course,corder_course.cou_short,corder_course.cou_name,corder_course.cou_level,corder_course.cou_category,corder_course.cou_image,corder_course.cou_link,"+
-          "corder_text,corder_last_unite,corder_last_lesson,corder_last_topic,"+
-          "corder_last_lesson.section_name,"+
-          "corder_last_unite.unit_name,"+
-          "corder_last_topic.lesson_name",
-          sort: ["corder_course,DESC"]
-        }
-      })
-        .then(response => {
-            this.order=response.data.formattedData;
-        })
-        .catch(e => {
-             this.order="";
-        });
+		if(user && user.id){
+				await axios({
+				url: process.env.baseURL+'Course_Order',
+				method: "get",
+				params: {
+				  limit: 100,
+				  lang: slang,
+				  filter: { corder_course: ["=",1], status: ["=",1],corder_user:["=",user.id]  },
+				  fields: "id,"+
+				  "corder_course,corder_course.cou_short,corder_course.cou_name,corder_course.cou_level,corder_course.cou_category,corder_course.cou_image,corder_course.cou_link,"+
+				  "corder_text,corder_last_unite,corder_last_lesson,corder_last_topic,"+
+				  "corder_last_lesson.section_name,"+
+				  "corder_last_unite.unit_name,"+
+				  "corder_last_topic.lesson_name",
+				  sort: ["corder_course,DESC"]
+				}
+			  })
+				.then(response => {
+					this.order=response.data.formattedData;
+				})
+				.catch(e => {
+					 this.order="";
+				});
+		}else{
+		
+			 this.order="";
+		}
       },
     getCourses(prev) {
       return this.lessons ? this.lessons.filter(k => k.prev_Id == prev) : [];
@@ -763,5 +773,12 @@ h3.popover-header {
 }
 .review_all120 {
   margin-bottom:8px;
+}
+._215b01{
+min-height: 280px;
+}
+.preview_video{
+min-height: 170px;
+min-width: 170px;
 }
 </style>

@@ -21,6 +21,7 @@ export default {
             limit:20
         },
         loading: false,
+        loadingMore: false,
         data:[]
     };
   },
@@ -154,10 +155,15 @@ export default {
             });
         });
       },
-    async getQuestition() { 
+    async getQuestition(loadMore=false) { 
+	
+ 
         let filters = { status: ["=", 1] };
-        this.loading=true;   
-  
+        if(!loadMore){
+			this.loading=true;   
+		}else{
+			this.loadingMore=true;   
+		}
         if (this.search.keyword) {
           filters.rs_Question = ["LIKE", this.search.keyword];
         }
@@ -237,8 +243,14 @@ export default {
                 response.data.formattedData[0]
             ) {
                 setTimeout(() => {
-                    
-                    this.data = response.data.formattedData;
+                    if(loadMore==false){ 
+						this.data = response.data.formattedData;
+					}else if(loadMore==true){ 
+						response.data.formattedData.forEach(a=>{
+							this.data.push(a); 
+						})
+						
+					}
                     this.pagination.total = response.data.count;
                 }, 1000);
                 this.$store.dispatch("search/groupFields", {module:'exam_q', group:'exa_degree',lang: this.LOCALE});
@@ -248,6 +260,7 @@ export default {
  
                 setTimeout(() => {
                     this.loading=false;    
+                    this.loadingMore=false;    
                     
                 }, 2000);
             }else {
@@ -257,7 +270,7 @@ export default {
 
                 setTimeout(() => {
                   this.loading=false;    
-                    
+                    this.loadingMore=false; 
                   this.data = [];
                   this.pagination.total = 0;
                 }, 1000);
@@ -271,6 +284,7 @@ export default {
  
 
                     this.loading=false;  
+                    this.loadingMore=false;  
                     this.data = [];
                     this.pagination.total = 0;
 

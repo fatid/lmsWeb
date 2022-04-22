@@ -15,7 +15,7 @@ Table Of Content
 Fonts
 ===================================================================================== */
  
-@import url('https://fonts.googleapis.com/css?family=Markazi+Text:wght@400;500,600|Cairo:wght@300;400;600;700;900|Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i|Cairo:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Scheherazade+New:wght@400;700|Markazi+Text:wght@400;500,600|Cairo:wght@300;400;600;700;900|Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i|Cairo:100,100i,300,300i,400,400i,500,500i,600,700,700i,900,900i&display=swap');
  
 /* ================================================================================== 
 Reset Css
@@ -38,9 +38,11 @@ time, mark, audio, video {
 	padding: 0;
 	border: 0;
 	font-size: 100%;
-	font: inherit;
+	/*font-family: 'Scheherazade New', serif!important;*/
 	vertical-align: baseline;
 }
+ 
+ 
 /* HTML5 display-role reset for older browsers */
 article, aside, details, figcaption, figure, 
 footer, header, hgroup, menu, nav, section {
@@ -279,7 +281,7 @@ body {
 	font-size: 0.875rem;
 	line-height: 1.42857143;
 	color: #333;
-	background: #f7f7f7 !important;
+	background: #fff !important;
 }
 
 .menu_left::-webkit-scrollbar {
@@ -398,7 +400,8 @@ header.main-header {
 	background: #fff;
 	display: flex !important;
 	align-items: center;
-	box-shadow: 0px 0.052083333in 11.25pt -9px rgba(0,0,0,.1);
+	box-shadow: 0px 0.052083333in 11.25pt -9px rgba(0,0,0,.2);
+	border-bottom:1px solid #f7f7f7;
 }
 
 .main_logo {
@@ -407,9 +410,7 @@ header.main-header {
     height: 55px;
     margin-left: 20px; 
 }
-.main_logo img {
-    height: 50px;
-}
+
 .logo-inverse {
     display: none;
 }
@@ -8004,3 +8005,34 @@ a.rmv-btn i {
     position: absolute;
 }
 
+.page-content{ 
+	width: 100%;
+	display: block;	 
+	padding: 10px;
+	
+}
+.page-header{
+	width: 100%;
+	display: block;	 
+	background: #f8efee;
+	border-radius: 8px;
+}
+.page-content .page-header .search-header {
+    display: inline-flex;
+    width: 100%;
+    padding: 10px 0px;
+    justify-content: space-between;
+    border-bottom: 0; 
+    margin-bottom: 0px;  
+}
+
+.fcrse_3 {
+    background: #fff;
+    width: 100%;
+    float: left;
+    padding: 0;
+    border-radius: 10px;
+    margin-bottom: 30px;
+    border: 1px solid #afafaf;
+    transition: all .2s ease-in-out;
+}

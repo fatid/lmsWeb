@@ -70,7 +70,7 @@
 import general from "@/mixins/general";
 
 export default {
-	layout: 'basic',
+	layout: 'default',
 	mixins:[general],
 	data(){
 		return{ 
